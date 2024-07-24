@@ -93,7 +93,7 @@ export default [
       {
         "title": "UI Components",
         "icon": "material-symbols:settings-input-component-outline-rounded",
-        "path": "https://roseui-nuxt.vercel.app"
+        "path": "https://corradui.datasc.dev"
       }
     ],
     "meta": {
