@@ -3,7 +3,7 @@ import sha256 from "crypto-js/sha256.js";
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
-  const password = sha256("abc123").toString();
+  const password = sha256(body.password).toString();
   let secretKey = generateSecretKey();
 
   try {
