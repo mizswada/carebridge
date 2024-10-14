@@ -1,70 +1,130 @@
 import sha256 from "crypto-js/sha256.js";
-import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
+import { DateTime } from "luxon";
+import mail from "@/server/helper/email";
+import registerTemplate from "@/server/template/email/verify-account";
 
-const ENV = useRuntimeConfig();
+const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
 
-    // Get user from database
-    const allUser = await prisma.user.findMany();
-
-    // Check if the user already exists
-    const userExist = allUser.find((user) => {
-      return user?.userEmail === body?.useremail;
-    });
-
-    if (userExist)
+    // Check if email already exists
+    const isEmailValid = await validateEmail(body.email);
+    console.log(body.email);
+    if (!isEmailValid) {
       return {
         statusCode: 400,
         message: "Email already exists",
-    };
+      };
+    }
+
+    const hashedPassword = sha256(body.password).toString();
 
     // Add New User
     const user = await prisma.user.create({
+      data: {
+        userPassword: hashedPassword,
+        //userFullName: body?.fullname || "",
+        userEmail: body?.email || "",
+        userStatus: "ACTIVE",
+        userCreatedDate: new Date(),
+      },
+    });
+
+    if (user) {
+      // Add user role
+      const userRole = await prisma.userrole.create({
+          data: {
+            userRoleUserID: user.userID,
+            userRoleRoleID: parseInt(body.role),
+            userRoleCreatedDate: new Date(),
+          },
+      });
+
+      const token = await prisma.token.create({
         data: {
-          userPassword: password,
-          userFullName: body?.fullname || "",
-          userEmail: body?.email || "",
-          userStatus: "ACTIVE",
-          userCreatedDate: new Date(),
+          tokenUUID: generateTokenID(),
+          user: {
+            connect: {
+              userID: user.userID,
+            },
+          },
+          tokenType: "REGISTRATION",
+          tokenExpiryDate: DateTime.now().plus({ days: 1 }).toJSDate(),
+          tokenCreatedDate: DateTime.now().toJSDate(),
         },
       });
 
-      if (user) {
-        // Add user role
-        const userRole = await prisma.userrole.create({
-            data: {
-              userRoleUserID: user.userID,
-              userRoleRoleID: body.type,
-              userRoleCreatedDate: new Date(),
-            },
-        });
+      const url = `${config.public.feURL}/verify-account/${token.tokenUUID}`;
 
-        return {
-          statusCode: 200,
-          message: "User successfully added!",
-        };
-      } else {
-        return {
-          statusCode: 500,
-          message: "Something went wrong! Please contact your administrator.",
-        };
-      }
+      const emailTemplate = replaceEmailTemplateURL(registerTemplate, url);
+      /* const emailTemplate = replaceEmailTemplateURL(registerTemplate, {
+        verifyAccountLink: url,
+      }); */
+
+      // Send verification email
+      await mail(
+        user.userEmail,
+        "Verify Account",
+        "Verify Account",
+        emailTemplate
+      );
+
+      return {
+        statusCode: 200,
+        message: "User successfully added! Please verify your account.",
+      };
+    } else {
+      return {
+        statusCode: 500,
+        message: "Something went wrong! Please contact your administrator.",
+      };
+    } 
   } catch (error) {
     console.log(error);
     return {
       statusCode: 500,
-      message: "Internal server error",
+      //message: "Internal server error",
+      message: error.message,
     };
   }
 });
 
-function generateAccessToken(user) {
-  return jwt.sign(user, ENV.auth.secretAccess, { expiresIn: "1d" });
+
+async function validateEmail(email) {
+  const user = await prisma.user.findFirst({
+    where: {
+      userEmail: email,
+    },
+  });
+
+  if (user) {
+    return false;
+  }
+
+  return true;
 }
 
-function generateRefreshToken(user) {
-  return jwt.sign(user, ENV.auth.secretRefresh, { expiresIn: "30d" });
+function generateTokenID() {
+  return uuidv4();
 }
+
+/* function replaceEmailTemplateURL(template, params) {
+  let modifiedTemplate = template;
+
+  Object.keys(params).forEach((key) => {
+    const placeholder = `[[${key}]]`;
+    modifiedTemplate = modifiedTemplate.replace(new RegExp(placeholder, 'g'), params[key]);
+  });
+
+  return modifiedTemplate;
+} */
+
+function replaceEmailTemplateURL(template, url) {
+  return template.replace(
+    "[[verifyAccountLink]]", url
+  );
+} 
+

@@ -60,14 +60,23 @@ export default defineEventHandler(async (event) => {
       `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Lax; Path=/`,
     ]);
 
-    return {
-      statusCode: 200,
-      message: "Login success",
-      data: {
-        user: user,
-        roles: roleNames,
-      },
-    };
+    if(user.userIsVerify === 0){
+      return {
+        statusCode: 401,
+        message: "Please verify your account first",
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: "Login success",
+        data: {
+          user: user,
+          roles: roleNames,
+        },
+      };
+    }
+
+    
   } catch (error) {
     console.log(error);
     return {

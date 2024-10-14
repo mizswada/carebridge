@@ -5,6 +5,17 @@ export default defineNuxtConfig({
       secretAccess: process.env.NUXT_ACCESS_TOKEN_SECRET,
       secretRefresh: process.env.NUXT_REFRESH_TOKEN_SECRET,
     },
+    nodemailer: {
+      host: process.env.NUXT_NODEMAILER_HOST,
+      port: process.env.NUXT_NODEMAILER_PORT,
+      secure: process.env.NUXT_NODEMAILER_SECURE,
+      email: process.env.NUXT_NODEMAILER_EMAIL,
+      password: process.env.NUXT_NODEMAILER_PASSWORD,
+    },
+    public: {
+      env: process.env.NUXT_ENV,
+      feURL: process.env.NUXT_FE_URL,
+    },
   },
   modules: [
     "@nuxtjs/tailwindcss",
@@ -12,7 +23,7 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "@vueuse/nuxt",
     "floating-vue/nuxt",
-    "@pinia/nuxt",
+    "@pinia/nuxt", 
     "@pinia-plugin-persistedstate/nuxt",
     "nuxt-security",
     "nuxt-typed-router",
