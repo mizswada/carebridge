@@ -7,14 +7,35 @@ const config = useRuntimeConfig();
 // console.log("NUXT_NODEMAILER_EMAIL:", config.NUXT_NODEMAILER_EMAIL);
 // console.log("NUXT_NODEMAILER_PASSWORD:", config.NUXT_NODEMAILER_PASSWORD);
 
+// const transporter = nodemailer.createTransport({
+//   host: config.NUXT_NODEMAILER_HOST,
+//   port: parseInt(config.NUXT_NODEMAILER_PORT, 10), // Ensure the port is correctly parsed as an integer
+//   // port: 2525,
+//   secure: config.NUXT_NODEMAILER_SECURE === "true", // Convert to boolean if needed
+//   auth: {
+//     user: config.NUXT_NODEMAILER_EMAIL,
+//     pass: config.NUXT_NODEMAILER_PASSWORD,
+//   },
+// });
+
+// const transporter = nodemailer.createTransport({
+//   host: config.nodemailer.host,
+//   port: config.nodemaier.port,
+//   secure: config.nodemailer.secure,
+//   auth: {
+//     user: config.nodemailer.email,
+//     pass: config.nodemailer.password,
+//   },
+// });
+
 const transporter = nodemailer.createTransport({
-  host: config.NUXT_NODEMAILER_HOST,
-  port: parseInt(config.NUXT_NODEMAILER_PORT, 10), // Ensure the port is correctly parsed as an integer
-  // port: 2525,
-  secure: config.NUXT_NODEMAILER_SECURE === "true", // Convert to boolean if needed
+  host: config.nodemailer.host,
+  port: config.nodemailer.port,
+  secure: config.nodemailer.secure,
   auth: {
-    user: config.NUXT_NODEMAILER_EMAIL,
-    pass: config.NUXT_NODEMAILER_PASSWORD,
+    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+    user: config.nodemailer.email,
+    pass: config.nodemailer.password,
   },
 });
 
