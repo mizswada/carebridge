@@ -1,9 +1,16 @@
 import nodemailer from "nodemailer";
 const config = useRuntimeConfig();
 
+console.log("NUXT_NODEMAILER_HOST:", config.NUXT_NODEMAILER_HOST);
+console.log("NUXT_NODEMAILER_PORT:", config.NUXT_NODEMAILER_PORT);
+console.log("NUXT_NODEMAILER_SECURE:", config.NUXT_NODEMAILER_SECURE);
+console.log("NUXT_NODEMAILER_EMAIL:", config.NUXT_NODEMAILER_EMAIL);
+console.log("NUXT_NODEMAILER_PASSWORD:", config.NUXT_NODEMAILER_PASSWORD);
+
 const transporter = nodemailer.createTransport({
   host: config.NUXT_NODEMAILER_HOST,
-  port: config.NUXT_NODEMAILER_PORT,
+  port: parseInt(config.NUXT_NODEMAILER_PORT, 10), // Ensure the port is correctly parsed as an integer
+  // port: 2525,
   secure: config.NUXT_NODEMAILER_SECURE === "true", // Convert to boolean if needed
   auth: {
     user: config.NUXT_NODEMAILER_EMAIL,
@@ -11,7 +18,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function main(to, subject, text, html) {
+async function sendMail(to, subject, text, html) {
   try {
     if (!to) throw new Error("Recipient email address 'to' is required");
     if (!subject) throw new Error("Email subject is required");
@@ -33,4 +40,4 @@ async function main(to, subject, text, html) {
   }
 }
 
-export default main;
+export default sendMail;
