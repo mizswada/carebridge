@@ -1,9 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import mail from "~/server/helper/email";
-import receiptSubTemplate from "~/server/template/email/receiptSub";
 import { DateTime } from "luxon";
+import { v4 as uuidv4 } from "uuid";
+import mail from "@/server/helper/email";
+import registerTemplate from "@/server/template/email/verify-account";
 
 const prisma = new PrismaClient();
+const config = useRuntimeConfig();
 
 // Utility function to generate a random password
 const generatePassword = (length = 12) => {
@@ -25,6 +27,7 @@ export default defineEventHandler(async (event) => {
   try {
     body.roleID = parseInt(body.roleID, 10);
     body.centerCapacity = parseInt(body.centerCapacity, 10);
+
     // Start a transaction to ensure atomicity
     const [newUser, newRecord, newUserRole] = await prisma.$transaction(
       async (prisma) => {
@@ -45,7 +48,6 @@ export default defineEventHandler(async (event) => {
         });
 
         // Step 2: Insert into userrole table with the appropriate roleID
-        // const roleID = body.selectedOption === "Association" ? 4 : 3; // Define roleID based on selection
         const createdUserRole = await prisma.userrole.create({
           data: {
             userRoleUserID: createdUser.userID,
@@ -54,9 +56,9 @@ export default defineEventHandler(async (event) => {
           },
         });
 
+        // Step 3: Insert into either user_association or user_rehab_center based on roleID
         let createdRecord;
         if (body.roleID === 4) {
-          // Step 3: Association record creation
           createdRecord = await prisma.user_association.create({
             data: {
               user_id: createdUser.userID,
@@ -71,7 +73,7 @@ export default defineEventHandler(async (event) => {
               association_address_postcode: body.associationAddressPostcode,
               association_address_state: body.associationAddressState,
               association_address_country: body.associationAddressCountry,
-              pic_name: body.picName, // Specific to association contact person
+              pic_name: body.picName,
               pic_phoneNum: body.picPhoneNum,
               pic_email: body.picEmail,
               website: body.website,
@@ -84,7 +86,6 @@ export default defineEventHandler(async (event) => {
             },
           });
         } else if (body.roleID === 3) {
-          // Step 3: Rehab Center record creation
           createdRecord = await prisma.user_rehab_center.create({
             data: {
               user_id: createdUser.userID,
@@ -96,7 +97,7 @@ export default defineEventHandler(async (event) => {
               center_address_country: body.centerAddressCountry,
               registration_number: body.registrationNumber,
               license_number: body.licenseNumber,
-              contact_number: body.contactNumber, // Specific to rehab center contact
+              contact_number: body.contactNumber,
               email_address: body.userEmail,
               center_type: body.centerType,
               person_in_charge: body.userFullName,
@@ -115,36 +116,26 @@ export default defineEventHandler(async (event) => {
       }
     );
 
-    // Prepare email data
-    const datetimeFormat = DateTime.now()
-      .setZone("Asia/Kuala_Lumpur")
-      .toFormat("dd/MM/yyyy hh:mm:ss");
-    const emailData = {
-      receiptID: newUser.userID,
-      amountPaid: "N/A",
-      plan:
-        body.selectedOption === "Association" ? "Association" : "Rehab Center",
-      duration: "N/A",
-      planType: "N/A",
-      datePaid: datetimeFormat,
-      status: "Pending Approval",
-    };
+    // Generate the verification token without storing it
+    const verificationToken = uuidv4();
+    const verificationURL = `${config.public.feURL}/verify-account/${verificationToken}`;
 
-    // Send email
-    const emailContent = replaceEmailTemplateWord(
-      receiptSubTemplate,
-      emailData
+    // Prepare and send the verification email
+    const emailTemplate = replaceEmailTemplateURL(
+      registerTemplate,
+      verificationURL
     );
     await mail(
       newUser.userEmail,
-      "Your Registration Receipt",
-      "Your Registration Receipt",
-      emailContent
+      "Verify Your Account",
+      "Please verify your account by clicking the link below.",
+      emailTemplate
     );
 
     return {
       success: true,
-      message: "Your Registration is Completed",
+      message:
+        "Your Registration is Completed. Please check your email to verify your account.",
       user: newUser,
       record: newRecord,
       userRole: newUserRole,
@@ -161,10 +152,6 @@ export default defineEventHandler(async (event) => {
 });
 
 // Utility function to replace placeholders in the email template
-function replaceEmailTemplateWord(template, data) {
-  let emailTemplate = template;
-  Object.keys(data).forEach((key) => {
-    emailTemplate = emailTemplate.replace(`[[${key}]]`, data[key]);
-  });
-  return emailTemplate;
+function replaceEmailTemplateURL(template, url) {
+  return template.replace("[[verifyAccountLink]]", url);
 }

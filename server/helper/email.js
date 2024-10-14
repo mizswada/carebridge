@@ -1,11 +1,11 @@
 import nodemailer from "nodemailer";
 const config = useRuntimeConfig();
 
-console.log("NUXT_NODEMAILER_HOST:", config.NUXT_NODEMAILER_HOST);
-console.log("NUXT_NODEMAILER_PORT:", config.NUXT_NODEMAILER_PORT);
-console.log("NUXT_NODEMAILER_SECURE:", config.NUXT_NODEMAILER_SECURE);
-console.log("NUXT_NODEMAILER_EMAIL:", config.NUXT_NODEMAILER_EMAIL);
-console.log("NUXT_NODEMAILER_PASSWORD:", config.NUXT_NODEMAILER_PASSWORD);
+// console.log("NUXT_NODEMAILER_HOST:", config.NUXT_NODEMAILER_HOST);
+// console.log("NUXT_NODEMAILER_PORT:", config.NUXT_NODEMAILER_PORT);
+// console.log("NUXT_NODEMAILER_SECURE:", config.NUXT_NODEMAILER_SECURE);
+// console.log("NUXT_NODEMAILER_EMAIL:", config.NUXT_NODEMAILER_EMAIL);
+// console.log("NUXT_NODEMAILER_PASSWORD:", config.NUXT_NODEMAILER_PASSWORD);
 
 const transporter = nodemailer.createTransport({
   host: config.NUXT_NODEMAILER_HOST,
