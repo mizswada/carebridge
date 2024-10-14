@@ -1,22 +1,23 @@
+// /server/api/lookup.js
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   try {
-    // Fetch both states and countries from the lookup table
+    // Fetch states, countries, and association types from the lookup table
     const lookups = await prisma.lookup.findMany({
       where: {
-        lookupTitle: { in: ["state", "country"] }, // Filter for both types
+        lookupTitle: { in: ["state", "country", "Association Type"] }, // Include "Association Type" here
       },
       select: {
         lookupID: true,
         lookupValue: true,
-        lookupTitle: true, // Assuming you have a `type` column to differentiate
+        lookupTitle: true,
       },
     });
 
-    // Separate states and countries based on the type
+    // Separate data based on lookupTitle
     const states = lookups
       .filter((item) => item.lookupTitle === "state")
       .map((state) => ({ value: state.lookupID, label: state.lookupValue }));
@@ -28,11 +29,19 @@ export default defineEventHandler(async (event) => {
         label: country.lookupValue,
       }));
 
+    const associationTypes = lookups
+      .filter((item) => item.lookupTitle === "Association Type")
+      .map((type) => ({
+        value: type.lookupID,
+        label: type.lookupValue,
+      }));
+
     return {
       success: true,
       data: {
         states,
         countries,
+        associationTypes,
       },
     };
   } catch (error) {
