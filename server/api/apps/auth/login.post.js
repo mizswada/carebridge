@@ -80,7 +80,11 @@ export default defineEventHandler(async (event) => {
     if (!userCareTakerClient) {
       return {
         statusCode: 404,
-        message: "User profile not found. Please complete your profile.",
+        message: "Login success. User profile not found. Please complete your profile.",
+        data: {
+          user: user,
+          roles: roleNames,
+        },
       };
     }
 
@@ -89,7 +93,11 @@ export default defineEventHandler(async (event) => {
     if (!isProfileComplete) {
       return {
         statusCode: 400,
-        message: "Please complete your profile before proceeding.",
+        message: "Login success. Please complete your profile before proceeding.",
+        data: {
+          user: user,
+          roles: roleNames,
+        },
       };
     }
 
@@ -109,7 +117,8 @@ export default defineEventHandler(async (event) => {
     console.log(error);
     return {
       statusCode: 500,
-      message: "Internal server error",
+      //message: "Internal server error",
+      message: error.message,
     };
   }
 });
