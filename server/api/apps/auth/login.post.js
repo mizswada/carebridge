@@ -76,27 +76,31 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    let messageSuccess = 'Login success';
     // Check if the userCareTaker profile exists
     if (!userCareTakerClient) {
-      return {
+      messageSuccess = "User profile not found. Please complete your profile.";
+      /* return {
         statusCode: 404,
         message: "User profile not found. Please complete your profile.",
-      };
+      }; */
     }
 
     // Now check if the profile is complete
     const isProfileComplete = checkProfileCompletion(userCareTakerClient);
     if (!isProfileComplete) {
-      return {
+
+      messageSuccess = "Login success. Please complete your profile before proceeding.";
+      /* return {
         statusCode: 400,
-        message: "Please complete your profile before proceeding.",
-      };
+        message: "Login success. Please complete your profile before proceeding.",
+      }; */
     }
 
    
     return {
       statusCode: 200,
-      message: "Login success",
+      message: messageSuccess,
       data: {
         user: user,
         roles: roleNames,
