@@ -82,8 +82,12 @@ export default defineEventHandler(async (event) => {
       messageSuccess = "User profile not found. Please complete your profile.";
       /* return {
         statusCode: 404,
-        message: "User profile not found. Please complete your profile.",
-      }; */
+        message: "Login success. User profile not found. Please complete your profile.",
+        data: {
+          user: user,
+          roles: roleNames,
+        },
+      };
     }
 
     // Now check if the profile is complete
@@ -94,7 +98,11 @@ export default defineEventHandler(async (event) => {
       /* return {
         statusCode: 400,
         message: "Login success. Please complete your profile before proceeding.",
-      }; */
+        data: {
+          user: user,
+          roles: roleNames,
+        },
+      };
     }
 
    
@@ -113,7 +121,8 @@ export default defineEventHandler(async (event) => {
     console.log(error);
     return {
       statusCode: 500,
-      message: "Internal server error",
+      //message: "Internal server error",
+      message: error.message,
     };
   }
 });
