@@ -76,11 +76,9 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    let messageSuccess = 'Login success';
     // Check if the userCareTaker profile exists
     if (!userCareTakerClient) {
-      messageSuccess = "User profile not found. Please complete your profile.";
-      /* return {
+      return {
         statusCode: 404,
         message: "Login success. User profile not found. Please complete your profile.",
         data: {
@@ -93,9 +91,7 @@ export default defineEventHandler(async (event) => {
     // Now check if the profile is complete
     const isProfileComplete = checkProfileCompletion(userCareTakerClient);
     if (!isProfileComplete) {
-
-      messageSuccess = "Login success. Please complete your profile before proceeding.";
-      /* return {
+      return {
         statusCode: 400,
         message: "Login success. Please complete your profile before proceeding.",
         data: {
@@ -108,7 +104,7 @@ export default defineEventHandler(async (event) => {
    
     return {
       statusCode: 200,
-      message: messageSuccess,
+      message: "Login success",
       data: {
         user: user,
         roles: roleNames,
