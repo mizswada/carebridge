@@ -5,6 +5,7 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
 
     const token = body.token;
+    const token_type = body.token_type
 
     if (!token) {
       return {
@@ -17,7 +18,7 @@ export default defineEventHandler(async (event) => {
       where: {
         tokenUUID: token,
         tokenStatus: "ACTIVE",
-        tokenType: "REGISTRATION",
+        tokenType: token_type,
       },
     });
 

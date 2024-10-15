@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
 
       return {
         statusCode: 200,
-        message: "User successfully added! Please verify your account.",
+        message: "User successfully registered! Please check your email to verify your account.",
       };
     } else {
       return {

@@ -66,13 +66,13 @@ export default defineEventHandler(async (event) => {
         await mail(
             user.userEmail,
             "Verify Account",
-            "Verify Account",
+            "Verify Account", 
             emailTemplate
         );
 
         return {
             statusCode: 200,
-            message: "Verification email sent successfully.",
+            message: "Verification email successfully sent.",
         };
 
     } catch (error) {
