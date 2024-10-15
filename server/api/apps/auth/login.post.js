@@ -52,11 +52,13 @@ export default defineEventHandler(async (event) => {
     const roleNames = roles.map((r) => r.role.roleName);
 
     const accessToken = generateAccessToken({
+      userID: user.userID,
       useremail: user.userEmail,
       roles: roleNames,
     });
 
     const refreshToken = generateRefreshToken({
+      userID: user.userID,
       useremail: user.userEmail,
       roles: roleNames,
     });
@@ -84,6 +86,8 @@ export default defineEventHandler(async (event) => {
         data: {
           user: user,
           roles: roleNames,
+          accessToken,
+          refreshToken,
         },
       };
     }
@@ -97,6 +101,8 @@ export default defineEventHandler(async (event) => {
         data: {
           user: user,
           roles: roleNames,
+          accessToken,
+          refreshToken,
         },
       };
     }
@@ -108,6 +114,8 @@ export default defineEventHandler(async (event) => {
       data: {
         user: user,
         roles: roleNames,
+        accessToken,
+        refreshToken,
       },
     };
     
