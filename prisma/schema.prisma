@@ -39,6 +39,7 @@ model user {
   token                                           token[]
   user_association                                user_association[]
   user_care_taker                                 user_care_taker[]
+  user_client                                     user_client[]
   user_rehab_center                               user_rehab_center[]
   userrole                                        userrole[]
 }
@@ -83,6 +84,9 @@ model lookup {
   user_care_taker_user_care_taker_nationalityTolookup                       user_care_taker[]       @relation("user_care_taker_nationalityTolookup")
   user_care_taker_user_care_taker_qualificationsTolookup                    user_care_taker[]       @relation("user_care_taker_qualificationsTolookup")
   user_care_taker_user_care_taker_working_hoursTolookup                     user_care_taker[]       @relation("user_care_taker_working_hoursTolookup")
+  user_client_user_client_countryTolookup                                   user_client[]           @relation("user_client_countryTolookup")
+  user_client_user_client_genderTolookup                                    user_client[]           @relation("user_client_genderTolookup")
+  user_client_user_client_stateTolookup                                     user_client[]           @relation("user_client_stateTolookup")
   user_rehab_center_user_rehab_center_center_address_countryTolookup        user_rehab_center[]     @relation("user_rehab_center_center_address_countryTolookup")
   user_rehab_center_user_rehab_center_center_address_stateTolookup          user_rehab_center[]     @relation("user_rehab_center_center_address_stateTolookup")
 }
@@ -336,6 +340,7 @@ model user_care_taker {
   emergency_contact_number                         String?   @db.VarChar(50)
   working_hours                                    Int?
   languages_spoken                                 String?   @db.Text
+  documents_certificate                            String?   @db.VarChar(255)
   documents_ic                                     String?   @db.VarChar(255)
   health_status                                    Int?
   profile_picture                                  String?   @db.VarChar(255)
@@ -409,4 +414,28 @@ model token {
   user             user?     @relation(fields: [userID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "token_ibfk_1")
 
   @@index([userID], map: "userID")
+}
+
+model user_client {
+  clientID                           Int      @id @default(autoincrement())
+  user_id                            Int
+  dateOfBirth                        DateTime @db.Date
+  gender                             Int
+  addressLine1                       String   @db.VarChar(255)
+  addressLine2                       String?  @db.VarChar(255)
+  city                               String   @db.VarChar(100)
+  state                              Int
+  country                            Int
+  postcode                           String   @db.VarChar(20)
+  medicalConditions                  String?  @db.Text
+  medications                        String?  @db.Text
+  lookup_user_client_countryTolookup lookup   @relation("user_client_countryTolookup", fields: [country], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "country")
+  lookup_user_client_genderTolookup  lookup   @relation("user_client_genderTolookup", fields: [gender], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "fk_gender")
+  user                               user     @relation(fields: [user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_c")
+  lookup_user_client_stateTolookup   lookup   @relation("user_client_stateTolookup", fields: [state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "state")
+
+  @@index([country], map: "Country")
+  @@index([state], map: "State")
+  @@index([gender], map: "fk_gender")
+  @@index([user_id], map: "fk_user_id_c")
 }
