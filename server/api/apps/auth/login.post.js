@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
     if (!user) {
       return {
-        statusCode: 404,
+        statusCode: 400,
         message: "User does not exist",
       };
     }
@@ -23,14 +23,14 @@ export default defineEventHandler(async (event) => {
     const hashedPassword = sha256(password).toString();
     if (user.userPassword !== hashedPassword) {
       return {
-        statusCode: 401,
+        statusCode: 400,
         message: "Invalid password",
       };
     }
 
     if(user.userIsVerify === 0){
       return {
-        statusCode: 401,
+        statusCode: 400,
         message: "Please verify your account first",
       };
     }
@@ -81,7 +81,7 @@ export default defineEventHandler(async (event) => {
     // Check if the userCareTaker profile exists
     if (!userCareTakerClient) {
       return {
-        statusCode: 404,
+        statusCode: 200,
         message: "Login success. User profile not found. Please complete your profile.",
         data: {
           user: user,
@@ -96,7 +96,7 @@ export default defineEventHandler(async (event) => {
     const isProfileComplete = checkProfileCompletion(userCareTakerClient);
     if (!isProfileComplete) {
       return {
-        statusCode: 400,
+        statusCode: 200,
         message: "Login success. Please complete your profile before proceeding.",
         data: {
           user: user,
