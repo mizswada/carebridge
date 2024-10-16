@@ -22,12 +22,13 @@ model user {
   userID                                          Int                     @id @default(autoincrement())
   userSecretKey                                   String?                 @db.VarChar(255)
   userCategoryCode                                String?                 @db.VarChar(100)
-  userUsername                                    String?                 @db.VarChar(255)
+  userUsername                                    String?                 @unique(map: "unique_userUsername") @db.VarChar(255)
   userPassword                                    String?                 @db.VarChar(255)
   userFullName                                    String?                 @db.VarChar(255)
   userEmail                                       String?                 @db.VarChar(255)
   userPhone                                       String?                 @db.VarChar(255)
   userStatus                                      String?                 @db.VarChar(255)
+  userIsVerify                                    Int?                    @default(0)
   userCreatedDate                                 DateTime?               @db.DateTime(0)
   userModifiedDate                                DateTime?               @db.DateTime(0)
   activity                                        activity[]
@@ -37,6 +38,7 @@ model user {
   emergency_contacts                              emergency_contacts[]
   equipment                                       equipment[]
   jobs_user_assignation                           jobs_user_assignation[]
+  token                                           token[]
   user_association                                user_association[]
   user_care_taker                                 user_care_taker[]
   user_rehab_center                               user_rehab_center[]
@@ -88,12 +90,12 @@ model lookup {
 }
 
 model userrole {
-  userRoleID          Int       @id @default(autoincrement())
-  userRoleUserID      Int?
-  userRoleRoleID      Int?
-  userRoleCreatedDate DateTime? @db.DateTime(0)
-  role                role?     @relation(fields: [userRoleRoleID], references: [roleID], onDelete: Restrict, onUpdate: Restrict, map: "FK_userrole_role")
-  user                user?     @relation(fields: [userRoleUserID], references: [userID], onDelete: Restrict, onUpdate: Restrict, map: "FK_userrole_user")
+  userRoleID          Int      @id @default(autoincrement())
+  userRoleUserID      Int      @default(0)
+  userRoleRoleID      Int      @default(0)
+  userRoleCreatedDate DateTime @db.DateTime(0)
+  role                role     @relation(fields: [userRoleRoleID], references: [roleID], onUpdate: Restrict, map: "FK_userrole_role")
+  user                user     @relation(fields: [userRoleUserID], references: [userID], onUpdate: Restrict, map: "FK_userrole_user")
 
   @@index([userRoleRoleID], map: "FK_userrole_role")
   @@index([userRoleUserID], map: "FK_userrole_user")
@@ -136,7 +138,9 @@ model category {
   category_id       Int                 @id @default(autoincrement())
   type              String              @db.VarChar(100)
   name              String              @db.VarChar(255)
-  position          Int
+  description       String?             @db.VarChar(255)
+  position          Int?
+  status            String              @db.VarChar(50)
   created_at        DateTime?           @default(now()) @db.Timestamp(0)
   updated_at        DateTime?           @db.Timestamp(0)
   deleted_at        DateTime?           @db.Timestamp(0)
@@ -255,12 +259,12 @@ model jobs_user_assignation {
   @@index([jobUser_jobID], map: "jobUser_jobID")
   @@index([jobUser_paymentStatus], map: "jobUser_paymentStatus")
   @@index([jobUser_userID], map: "jobUser_userID")
-  @@index([jobUser_jobStatus], map: "jobUser_jobStatus")
+  @@index([jobUser_jobStatus], map: "jobUser_status")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model survey_list {
-  data_id               Int     @id @default(autoincrement())
+  data_id               Int     @id
   survey_id             String  @default("0") @db.VarChar(255)
   vehicle_number        String  @default("0") @db.VarChar(255)
   vehicle_timein        String? @db.VarChar(255)
@@ -369,6 +373,7 @@ model user_care_taker {
 model user_rehab_center {
   id                                                      Int       @id @default(autoincrement())
   user_id                                                 Int?
+  center_category                                         Int?
   center_address_line1                                    String    @db.VarChar(255)
   center_address_line2                                    String?   @db.VarChar(255)
   center_address_city                                     String    @db.VarChar(255)
@@ -397,4 +402,17 @@ model user_rehab_center {
   @@index([center_address_state], map: "center_address_state")
   @@index([center_type], map: "center_type")
   @@index([user_id], map: "user_id")
+}
+
+model token {
+  tokenID          Int       @id @default(autoincrement())
+  tokenUUID        String?   @db.VarChar(255)
+  userID           Int?
+  tokenType        String?   @db.VarChar(255)
+  tokenExpiryDate  DateTime? @db.Date
+  tokenStatus      String?   @default("ACTIVE") @db.VarChar(255)
+  tokenCreatedDate DateTime? @db.DateTime(0)
+  user             user?     @relation(fields: [userID], references: [userID], onDelete: Restrict, onUpdate: Restrict, map: "token_ibfk_1")
+
+  @@index([userID], map: "userID")
 }

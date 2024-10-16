@@ -113,9 +113,8 @@ export default [
         meta: {
           auth: {
             role: ["Superadmin", "Admin"],
-          }
+          },
         },
-        
       },
     ],
   },
@@ -183,13 +182,13 @@ export default [
     child: [
       {
         title: "Category",
-        path: "/category",
+        path: "/care-service/category/category-list",
         icon: "material-symbols:category-search-outline-rounded",
         child: [],
       },
       {
         title: "Service List",
-        path: "/category",
+        path: "/care-service/category/service-list",
         icon: "material-symbols-light:lists",
         child: [],
       },
