@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
     if (!tokenRecord) {
       return {
-        statusCode: 404,
+        statusCode: 400,
         message: "Token does not exist or already used",
       };
     }

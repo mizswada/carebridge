@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     
         if (!user) {
             return {
-                statusCode: 404,
+                statusCode: 400,
                 message: "User does not exist",
             };
         }

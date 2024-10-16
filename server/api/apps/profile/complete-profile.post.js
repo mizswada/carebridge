@@ -130,7 +130,7 @@ export default defineEventHandler(async (event) => {
             });
     
             return {
-                statusCode: 201,
+                statusCode: 200,
                 message: "User profile created successfully",
                 //data: newClient,
             };
@@ -138,7 +138,7 @@ export default defineEventHandler(async (event) => {
     
         // If role is neither "Caretaker" nor "Client", return an error
         return {
-            statusCode: 403,
+            statusCode: 400,
             message: "Unauthorized: User role not allowed for this operation",
         };
   

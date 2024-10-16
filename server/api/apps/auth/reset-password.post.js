@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
     if (!tokenRecord) {
       return {
-        statusCode: 404,
+        statusCode: 400,
         message: "Token does not exist",
       };
     }
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
 
     if (!userRecord) {
       return {
-        statusCode: 404,
+        statusCode: 400,
         message: "User does not exist",
       };
     }
