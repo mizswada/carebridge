@@ -18,7 +18,7 @@ const changeKey = ref(0);
 
 const customers = [
   {
-    name: "Iqmal hariz",
+    name: "Iqmal",
     age: "25",
     city: "Kuala Lumpur",
     country: "Malaysia",
