@@ -64,6 +64,36 @@ export default defineEventHandler(async (event) => {
         },
     });
 
+    const job_stayin = await prisma.lookup.findMany({
+        where: {
+            lookupTitle: "job_stayin",
+        },
+        select: {
+            lookupID: true,
+            lookupValue: true,
+        },
+    });
+    
+    const qualifications_caretaker = await prisma.lookup.findMany({
+        where: {
+            lookupTitle: "qualifications_caretaker",
+        },
+        select: {
+            lookupID: true,
+            lookupValue: true,
+        },
+    });
+
+    const job_category = await prisma.category.findMany({
+        where: {
+            type: "care_service",
+        },
+        select: {
+            category_id: true,
+            name: true,
+        },
+    });
+
 
     return {
         statusCode: 200,
@@ -74,6 +104,9 @@ export default defineEventHandler(async (event) => {
             genders: genders,
             working_hours: working_hours, 
             health_status: health_status, 
+            job_stayin: job_stayin,
+            qualifications_caretaker: qualifications_caretaker,
+            job_category: job_category
         },
     };
 

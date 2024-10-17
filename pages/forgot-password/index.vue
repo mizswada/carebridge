@@ -16,7 +16,7 @@ const forgotPassword = async () => {
   const { data } = await useFetch("/api/auth/forgot-password", {
     method: "POST",
     body: {
-      email: form.email,
+      email: form.value.email,
     },
   });
 
