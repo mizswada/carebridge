@@ -182,14 +182,20 @@ export default [
     child: [
       {
         title: "Category",
-        path: "/care-service/category/category-list",
+        path: "/care-service/category-list",
         icon: "material-symbols:category-search-outline-rounded",
         child: [],
       },
       {
         title: "Service List",
-        path: "/care-service/category/service-list",
+        path: "/care-service/service-list",
         icon: "material-symbols-light:lists",
+        child: [],
+      },
+      {
+        title: "Details List", // New item added
+        path: "/care-service/details-list",
+        icon: "material-symbols:info-outline",
         child: [],
       },
       {

@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
         job_location_city: body.job_location_city,
         job_location_state: body.job_location_state,
         job_date: jobDate,
-        job_time: jobTime,
+        job_time: body.job_time,
         job_duration: body.job_duration,
         job_payment: body.job_payment,
         job_notes: body.job_notes || "",

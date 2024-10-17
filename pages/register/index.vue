@@ -263,43 +263,84 @@ const handleFileChange = async (event, field) => {
         <p class="text-slate-500 mb-6 col-sp">
           Please fill in the form to create an account.
         </p>
+        <div class="mb-4">
+          <h4 class="col-span-2">Select Your Role</h4>
+        </div>
 
-        <!-- Radio Button Group -->
-        <div class="mb-6 flex justify-center">
-          <div class="flex space-x-4">
-            <div class="border border-gray-300 p-4 rounded-md">
-              <label>
+        <div class="mb-6 flex justify-center w-full">
+          <div class="flex space-x-4 w-full">
+            <!-- Association Option -->
+            <div
+              :class="[
+                'border-2', // Increase border thickness
+                'border-black', // Set border color to black
+                'p-4', // Padding inside the box
+                'rounded-md', // Rounded corners
+                'w-full', // Full width of each option
+                'bg-black', // Black background by default
+                'text-white', // White text by default
+                'flex', // Flex layout for centering
+                'items-center', // Vertically center content
+                'justify-center', // Horizontally center content
+                selectedOption === 'Association' ? 'opacity-100' : 'opacity-50', // Full opacity if selected, reduced opacity if not
+                'transition-opacity duration-300', // Smooth transition for opacity change
+              ]"
+            >
+              <label class="flex items-center space-x-2 cursor-pointer">
                 <input
                   type="radio"
                   value="Association"
                   v-model="selectedOption"
+                  class="radio-button accent-purple-600"
                 />
-                Association
+                <span class="font-bold uppercase">Association</span>
               </label>
             </div>
-            <div class="border border-gray-300 p-4 rounded-md">
-              <label>
+
+            <!-- Rehab Center Option -->
+            <div
+              :class="[
+                'border-2', // Increase border thickness
+                'border-black', // Set border color to black
+                'p-4', // Padding inside the box
+                'rounded-md', // Rounded corners
+                'w-full', // Full width of each option
+                'bg-black', // Black background by default
+                'text-white', // White text by default
+                'flex', // Flex layout for centering
+                'items-center', // Vertically center content
+                'justify-center', // Horizontally center content
+                selectedOption === 'Rehab Center'
+                  ? 'opacity-100'
+                  : 'opacity-50', // Full opacity if selected, reduced opacity if not
+                'transition-opacity duration-300', // Smooth transition for opacity change
+              ]"
+            >
+              <label class="flex items-center space-x-2 cursor-pointer">
                 <input
                   type="radio"
                   value="Rehab Center"
                   v-model="selectedOption"
+                  class="radio-button accent-purple-600"
                 />
-                Rehab Center
+                <span class="font-bold uppercase">Rehab Center</span>
               </label>
             </div>
           </div>
         </div>
 
+        <hr class="border-black w-full border-1" />
         <!-- Conditional Fields for Association -->
         <div v-if="selectedOption === 'Association'">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <h4 class="col-span-2">Association Details</h4>
+            <h4 class="col-span-2 mt-4">Association Details</h4>
             <FormKit
               label="Username"
               type="text"
               label-class="text-left"
               v-model="formData.userUsername"
               :validation="'required'"
+              placeholder="Account Username"
             />
             <FormKit
               label="Password"
@@ -307,6 +348,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.userPassword"
               :validation="'required'"
+              placeholder="Account Password"
             />
             <FormKit
               label="Secret Key"
@@ -328,6 +370,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.userFullName"
               :validation="'required'"
+              placeholder="Association Fullname"
             />
             <FormKit
               label="Email"
@@ -335,6 +378,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.userEmail"
               :validation="'required'"
+              placeholder="Association Email"
             />
             <FormKit
               label="Phone"
@@ -342,6 +386,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.userPhone"
               :validation="'required'"
+              placeholder="Association Phone Number"
             />
             <FormKit
               label="Association Category"
@@ -365,6 +410,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.registrationNumber"
               :validation="'required'"
+              placeholder="Association Registration Number"
             />
             <FormKit
               label="License Number"
@@ -372,6 +418,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.licenseNumber"
               :validation="'required'"
+              placeholder="Association License Number"
             />
             <FormKit
               label="Establishment Date"
@@ -392,6 +439,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.website"
               :validation="'required'"
+              placeholder="Association website URL"
             />
             <FormKit
               label="Operational Area"
@@ -405,13 +453,10 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.membershipDetails"
             />
-            <FormKit
-              label="Association Logo"
-              type="file"
-              label-class="text-left"
-              @change="handleFileChange($event, 'associationLogo')"
-              :validation="'required'"
-            />
+
+            <hr class="border-t border-black w-full col-span-2 my-4" />
+
+            <h4 class="col-span-2">Association Address</h4>
             <FormKit
               label="Address Line 1"
               type="text"
@@ -455,6 +500,8 @@ const handleFileChange = async (event, field) => {
               :options="countryOptions"
               :validation="'required'"
             />
+            <hr class="border-t border-black w-full col-span-2 my-4" />
+            <h4 class="col-span-2">Contact Person Details</h4>
             <FormKit
               label="Contact Person Name"
               type="text"
@@ -476,6 +523,9 @@ const handleFileChange = async (event, field) => {
               v-model="formData.picEmail"
               :validation="'required'"
             />
+            <hr class="border-t border-black w-full col-span-2 my-4" />
+            <h4 class="col-span-2">Supporting Documents</h4>
+
             <FormKit
               label="Licenses"
               type="file"
@@ -490,19 +540,27 @@ const handleFileChange = async (event, field) => {
               @change="handleFileChange($event, 'documentsCertificates')"
               :validation="'required'"
             />
+            <FormKit
+              label="Association Logo"
+              type="file"
+              label-class="text-left"
+              @change="handleFileChange($event, 'associationLogo')"
+              :validation="'required'"
+            />
           </div>
         </div>
 
         <!-- Conditional Fields for Rehab Center -->
         <div v-else>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <h4 class="col-span-2">Center Details</h4>
+            <h4 class="col-span-2 mt-4">Center Details</h4>
             <FormKit
               label="Username"
               type="text"
               label-class="text-left"
               v-model="formData.userUsername"
               :validation="'required'"
+              placeholder="Account Username"
             />
             <FormKit
               label="Password"
@@ -510,6 +568,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.userPassword"
               :validation="'required'"
+              placeholder="Account Password"
             />
             <FormKit
               label="Secret Key"
@@ -531,6 +590,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.userFullName"
               :validation="'required'"
+              placeholder="Center Fullname"
             />
             <FormKit
               label="Email"
@@ -538,6 +598,7 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.userEmail"
               :validation="'required'"
+              placeholder="Center Email"
             />
             <FormKit
               label="Phone"
@@ -545,7 +606,80 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.userPhone"
               :validation="'required'"
+              placeholder="Center Phone Number"
             />
+            <FormKit
+              label="Registration Number"
+              type="text"
+              label-class="text-left"
+              v-model="formData.registrationNumber"
+              :validation="'required'"
+              placeholder="Center Registration Number"
+            />
+            <FormKit
+              label="License Number"
+              type="text"
+              label-class="text-left"
+              v-model="formData.licenseNumber"
+              :validation="'required'"
+              placeholder="Center License Number"
+            />
+            <FormKit
+              label="Center Category"
+              type="select"
+              label-class="text-left"
+              v-model="formData.rehabCenterCategory"
+              :options="rehabCenterCategoryOptions"
+              :validation="'required'"
+            />
+            <FormKit
+              label="Operational Hours"
+              type="text"
+              label-class="text-left"
+              v-model="formData.operationalHours"
+              :validation="'required'"
+              placeholder="Opening hours - Closing Hours"
+            />
+            <FormKit
+              label="Website"
+              type="url"
+              label-class="text-left"
+              v-model="formData.website"
+              :validation="'required'"
+              placeholder="Center website URL"
+            />
+            <FormKit
+              label="Center Capacity"
+              type="number"
+              label-class="text-left"
+              v-model="formData.centerCapacity"
+              placeholder="Center Capacity"
+            />
+            <FormKit
+              label="Geolocation"
+              type="text"
+              label-class="text-left"
+              v-model="formData.geolocation"
+              :validation="'required'"
+            />
+            <FormKit
+              label="Center Description"
+              type="textarea"
+              label-class="text-left"
+              v-model="formData.centerDescription"
+            />
+            <FormKit
+              label="Center Type"
+              type="select"
+              label-class="text-left"
+              v-model="formData.centerType"
+              :options="centerTypeOptions"
+              :validation="'required'"
+            />
+
+            <hr class="border-t border-black w-full col-span-2 my-4" />
+
+            <h4 class="col-span-2">Center Address</h4>
             <FormKit
               label="Address Line 1"
               type="text"
@@ -589,19 +723,15 @@ const handleFileChange = async (event, field) => {
               :options="countryOptions"
               :validation="'required'"
             />
+            <hr class="border-t border-black w-full col-span-2 my-4" />
+            <h4 class="col-span-2">Person In Charge (PIC) Details</h4>
             <FormKit
-              label="Registration Number"
+              label="Person In Charge"
               type="text"
               label-class="text-left"
-              v-model="formData.registrationNumber"
+              v-model="formData.personInCharge"
               :validation="'required'"
-            />
-            <FormKit
-              label="License Number"
-              type="text"
-              label-class="text-left"
-              v-model="formData.licenseNumber"
-              :validation="'required'"
+              placeholder="PIC Name"
             />
             <FormKit
               label="Contact Number"
@@ -609,63 +739,12 @@ const handleFileChange = async (event, field) => {
               label-class="text-left"
               v-model="formData.contactNumber"
               :validation="'required'"
+              placeholder="PIC Phone Number"
             />
-            <FormKit
-              label="Center Category"
-              type="select"
-              label-class="text-left"
-              v-model="formData.rehabCenterCategory"
-              :options="rehabCenterCategoryOptions"
-              :validation="'required'"
-            />
-            <FormKit
-              label="Center Type"
-              type="select"
-              label-class="text-left"
-              v-model="formData.centerType"
-              :options="centerTypeOptions"
-              :validation="'required'"
-            />
-            <FormKit
-              label="Person In Charge"
-              type="text"
-              label-class="text-left"
-              v-model="formData.personInCharge"
-              :validation="'required'"
-            />
-            <FormKit
-              label="Operational Hours"
-              type="text"
-              label-class="text-left"
-              v-model="formData.operationalHours"
-              :validation="'required'"
-            />
-            <FormKit
-              label="Website"
-              type="url"
-              label-class="text-left"
-              v-model="formData.website"
-              :validation="'required'"
-            />
-            <FormKit
-              label="Center Capacity"
-              type="number"
-              label-class="text-left"
-              v-model="formData.centerCapacity"
-            />
-            <FormKit
-              label="Geolocation"
-              type="text"
-              label-class="text-left"
-              v-model="formData.geolocation"
-              :validation="'required'"
-            />
-            <FormKit
-              label="Center Description"
-              type="textarea"
-              label-class="text-left"
-              v-model="formData.centerDescription"
-            />
+
+            <hr class="border-t border-black w-full col-span-2 my-4" />
+            <h4 class="col-span-2">Supporting Documents</h4>
+
             <FormKit
               label="Licenses"
               type="file"
@@ -712,3 +791,14 @@ const handleFileChange = async (event, field) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.radio-button:checked + label {
+  border-color: purple;
+}
+
+/* Optional: Adjust background and text color for better visibility */
+.bg-purple-100 {
+  background-color: #e9d5ff;
+}
+</style>

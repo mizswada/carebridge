@@ -1,5 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+
 definePageMeta({
   title: "Job Listing",
   middleware: ["auth"],
@@ -7,6 +9,8 @@ definePageMeta({
 });
 
 const { $swal, $router } = useNuxtApp();
+const router = useRouter();
+// const jobId = route.query.id;
 
 const jobList = ref([]);
 const showModal = ref(false);
@@ -37,6 +41,7 @@ onMounted(async () => {
   await fetchCategories();
   await fetchLocationStates();
   await fetchJobStayinOptions();
+  // console.log("Navigated Job ID:", jobId);
 });
 
 const jobCategoryOptions = ref([
@@ -46,6 +51,7 @@ const jobLocationStateOptions = ref([
   { value: 0, label: "Please Select a State" },
 ]);
 const jobStayinOptions = ref([{ value: 0, label: "Please Select an option" }]);
+
 // Function to fetch job categories
 const fetchCategories = async () => {
   try {
@@ -133,7 +139,7 @@ async function getJobList() {
       job_location_city: job.job_location_city,
       job_location_state: job.job_location_state,
       job_date: new Date(job.job_date).toLocaleDateString("en-GB"),
-      job_time: new Date(job.job_time).toLocaleTimeString("en-GB"),
+      job_time: job.job_time,
       job_duration: job.job_duration,
       job_payment: job.job_payment,
       job_notes: job.job_notes,
@@ -143,10 +149,10 @@ async function getJobList() {
   }
 }
 
-const openDetailsModal = async (value) => {
-  $router.push({
-    name: "care-service-category-service-details",
-    params: { id: value.job_id },
+const navigateToDetails = (value) => {
+  router.push({
+    path: `/care-service/detail-list`, // Use path directly
+    query: { id: value.job_id }, // Pass job_id as a query parameter
   });
 };
 
@@ -206,29 +212,6 @@ const saveJob = async () => {
       ? "/api/devtool/care-service/service-list/edit"
       : "/api/devtool/care-service/service-list/add";
 
-  // Parse and validate date and time inputs
-  const jobDate = showModalForm.value.job_date
-    ? new Date(showModalForm.value.job_date)
-    : null;
-
-  let jobTime = null;
-  if (showModalForm.value.job_time) {
-    const [hours, minutes] = showModalForm.value.job_time
-      .split(":")
-      .map(Number);
-    if (!isNaN(hours) && !isNaN(minutes)) {
-      jobTime = new Date();
-      jobTime.setHours(hours, minutes, 0, 0); // Set only the time part
-      jobTime = jobTime.toISOString().split("T")[1].slice(0, 5); // Convert to 'HH:mm' format
-    } else {
-      $swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Invalid date or time format.",
-      });
-      return;
-    }
-  }
   const dataToSave = {
     job_id: showModalForm.value.job_id,
     job_category: parseInt(showModalForm.value.job_category, 10),
@@ -244,20 +227,19 @@ const saveJob = async () => {
       : null,
     job_title: showModalForm.value.job_title,
     job_location_city: showModalForm.value.job_location_city,
-    job_date: jobDate,
-    job_time: jobTime,
+    job_date: new Date(showModalForm.value.job_date).toISOString(), // Convert to ISO DateTime format
+    job_time: showModalForm.value.job_time, // Send as HH:mm or HH:mm:ss format
     job_notes: showModalForm.value.job_notes || "",
     created_at: new Date(),
     updated_at: new Date(),
   };
 
   const { data } = await useFetch(endpoint, {
-    initialCache: false,
     method: "POST",
     body: JSON.stringify(dataToSave),
   });
 
-  if (data.value.statusCode === 200) {
+  if (data.value?.statusCode === 200) {
     $swal.fire({
       position: "center",
       icon: "success",
@@ -268,7 +250,6 @@ const saveJob = async () => {
       timer: 1000,
       showConfirmButton: false,
     });
-
     setTimeout(() => {
       $router.go();
     }, 1000);
@@ -372,7 +353,7 @@ const deleteJob = async () => {
                     />
                     Delete
                   </rs-button>
-                  <rs-button @click="openDetailsModal(data.value)">
+                  <rs-button @click="navigateToDetails(data.value)">
                     <Icon name="ic:outline-info" class="mr-2 !w-4 !h-4" />
                     Details
                   </rs-button>

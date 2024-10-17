@@ -218,7 +218,7 @@ model jobs {
   job_location_city                      String?                 @db.VarChar(255)
   job_location_state                     Int?
   job_date                               DateTime?               @db.Date
-  job_time                               DateTime?               @db.Date
+  job_time                               String?                 @db.VarChar(255)
   job_duration                           Int?
   job_payment                            Decimal?                @db.Decimal(10, 2)
   job_notes                              String?                 @db.Text
