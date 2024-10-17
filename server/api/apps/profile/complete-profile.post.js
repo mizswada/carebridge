@@ -1,5 +1,4 @@
 import multer from 'multer';
-import { DateTime } from "luxon";
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import fs from 'fs';
@@ -56,21 +55,24 @@ export default defineEventHandler(async (event) => {
             // Handle multiple file uploads
             await new Promise((resolve, reject) => {
                 upload.fields([
-                { name: 'upload_document_ic', maxCount: 1 },
+                { name: 'upload_ic', maxCount: 1 },
                 { name: 'upload_certificate', maxCount: 1 },
                 { name: 'profile_picture ', maxCount: 1 },
                 ])(event.req, event.res, (err) => {
-                if (err) return reject(err);
+                if (err) {
+                    console.error("Multer error:", err);
+                    return reject(new Error("Multer error during file upload: " + err.message));
+                }
                 resolve();
                 });
             });
         
             const files = event.req.files;
-            if (!files || (!files.upload_document_ic && !files.upload_certificate  && !files.profile_picture)) {
+            if (!files || (!files.upload_ic && !files.upload_certificate  && !files.profile_picture)) {
                 return { statusCode: 400, message: "No files uploaded" };
             }
         
-            const documentIcPath = files.upload_document_ic ? files.upload_document_ic[0].path : null;
+            const documentIcPath = files.upload_ic ? files.upload_ic[0].path : null;
             const certificatePath = files.upload_certificate ? files.upload_certificate[0].path : null;
             const profilePicturePath = files.profile_picture ? files.profile_picture[0].path : null;
 
