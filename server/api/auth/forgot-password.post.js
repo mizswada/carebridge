@@ -10,11 +10,8 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
 
-    console.log("date:", body.date)
-    console.log("time:", body.time)
-
     // Check if email already exists
-    /* const isEmailValid = await validateEmail(body.email);
+    const isEmailValid = await validateEmail(body.email);
     console.log(body.email);
     if (!isEmailValid) {
       return {
@@ -69,7 +66,7 @@ export default defineEventHandler(async (event) => {
         "Reset Password",
         emailTemplate
     );
-    }  */
+    }  
 
     return {
         statusCode: 200,
