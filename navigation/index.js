@@ -213,14 +213,14 @@ export default [
       {
         title: "Equipment",
         icon: "ep:tools",
-        path: "/emergency-contact",
-        external: true,
+        path: "/equipment",
+        external: false,  // Use Vue Router to navigate within the app
       },
       {
         title: "Emergency Contact",
         icon: "ri:contacts-book-3-line",
         path: "/emergency-contact",
-        external: true,
+        external: true,  // Still opens as an external link
       },
     ],
     meta: {
