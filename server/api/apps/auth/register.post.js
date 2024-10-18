@@ -11,8 +11,8 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
 
     // Check if email already exists
-    const isEmailValid = await validateEmail(body.email);
-    console.log(body.email);
+    const isEmailValid = await validateEmail(body.useremail);
+    console.log(body.useremail);
     if (isEmailValid) {
       return {
         statusCode: 400,
@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
       data: {
         userPassword: hashedPassword,
         //userFullName: body?.fullname || "",
-        userEmail: body?.email || "",
+        userEmail: body?.useremail || "",
         userStatus: "ACTIVE",
         userCreatedDate: new Date(),
       },
