@@ -5,7 +5,10 @@ export default defineNuxtConfig({
       secretAccess: process.env.NUXT_ACCESS_TOKEN_SECRET,
       secretRefresh: process.env.NUXT_REFRESH_TOKEN_SECRET,
     },
-  },
+    public: {
+      uploadURL: process.env.NUXT_UPLOAD_URL,
+    },
+  }, 
   modules: [
     "@nuxtjs/tailwindcss",
     "@formkit/nuxt",
