@@ -317,7 +317,7 @@ export default [
       },
       {
         title: "Caretaker",
-        path: "/care-taker",
+        path: "/caretaker",
         icon: "hugeicons:healtcare",
         child: [],
         meta: {
@@ -328,8 +328,8 @@ export default [
         
       },
       {
-        title: "Client",
-        path: "/client",
+        title: "Customer",
+        path: "/customer",
         icon: "carbon:customer",
         child: [],
         meta: {

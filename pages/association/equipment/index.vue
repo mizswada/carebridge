@@ -559,8 +559,8 @@
                 <template v-slot:header>
                 Add Equipment
                 </template>
-                <template v-slot:body>
-                <form>
+                <template v-slot:body> 
+                <form @submit.prevent="submit">
                     <!-- Name Input -->
                     <div class="mb-4">
                     <FormKit type="text" label="Name *" v-model="nameInput" :class="{'border-red-500': nameError}" placeholder="Name" required />

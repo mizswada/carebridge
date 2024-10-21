@@ -1,6 +1,6 @@
 <script setup>
     definePageMeta({
-        title: "Admin Management",
+        title: "Caretaker Management",
     });
     const { $swal, $router } = useNuxtApp();
 
@@ -8,9 +8,9 @@
     const modalAdd = ref(false);
     const modalDelete = ref(false);
 
-    const selectedAdmin = ref(null);
+    const selectedCaretaker = ref(null);
 
-    const admins = ref(null);
+    const caretakers = ref(null);
     const states = ref([]);
     const countries = ref([]);
     const genders = ref([]);
@@ -65,12 +65,12 @@
     genders.value.unshift({ value: "", label: "Please choose" });
    
     // list
-    const admin = await useFetch('/api/admin/list');
-    if(admin.data.value.response == 200){
-        admins.value = admin.data.value.data;
+    const caretaker = await useFetch('/api/caretaker/list');
+    if(caretaker.data.value.response == 200){
+        caretakers.value = caretaker.data.value.data;
     }
     else{
-        alert("An error occurred while fetching admins. Please try again.");
+        alert("An error occurred while fetching caretakers. Please try again.");
     }
 
     const validateFields = () => {
@@ -232,7 +232,7 @@
             }
             else
             {
-                const { data: add } = await useFetch("/api/admin/create", {
+                const { data: add } = await useFetch("/api/caretaker/create", {
                     method: "POST",
                     body: JSON.stringify({ 
                         userUsername: inputUsername.value ,
@@ -240,14 +240,14 @@
                         userFullName: inputName.value ,
                         userEmail: inputEmail.value ,
                         userPhone: inputContact.value ,
-                        admin_date_of_birth: inputDOB.value ,
-                        admin_gender: inputGender.value ,
-                        admin_address_line1: inputLine1.value ,
-                        admin_address_line2: inputLine2.value ,
-                        admin_address_city: inputCity.value ,
-                        admin_address_postcode: inputPostcode.value ,
-                        admin_address_state: inputState.value ,
-                        admin_address_country: inputCountry.value 
+                        caretaker_date_of_birth: inputDOB.value ,
+                        caretaker_gender: inputGender.value ,
+                        caretaker_address_line1: inputLine1.value ,
+                        caretaker_address_line2: inputLine2.value ,
+                        caretaker_address_city: inputCity.value ,
+                        caretaker_address_postcode: inputPostcode.value ,
+                        caretaker_address_state: inputState.value ,
+                        caretaker_address_country: inputCountry.value 
                     }),
                 });        
 
@@ -269,14 +269,14 @@
                 } 
                 else 
                 {
-                    alert("Admin failed to create.");
+                    alert("Caretaker failed to create.");
                 }
             }            
         } 
         catch (error) 
         {
-            console.error("Failed to created admin", error);
-            alert("An error occurred while created admin details. Please try again.");
+            console.error("Failed to created caretaker", error);
+            alert("An error occurred while created caretaker details. Please try again.");
         }
     };
 
@@ -300,7 +300,7 @@
     const editButton = async  (id) =>
     {       
         try {
-            const { data: detail } = await useFetch("/api/admin/get", {
+            const { data: detail } = await useFetch("/api/caretaker/get", {
                 method: "GET",
                 query: {
                     id: parseInt(id),
@@ -309,29 +309,29 @@
             // alert(JSON.stringify(detail.value));
             if (detail.value.response === 200) 
             {
-                selectedAdmin.value=id;
+                selectedCaretaker.value=id;
                 inputName.value = detail.value.data.user.userFullName ,
                 inputEmail.value = detail.value.data.user.userEmail,
                 inputContact.value = detail.value.data.user.userPhone  ,
-                inputDOB.value = formatDate(detail.value.data.details.admin_date_of_birth) ,
-                inputGender.value = detail.value.data.details.admin_gender ,
-                inputLine1.value = detail.value.data.details.admin_address_line1 ,
-                inputLine2.value = detail.value.data.details.admin_address_line2 ,
-                inputCity.value = detail.value.data.details.admin_address_city ,
-                inputPostcode.value = detail.value.data.details.admin_address_postcode ,
-                inputState.value = detail.value.data.details.admin_address_state ,
-                inputCountry.value = detail.value.data.details.admin_address_country ,
+                inputDOB.value = formatDate(detail.value.data.details.caretaker_date_of_birth) ,
+                inputGender.value = detail.value.data.details.caretaker_gender ,
+                inputLine1.value = detail.value.data.details.caretaker_address_line1 ,
+                inputLine2.value = detail.value.data.details.caretaker_address_line2 ,
+                inputCity.value = detail.value.data.details.caretaker_address_city ,
+                inputPostcode.value = detail.value.data.details.caretaker_address_postcode ,
+                inputState.value = detail.value.data.details.caretaker_address_state ,
+                inputCountry.value = detail.value.data.details.caretaker_address_country ,
                 modalEdit.value = true;
             } 
             else 
             {
-                alert("Admin not found.");
+                alert("Caretaker not found.");
             }
         } 
         catch (error) 
         {
-            console.error("Failed to fetch admin details:", error);
-            alert("An error occurred while fetching admin details. Please try again.");
+            console.error("Failed to fetch caretaker details:", error);
+            alert("An error occurred while fetching caretaker details. Please try again.");
         }
     };
 
@@ -342,21 +342,21 @@
             return; // Stop if form is invalid
         }
 
-        const { data: update } = await useFetch("/api/admin/update", {
+        const { data: update } = await useFetch("/api/caretaker/update", {
             method: "POST",
             body: JSON.stringify({                  
-                id: selectedAdmin.value,
+                id: selectedCaretaker.value,
                 userFullName: inputName.value ,
                 userEmail: inputEmail.value ,
                 userPhone: inputContact.value ,
-                admin_date_of_birth: inputDOB.value ,
-                admin_gender: inputGender.value ,
-                admin_address_line1: inputLine1.value ,
-                admin_address_line2: inputLine2.value ,
-                admin_address_city: inputCity.value ,
-                admin_address_postcode: inputPostcode.value ,
-                admin_address_state: inputState.value ,
-                admin_address_country: inputCountry.value 
+                caretaker_date_of_birth: inputDOB.value ,
+                caretaker_gender: inputGender.value ,
+                caretaker_address_line1: inputLine1.value ,
+                caretaker_address_line2: inputLine2.value ,
+                caretaker_address_city: inputCity.value ,
+                caretaker_address_postcode: inputPostcode.value ,
+                caretaker_address_state: inputState.value ,
+                caretaker_address_country: inputCountry.value 
             }),
         });        
 
@@ -378,13 +378,13 @@
         } 
         else 
         {
-            alert("Admin failed to update.");
+            alert("Caretaker failed to update.");
         }
       } 
       catch (error) 
       {
-          console.error("Failed to updated admin details:", error);
-          alert("An error occurred while updated admin details. Please try again.");
+          console.error("Failed to updated caretaker details:", error);
+          alert("An error occurred while updated caretaker details. Please try again.");
       }
     };
 
@@ -394,17 +394,17 @@
     };
     
     const confirmDelete = (id) => {
-        selectedAdmin.value = id;
+        selectedCaretaker.value = id;
         modalDelete.value = true;
     };
     
     const clickDelete = async () => 
     {
       try {
-        const { data:deleted} = await useFetch("/api/admin/delete", {
+        const { data:deleted} = await useFetch("/api/caretaker/delete", {
             method: "POST",
             body: JSON.stringify({                  
-              id: selectedAdmin.value,
+              id: selectedCaretaker.value,
             }),
         });        
 
@@ -426,24 +426,24 @@
         } 
         else 
         {
-            alert("Admin failed to update.");
+            alert("Caretaker failed to update.");
         }
       } 
       catch (error) 
       {
-          console.error("Failed to updated admin details:", error);
-          alert("An error occurred while updated admin details. Please try again.");
+          console.error("Failed to updated caretaker details:", error);
+          alert("An error occurred while updated caretaker details. Please try again.");
       }
-        admins.value = admins.value.filter(admin => admin.id !== selectedAdmin.value.id);
+        caretakers.value = caretakers.value.filter(caretaker => caretaker.id !== selectedCaretaker.value.id);
         modalDelete.value = false;
-        selectedAdmin.value = null;
+        selectedCaretaker.value = null;
     };
 </script>
 
 <template>
     <div class="space-y-8">
       <div class="text-lg font-semibold">
-        Admin Management
+        Caretaker Management
       </div>
       <br>
      
@@ -457,31 +457,31 @@
             >
               <Icon
                 class="text-indigo-500"
-                name="clarity:administrator-solid"
+                name="hugeicons:healtcare"
               ></Icon>
             </div>
             <div class="flex-1 truncate">
-              <span class="block font-semibold text-xl leading-tight"> {{ admins.length }}</span>
+              <span class="block font-semibold text-xl leading-tight"> {{ caretakers.length }}</span>
               <span class="text-base font-semibold text-gray-500">
-                Total Admins
+                Total Caretakers
               </span>
             </div>
           </div>
         </rs-card>
       </div>
   
-      <!-- List of admins -->
+      <!-- List of caretakers -->
       <div class="pb-20">
         <div class="bg-white p-6 rounded-lg shadow-md">
-          <div class="text-lg font-medium mb-4">List of Admins</div>
+          <div class="text-lg font-medium mb-4">List of Caretakers</div>
           <div class="flex justify-end items-center mb-3 gap-5">
             
             <rs-button variant="primary" @click="modalAdd = true">            
-              <Icon name="solar:add-square-broken" class="mr-2" /> Add Admin
+              <Icon name="solar:add-square-broken" class="mr-2" /> Add Caretaker
             </rs-button>
-            <rs-modal title="Add Admin" v-model="modalAdd" size="lg" position="center"  :overlayClose="false">
+            <rs-modal title="Add Caretaker" v-model="modalAdd" size="lg" position="center"  :overlayClose="false">
               <template v-slot:header>
-                Add Admin
+                Add Caretaker
               </template>
               <template v-slot:body>
                 <form @submit.prevent="submitCategory">
@@ -572,8 +572,8 @@
             </rs-modal>
           </div>
   
-          <rs-table v-if="admins.length > 0"
-            :data="admins"
+          <rs-table v-if="caretakers.length > 0"
+            :data="caretakers"
             :options="{
               variant: 'default',
               striped: true,
@@ -587,30 +587,39 @@
             }"
             advanced
           >
-          <template #name ="admins" >
-                {{ admins.value.user.fullName}}
+          <template #name ="caretakers" >
+                {{ caretakers.value.user.fullName}}
           </template>
-          <template #email ="admins" >
-                {{ admins.value.user.email}}
+          <template #email ="caretakers" >
+                {{ caretakers.value.user.email}}
           </template>
-          <template #contact ="admins" >
-                {{ admins.value.user.phone}}
+          <template #contact ="caretakers" >
+                {{ caretakers.value.user.phone}}
           </template>
-          <template #status ="admins" >
-                {{ admins.value.user.status}}
+          <template #status ="caretakers" >
+                {{ caretakers.value.user.status}}
           </template>
-            <template #action="admins">
+            <template #action="caretakers">
               <div class="flex items-center gap-4">
-                <rs-button @click="editButton(admins.value.id)">
+                <nuxt-link :to="`/caretaker/view/`+caretakers.value.id">
+                  <rs-button >
+                    <Icon
+                      name="material-symbols:visibility"
+                      class="mr-2 !w-4 !h-4"
+                    />
+                    view
+                  </rs-button>
+                </nuxt-link>
+                <!-- <rs-button @click="editButton(caretakers.value.id)">
                   <Icon
                     name="solar:pen-new-square-broken"
                     class="mr-2 !w-4 !h-4"
                   />
                   Edit
-                </rs-button>
-                <rs-modal title="Edit Admin" v-model="modalEdit" position="center" size="lg"  :overlayClose="false">
+                </rs-button> -->
+                <rs-modal title="Edit Caretaker" v-model="modalEdit" position="center" size="lg"  :overlayClose="false">
                   <template v-slot:header>
-                    Edit Admin
+                    Edit Caretaker
                   </template>
                   <template v-slot:body>
                     <form @submit.prevent="submitCategory">
@@ -680,7 +689,7 @@
                     <rs-button @click="clickUpdate">Update</rs-button>
                   </template>
                 </rs-modal>
-                <rs-button variant="danger" @click="confirmDelete(admins.value.id)">
+                <rs-button variant="danger" @click="confirmDelete(caretakers.value.id)">
                   <Icon
                     name="material-symbols:delete-sharp"
                     class="mr-2 !w-4 !h-4"
@@ -702,7 +711,7 @@
           Confirm Deletion
         </template>
         <template v-slot:body>
-          Are you sure you want to delete this admin?
+          Are you sure you want to delete this caretaker?
         </template>
         <template v-slot:footer>
           <rs-button @click="closeDelete">Cancel</rs-button>
@@ -712,7 +721,7 @@
   
     </div>
 </template>
-  {{ admins }}
+  {{ caretakers }}
 
   
   <style lang="scss" scoped></style>
