@@ -94,6 +94,16 @@ export default defineEventHandler(async (event) => {
         },
     });
 
+    const rehab_center = await prisma.category.findMany({
+        where: {
+            type: "rehab_center",
+        },
+        select: {
+            category_id: true,
+            name: true,
+        },
+    });
+
 
     return {
         statusCode: 200,
@@ -106,7 +116,8 @@ export default defineEventHandler(async (event) => {
             health_status: health_status, 
             job_stayin: job_stayin,
             qualifications_caretaker: qualifications_caretaker,
-            job_category: job_category
+            job_category: job_category,
+            rehab_center: rehab_center
         },
     };
 

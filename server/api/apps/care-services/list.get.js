@@ -23,18 +23,10 @@ export default defineEventHandler(async (event) => {
     
         // Read the body of the request to get user data
         const query = getQuery(event);
-        const jobId = parseInt(query.id);
-
-        if (!jobId) {
-            return {
-                statusCode: 400,
-                message: "Invalid or missing job ID.",
-            };
-        }
-
-        const getJob = await prisma.jobs.findFirst({
+     
+        const getJob = await prisma.jobs.findMany({
             where: {
-                job_id: parseInt(jobId),
+                job_status: "ACTIVE",
             },
             select: {
                 job_category: true,
@@ -47,20 +39,7 @@ export default defineEventHandler(async (event) => {
                 job_payment: true,
                 job_notes: true,
                 job_stayin: true,
-                job_status: true,
-                jobs_user_assignation: {
-                    select: {
-                        jobUser_id: true,
-                        user: {
-                            select: {
-                                userFullName: true,
-                                userEmail: true
-                            },
-                        },
-                        jobUser_checkIN: true,
-                        jobUser_checkOut: true,
-                    }
-                }
+                job_status: true
             },
         });
 
@@ -71,16 +50,10 @@ export default defineEventHandler(async (event) => {
             };
         }
 
-        // Format job_time to only return the time in "HH:mm" format
-        const formattedJobTime = DateTime.fromJSDate(getJob.job_time).toFormat('HH:mm');
-
         return {
             statusCode: 200,
             message: "Job retrieved successfully",
-            data: {
-                ...getJob,
-                job_time: formattedJobTime // Replace full datetime with just the time
-            }
+            data: getJob
         };
   
     } catch (error) {

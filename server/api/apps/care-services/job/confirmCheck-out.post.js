@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';import mail from "@/server/helper/email";
+import resetPasswordTemplate from "@/server/template/email/reset-Password";
 
 
 const config = useRuntimeConfig();
@@ -19,47 +20,44 @@ export default defineEventHandler(async (event) => {
         const decodedToken = jwt.verify(token, config.auth.secretAccess);
         
         const userID = decodedToken.userID;
-        const roles = decodedToken.roles;
+        const email = decodedToken.userEmail;
     
         // Read the body of the request to get user data
         const body = await readBody(event);
 
         console.log("Request body:", body); // Debugging log
 
-        // Parse job_date and job_time to correct formats
-        const parsedJobDate = body.job_date ? new Date(body.job_date) : null;
-        const parsedJobTime = body.job_time
-            ? DateTime.fromISO(`1970-01-01T${body.job_time}`).toJSDate()
-            : null;
+        const parsedCheckOut = body.checkOt ? new Date(body.checkOt) : null;
 
-        const newJob = await prisma.jobs.create({
+        const assignJob = await prisma.jobs_user_assignation.update({
+            where: {
+                jobUser_id: parseInt(body.jobUser_id),
+            },
             data: {
-                job_user_id: parseInt(userID),
-                job_category: parseInt(body.job_category),
-                job_title: body.job_title,
-                job_location_city: body.job_location_city,
-                job_location_state: parseInt(body.job_location_state),
-                job_date: parsedJobDate,
-                job_time: parsedJobTime,
-                job_duration: parseInt(body.job_duration),
-                job_payment: parseFloat(body.job_payment),
-                job_notes: body.job_notes ,
-                job_stayin: parseInt(body.job_stayin),
-                created_at: new Date(),
+                jobUser_confirmCheckOut: parsedCheckOut,
             },
         });
 
-        if(!newJob) {
+        if(!assignJob) {
             return {
                 statusCode: 400,
-                message: "Failed to create job. Please check your data and try again.",
+                message: "Failed to verify the check in. Please check your data and try again.",
             };
         }
 
+        //send email
+        /* const emailTemplate = replaceEmailTemplateURL(resetPasswordTemplate);
+
+        await mail(
+            email,
+            "Reset Password",
+            "Reset Password",
+            emailTemplate
+        ); */
+
         return {
             statusCode: 200,
-            message: "Job created successfully",
-            data: newJob
+            message: "Check-out confirmed! You have successfully verified the caretaker's check-out for the job.",
         };
   
     } catch (error) {
@@ -71,3 +69,6 @@ export default defineEventHandler(async (event) => {
     }
   });
   
+  function replaceEmailTemplateURL(template) {
+    return template.replace();
+  }

@@ -1,4 +1,5 @@
-import { DateTime } from "luxon";
+import mail from "@/server/helper/email";
+import resetPasswordTemplate from "@/server/template/email/reset-Password";
 import jwt from 'jsonwebtoken';
 
 
@@ -19,47 +20,32 @@ export default defineEventHandler(async (event) => {
         const decodedToken = jwt.verify(token, config.auth.secretAccess);
         
         const userID = decodedToken.userID;
-        const roles = decodedToken.roles;
+        const email = decodedToken.userEmail;
     
         // Read the body of the request to get user data
         const body = await readBody(event);
 
         console.log("Request body:", body); // Debugging log
 
-        // Parse job_date and job_time to correct formats
-        const parsedJobDate = body.job_date ? new Date(body.job_date) : null;
-        const parsedJobTime = body.job_time
-            ? DateTime.fromISO(`1970-01-01T${body.job_time}`).toJSDate()
-            : null;
-
-        const newJob = await prisma.jobs.create({
+        const assignJob = await prisma.jobs_user_assignation.update({
+            where: {
+                jobUser_id: parseInt(body.jobUser_id),
+            },
             data: {
-                job_user_id: parseInt(userID),
-                job_category: parseInt(body.job_category),
-                job_title: body.job_title,
-                job_location_city: body.job_location_city,
-                job_location_state: parseInt(body.job_location_state),
-                job_date: parsedJobDate,
-                job_time: parsedJobTime,
-                job_duration: parseInt(body.job_duration),
-                job_payment: parseFloat(body.job_payment),
-                job_notes: body.job_notes ,
-                job_stayin: parseInt(body.job_stayin),
-                created_at: new Date(),
+                jobUser_complain: body.complaint,
             },
         });
 
-        if(!newJob) {
+        if(!assignJob) {
             return {
                 statusCode: 400,
-                message: "Failed to create job. Please check your data and try again.",
+                message: "Failed to submit the complaint. Please try again.",
             };
         }
 
         return {
             statusCode: 200,
-            message: "Job created successfully",
-            data: newJob
+            message: "Your complaint has been submitted successfully. We will review it as soon as possible."
         };
   
     } catch (error) {
@@ -69,5 +55,5 @@ export default defineEventHandler(async (event) => {
             message: "Something went wrong! Please contact your administrator.",
         };
     }
-  });
+});
   

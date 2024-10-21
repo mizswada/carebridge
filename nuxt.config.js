@@ -12,9 +12,20 @@ export default defineNuxtConfig({
       email: process.env.NUXT_NODEMAILER_EMAIL,
       password: process.env.NUXT_NODEMAILER_PASSWORD,
     },
+    toyyibPay: {
+      URL: process.env.NUXT_TYP_URL,
+      secretKey: process.env.NUXT_TYP_SECRET_KEY,
+      categoryCode: process.env.NUXT_TYP_CATEGORY_CODE,
+      returnURL: process.env.NUXT_TYP_RETURN_URL,
+      callbackURL: process.env.NUXT_TYP_CALLBACK_URL,
+    },
     public: {
       env: process.env.NUXT_ENV,
       feURL: process.env.NUXT_FE_URL,
+    },
+    oneSignal: {
+      appId: process.env.NUXT_ONESIGNAL_APPID,
+      restApiKey: process.env.NUXT_ONESIGNAL_APIKEY,
     },
   },
   modules: [
