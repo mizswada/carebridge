@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
@@ -25,22 +27,10 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // Parse and validate date and time inputs
-    const jobDate = body.job_date ? new Date(body.job_date) : null;
-    let jobTime = null;
-    if (body.job_time) {
-      const [hours, minutes] = body.job_time.split(":").map(Number);
-      if (jobDate && !isNaN(hours) && !isNaN(minutes)) {
-        jobTime = new Date(jobDate);
-        jobTime.setHours(hours, minutes, 0, 0); // Set time on jobTime object
-        jobTime = jobTime.toISOString(); // Convert to ISO-8601 format
-      } else {
-        return {
-          statusCode: 400,
-          message: "Invalid date or time format.",
-        };
-      }
-    }
+    const parsedJobDate = body.job_date ? new Date(body.job_date) : null;
+    const parsedJobTime = body.job_time
+      ? DateTime.fromISO(`1970-01-01T${body.job_time}`).toJSDate()
+      : null;
     // Update the job according to the job_id and provided values
     const updatedJob = await prisma.jobs.update({
       where: {
@@ -51,8 +41,8 @@ export default defineEventHandler(async (event) => {
         job_title: body.job_title,
         job_location_city: body.job_location_city,
         job_location_state: body.job_location_state,
-        job_date: jobDate,
-        job_time: body.job_time,
+        job_date: parsedJobDate,
+        job_time: parsedJobTime,
         job_duration: body.job_duration,
         job_payment: body.job_payment,
         job_notes: body.job_notes || "",

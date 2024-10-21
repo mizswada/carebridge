@@ -139,7 +139,11 @@ async function getJobList() {
       job_location_city: job.job_location_city,
       job_location_state: job.job_location_state,
       job_date: new Date(job.job_date).toLocaleDateString("en-GB"),
-      job_time: job.job_time,
+      job_time: new Date(job.job_time).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true, // Use hour12: false for 24-hour format
+      }),
       job_duration: job.job_duration,
       job_payment: job.job_payment,
       job_notes: job.job_notes,
@@ -227,7 +231,8 @@ const saveJob = async () => {
       : null,
     job_title: showModalForm.value.job_title,
     job_location_city: showModalForm.value.job_location_city,
-    job_date: new Date(showModalForm.value.job_date).toISOString(), // Convert to ISO DateTime format
+    // job_date: new Date(showModalForm.value.job_date).toISOString(), // Convert to ISO DateTime format
+    job_date: showModalForm.value.job_date, // Send as YYYY-MM-DD format
     job_time: showModalForm.value.job_time, // Send as HH:mm or HH:mm:ss format
     job_notes: showModalForm.value.job_notes || "",
     created_at: new Date(),
