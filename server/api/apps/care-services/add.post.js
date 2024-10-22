@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
                 message: "Invalid job_date format. Expected format is 'dd-MM-yyyy'.",
             };
         }
-        
+
         const parsedJobTime = body.job_time
             ? DateTime.fromISO(`1970-01-01T${body.job_time}`).toJSDate()
             : null;
@@ -76,7 +76,8 @@ export default defineEventHandler(async (event) => {
         console.error("Error:", error.message);
         return {
             statusCode: 500,
-            message: "Something went wrong! Please contact your administrator.",
+            //message: "Something went wrong! Please contact your administrator.",
+            message: error.message,
         };
     }
   });
