@@ -27,7 +27,18 @@ export default defineEventHandler(async (event) => {
 
         console.log("Request body:", body); // Debugging log
 
-        const parsedCheckOut = body.checkOut ? new Date(body.checkOut) : null;
+        //const parsedCheckOut = body.checkOut ? new Date(body.checkOut) : null;
+        // Parse checkOut date with Luxon, expecting 'dd-MM-yyyy HH:mm:ss' format
+        const parsedCheckOut = body.checkOut
+            ? DateTime.fromFormat(body.checkOut, 'dd-MM-yyyy HH:mm:ss').toJSDate()
+            : null;
+
+        if (!parsedCheckOut || isNaN(parsedCheckOut.getTime())) {
+            return {
+                statusCode: 400,
+                message: "Invalid date format. Expected format is 'dd-MM-yyyy HH:mm:ss'.",
+            };
+        }
 
         const assignJob = await prisma.jobs_user_assignation.update({
             where: {

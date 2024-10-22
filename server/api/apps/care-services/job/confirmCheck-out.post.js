@@ -27,7 +27,17 @@ export default defineEventHandler(async (event) => {
 
         console.log("Request body:", body); // Debugging log
 
-        const parsedCheckOut = body.checkOt ? new Date(body.checkOt) : null;
+        //const parsedCheckOut = body.checkOt ? new Date(body.checkOt) : null;
+        const parsedCheckOut = body.checkOt
+            ? DateTime.fromFormat(body.checkOt, 'dd-MM-yyyy HH:mm:ss').toJSDate()
+            : null;
+
+        if (!parsedCheckOut || isNaN(parsedCheckOut.getTime())) {
+            return {
+                statusCode: 400,
+                message: "Invalid date format. Expected format is 'dd-MM-yyyy'.",
+            };
+        }
 
         const assignJob = await prisma.jobs_user_assignation.update({
             where: {

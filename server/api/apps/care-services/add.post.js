@@ -27,7 +27,17 @@ export default defineEventHandler(async (event) => {
         console.log("Request body:", body); // Debugging log
 
         // Parse job_date and job_time to correct formats
-        const parsedJobDate = body.job_date ? new Date(body.job_date) : null;
+        const parsedJobDate = body.job_date
+            ? DateTime.fromFormat(body.job_date, 'dd-MM-yyyy').toJSDate()
+            : null;
+
+        if (!parsedJobDate || isNaN(parsedJobDate.getTime())) {
+            return {
+                statusCode: 400,
+                message: "Invalid job_date format. Expected format is 'dd-MM-yyyy'.",
+            };
+        }
+        
         const parsedJobTime = body.job_time
             ? DateTime.fromISO(`1970-01-01T${body.job_time}`).toJSDate()
             : null;
