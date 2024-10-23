@@ -64,9 +64,9 @@ export default defineEventHandler(async (event) => {
         },
     });
 
-    const job_stayin = await prisma.lookup.findMany({
+    const job_additionalCare = await prisma.lookup.findMany({
         where: {
-            lookupTitle: "job_stayin",
+            lookupTitle: "job_additionalCare",
         },
         select: {
             lookupID: true,
@@ -87,6 +87,8 @@ export default defineEventHandler(async (event) => {
     const job_category = await prisma.category.findMany({
         where: {
             type: "care_service",
+            deleted_at: null
+
         },
         select: {
             category_id: true,
@@ -97,10 +99,51 @@ export default defineEventHandler(async (event) => {
     const rehab_center = await prisma.category.findMany({
         where: {
             type: "rehab_center",
+            deleted_at: null
         },
         select: {
             category_id: true,
             name: true,
+        },
+    });
+
+    const marital_status = await prisma.lookup.findMany({
+        where: {
+            lookupTitle: "marital_status",
+        },
+        select: {
+            lookupID: true,
+            lookupValue: true,
+        },
+    });
+    
+    const religion = await prisma.lookup.findMany({
+        where: {
+            lookupTitle: "religion",
+        },
+        select: {
+            lookupID: true,
+            lookupValue: true,
+        },
+    });
+    
+    const race = await prisma.lookup.findMany({
+        where: {
+            lookupTitle: "race",
+        },
+        select: {
+            lookupID: true,
+            lookupValue: true,
+        },
+    });
+    
+    const bank = await prisma.lookup.findMany({
+        where: {
+            lookupTitle: "bank",
+        },
+        select: {
+            lookupID: true,
+            lookupValue: true,
         },
     });
 
@@ -114,10 +157,14 @@ export default defineEventHandler(async (event) => {
             genders: genders,
             working_hours: working_hours, 
             health_status: health_status, 
-            job_stayin: job_stayin,
+            job_additionalCare: job_additionalCare,
             qualifications_caretaker: qualifications_caretaker,
             job_category: job_category,
-            rehab_center: rehab_center
+            rehab_center: rehab_center,
+            marital_status: marital_status,
+            religion: religion,
+            race:race,
+            bank: bank
         },
     };
 

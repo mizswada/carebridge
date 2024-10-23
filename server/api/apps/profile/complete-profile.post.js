@@ -78,9 +78,12 @@ export default defineEventHandler(async (event) => {
 
             // Insert into `user_care_taker` table
             const newCaretaker = await prisma.user_care_taker.create({
-                data: {
+                data: { 
                     user_id: userID,
                     identification_number: body.identification_number,
+                    race: parseInt(body.race),
+                    religion: parseInt(body.religion),
+                    marital_status: parseInt(body.marital_status),
                     date_of_birth: new Date(body.date_of_birth),
                     gender: body.gender,
                     nationality: body.nationality,
@@ -119,6 +122,11 @@ export default defineEventHandler(async (event) => {
                 data: {
                     user_id: userID,
                     dateOfBirth: new Date(body.dateOfBirth),
+                    identification_number: body.identification_number,
+                    race: parseInt(body.race),
+                    religion: parseInt(body.religion),
+                    marital_status: parseInt(body.marital_status),
+                    occupation: body.occupation,
                     gender: body.gender,
                     addressLine1: body.addressLine1,
                     addressLine2: body.addressLine2,
