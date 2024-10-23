@@ -1,27 +1,8 @@
-import multer from 'multer';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import fs from 'fs';
 
 const config = useRuntimeConfig();
-
-// Configure Multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = 'uploads/documents';
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-  },
-});
-
-const upload = multer({ storage });
 
 export default defineEventHandler(async (event) => {
     try {
@@ -49,33 +30,68 @@ export default defineEventHandler(async (event) => {
                 userPhone: body.mobile_number
             },
         });
+
+        // Helper function to save Base64 image to the server
+        const saveBase64File = async (base64Data, uploadDir) => {
+
+
+            // Extract the mimeType and base64 string using a regex
+            const matches = base64Data.match(/^data:(.+);base64,(.+)$/);
+            
+            if (!matches || matches.length !== 3) {
+                throw new Error("Invalid base64 string format.");
+            }
+
+            // Get the file extension
+            const mimeType = matches[1]; // E.g., image/png
+            const fileExtension = mimeType.split("/")[1]; // E.g., png
+
+            // Strip off the Base64 part and decode the data
+            const base64ImageData = base64Data.replace(/^data:image\/\w+;base64,/, "");
+            const fileBuffer = Buffer.from(base64ImageData, "base64");
+
+            // Create a unique filename with the extension
+            const uniqueFilename = `${Date.now()}_${Math.floor(Math.random() * 1000)}.${fileExtension}`;
+            
+            // Ensure the directory exists
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+
+            // Full file path
+            const fileUploadPath = path.join(uploadDir, uniqueFilename);
+
+            // Write the file to the server
+            await fs.promises.writeFile(fileUploadPath, fileBuffer);
+
+            // Return the file path
+            return `/uploads/${path.basename(uploadDir)}/${uniqueFilename}`;
+        };
   
         // Check if the user is a "Caretaker"
         if (roles.includes("Caretaker")) {
-            // Handle multiple file uploads
-            await new Promise((resolve, reject) => {
-                upload.fields([
-                { name: 'upload_ic', maxCount: 1 },
-                { name: 'upload_certificate', maxCount: 1 },
-                { name: 'profile_picture ', maxCount: 1 },
-                ])(event.req, event.res, (err) => {
-                if (err) {
-                    console.error("Multer error:", err);
-                    return reject(new Error("Multer error during file upload: " + err.message));
-                }
-                resolve();
-                });
-            });
-        
-            const files = event.req.files;
-            if (!files || (!files.upload_ic && !files.upload_certificate  && !files.profile_picture)) {
-                return { statusCode: 400, message: "No files uploaded" };
+
+            // Initialize response data
+            const responseData = {};
+            
+            // Process profile_picture if provided
+            if (body.profile_picture) {
+                const profilePicturePath = await saveBase64File(body.profile_picture, path.join(process.cwd(), 'public/uploads/profile_pictures'));
+                responseData.profile_picture = profilePicturePath;
             }
         
-            const documentIcPath = files.upload_ic ? files.upload_ic[0].path : null;
-            const certificatePath = files.upload_certificate ? files.upload_certificate[0].path : null;
-            const profilePicturePath = files.profile_picture ? files.profile_picture[0].path : null;
-
+            // Process upload_ic if provided
+            if (body.upload_ic) {
+                const uploadIcPath = await saveBase64File(body.upload_ic, path.join(process.cwd(), 'public/uploads/upload_ic'));
+                responseData.upload_ic = uploadIcPath;
+            }
+        
+            // Process upload_certificate if provided
+            if (body.upload_certificate) {
+                const uploadCertificatePath = await saveBase64File(body.upload_certificate, path.join(process.cwd(), 'public/uploads/upload_certificate'));
+                responseData.upload_certificate = uploadCertificatePath;
+            } 
+            
             // Insert into `user_care_taker` table
             const newCaretaker = await prisma.user_care_taker.create({
                 data: { 
@@ -98,10 +114,10 @@ export default defineEventHandler(async (event) => {
                     emergency_contact_number: body.emergency_contact_number,
                     working_hours: body.working_hours,
                     languages_spoken: body.languages_spoken,
-                    documents_ic: documentIcPath,
-                    documents_certificate: certificatePath,
+                    documents_ic: responseData.upload_ic,
+                    documents_certificate: responseData.upload_certificate,
                     health_status: body.health_status,
-                    profile_picture: profilePicturePath,
+                    profile_picture: responseData.profile_picture,
                     bank_account_name: body.bank_account_name,
                     bank_account_num: body.bank_account_num,
                     bank_account_beneficiary: body.bank_account_beneficiary,

@@ -160,6 +160,26 @@ export default defineEventHandler(async (event) => {
         },
     });
 
+    const equipment_type = await prisma.lookup.findMany({
+        where: {
+            lookupTitle: "equipment_type",
+        },
+        select: {
+            lookupID: true,
+            lookupValue: true,
+        },
+    });
+    
+    const equipment_status = await prisma.lookup.findMany({
+        where: {
+            lookupTitle: "equipment_status",
+        },
+        select: {
+            lookupID: true,
+            lookupValue: true,
+        },
+    });
+
 
     return {
         statusCode: 200,
@@ -178,7 +198,9 @@ export default defineEventHandler(async (event) => {
             religion: religion,
             race:race,
             bank: bank,
-            care_servicePrice: care_servicePrice
+            care_servicePrice: care_servicePrice,
+            equipment_type: equipment_type,
+            equipment_status: equipment_status
         },
     };
 
