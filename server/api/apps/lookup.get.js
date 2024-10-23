@@ -139,11 +139,24 @@ export default defineEventHandler(async (event) => {
     
     const bank = await prisma.lookup.findMany({
         where: {
-            lookupTitle: "bank",
+            lookupTitle: "bank_name",
         },
         select: {
             lookupID: true,
             lookupValue: true,
+        },
+    });
+
+    const care_servicePrice = await prisma.category.findMany({
+        where: {
+            type: "care_service",
+            deleted_at: null
+        },
+        select: {
+            category_id: true,
+            name: true,
+            charges: true,
+            charges_pro: true
         },
     });
 
@@ -164,7 +177,8 @@ export default defineEventHandler(async (event) => {
             marital_status: marital_status,
             religion: religion,
             race:race,
-            bank: bank
+            bank: bank,
+            care_servicePrice: care_servicePrice
         },
     };
 

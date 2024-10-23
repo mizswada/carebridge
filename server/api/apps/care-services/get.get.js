@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
                 job_duration: true,
                 job_payment: true,
                 job_notes: true,
-                job_stayin: true,
+                job_additionalCare: true,
                 job_status: true,
                 jobs_user_assignation: {
                     select: {
@@ -84,6 +84,12 @@ export default defineEventHandler(async (event) => {
         };
   
     } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return {
+                statusCode: 400,
+                message: "Your session has expired. Please log in again.",
+            };
+        }
         console.error("Error:", error.message);
         return {
             statusCode: 500,

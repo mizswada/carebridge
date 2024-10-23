@@ -111,14 +111,14 @@ export default defineEventHandler(async (event) => {
             message: "Data retrieved successfully",
             data: rehabCenters
         };
-
-        return {
-            statusCode: 200,
-            message: "Data retrieved successfully",
-            data: getActivity
-        };
   
     } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return {
+                statusCode: 400,
+                message: "Your session has expired. Please log in again.",
+            };
+        }
         console.error("Error:", error.message);
         return {
             statusCode: 500,

@@ -40,12 +40,33 @@ export default defineEventHandler(async (event) => {
             };
         }
 
+        const getStatus = await prisma.lookup.findFirst({
+            where: {
+                lookupID: 68,
+            },
+            select: {
+                lookupID: true,
+                lookupValue: true,
+            },
+        });
+
         const assignJob = await prisma.jobs_user_assignation.update({
             where: {
                 jobUser_id: parseInt(body.jobUser_id),
             },
             data: {
                 jobUser_checkIN: parsedCheckIn,
+                jobUser_jobStatus: parseInt(getStatus.lookupID)
+            },
+        });
+
+        console.log(getStatus);
+        const updateJob = await prisma.jobs.update({
+            where: {
+                job_id: parseInt(assignJob.jobUser_jobID),
+            },
+            data: {
+                job_status: getStatus.lookupValue.toUpperCase()
             },
         });
 
@@ -72,6 +93,14 @@ export default defineEventHandler(async (event) => {
         };
   
     } catch (error) {
+
+        if (error.name === 'TokenExpiredError') {
+            return {
+                statusCode: 400,
+                message: "Your session has expired. Please log in again.",
+            };
+        }
+
         console.error("Error:", error.message);
         return {
             statusCode: 500,

@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
                 job_duration: parseInt(body.job_duration),
                 job_payment: parseFloat(body.job_payment),
                 job_notes: body.job_notes ,
-                job_additionalCare: parseInt(body.job_additionalCare),
+                job_additionalCare: parseInt(body.job_stayin),
                 created_at: new Date(),
             },
         });
@@ -73,6 +73,12 @@ export default defineEventHandler(async (event) => {
         };
   
     } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return {
+                statusCode: 400,
+                message: "Your session has expired. Please log in again.",
+            };
+        }
         console.error("Error:", error.message);
         return {
             statusCode: 500,

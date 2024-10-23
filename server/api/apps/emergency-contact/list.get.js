@@ -22,48 +22,28 @@ export default defineEventHandler(async (event) => {
         const roles = decodedToken.roles;
     
         // Read the body of the request to get user data
-        const query = getQuery(event);
-        const state = parseInt(query.state);
+        const body = await readBody(event);
 
-        // Assuming you know the role ID for Rehab Center (let's say it's 2)
-        const rehabCenterRoleID = 3;
+        console.log("Request body:", body); // Debugging log
 
-        // Query to find users with the role of Rehab Center and include associated data
-        const rehabCenters = await prisma.user.findMany({
+        const newJob = await prisma.emergency_contacts.findMany({
             where: {
-                userrole: {
-                    some: {
-                        userRoleRoleID: rehabCenterRoleID,
-                    }
-                },
-                ...(state !== 0 && {
-                    user_rehab_center: {
-                        center_address_state: state  // Adding condition for center_address_state only if state is not 0
-                    }
-                })
+                contact_user_id: parseInt(userID),
+                deleted_at: null
             },
             select: {
-                userID: true,
-                userUsername: true,
-                userFullName: true,
-                userEmail: true,
-                userPhone: true,
-                userStatus: true,
-                // Include the rehab center details
-                user_rehab_center: {
-                    select: {
-                        center_address_state: true,
-                    }
-                }
-            }
+                contact_id: true,
+                contact_name: true,
+                contact_relationship: true,
+                contact_phone_number: true,
+            },
         });
 
         return {
             statusCode: 200,
-            message: "Data retrieved successfully",
-            data: rehabCenters
+            message: "Contact retrieved successfully",
+            data: newJob
         };
-
   
     } catch (error) {
         if (error.name === 'TokenExpiredError') {

@@ -26,26 +26,26 @@ export default defineEventHandler(async (event) => {
 
         console.log("Request body:", body); // Debugging log
 
-        const newJob = await prisma.jobs.update({
-            where: {
-                job_id: parseInt(body.id),
-            },
+        const newJob = await prisma.emergency_contacts.create({
             data: {
-                job_status: "DELETED",
-                deleted_at: new Date(),
+                contact_user_id: parseInt(userID),
+                contact_name: body.name,
+                contact_relationship: parseInt(body.relationship),
+                contact_phone_number: body.phone_number,
             },
         });
 
         if(!newJob) {
             return {
                 statusCode: 400,
-                message: "Failed to delete job. Please check your data and try again.",
+                message: "Failed to create contact. Please check your data and try again.",
             };
         }
 
         return {
             statusCode: 200,
-            message: "Job deleted successfully",
+            message: "Contact created successfully",
+            data: newJob
         };
   
     } catch (error) {
