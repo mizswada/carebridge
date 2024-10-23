@@ -192,12 +192,12 @@ export default [
         icon: "material-symbols-light:lists",
         child: [],
       },
-      {
-        title: "Details List", // New item added
-        path: "/care-service/details-list",
-        icon: "material-symbols:info-outline",
-        child: [],
-      },
+      // {
+      //   title: "Details List", // New item added
+      //   path: "/care-service/details-list",
+      //   icon: "material-symbols:info-outline",
+      //   child: [],
+      // },
       {
         title: "Payment",
         path: "/category",
