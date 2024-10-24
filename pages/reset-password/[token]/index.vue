@@ -21,10 +21,10 @@ if (!token) {
     title: "Error",
     text: "Invalid token",
     icon: "error",
-    timer: 2000,
+    timer: 3000,
     showConfirmButton: false,
   });
-  window.location.href = "/login";
+ window.location.href = "/login";
 }
 
 const { data: validateToken } = await useFetch("/api/apps/auth/validate-token", {
@@ -42,13 +42,13 @@ if (validateToken.value.statusCode != 200) {
     title: "Error",
     text: validateToken.value.message,
     icon: "error",
-    timer: 2000,
+    timer: 3000,
     showConfirmButton: false,
   });
 
   setTimeout(() => {
     window.location.href = "/login";
-  }, 2000);
+  }, 2000); 
 } 
 
 const resetPassword = async () => {
@@ -66,7 +66,7 @@ const resetPassword = async () => {
       title: "Success",
       text: data.value.message,
       icon: "success",
-      timer: 2000,
+      timer: 3000,
       showConfirmButton: false,
     });
 
@@ -177,19 +177,7 @@ const resetPassword = async () => {
             Reset Password
           </rs-button>
         </FormKit>
-    
-        <div class="grid grid-cols-1">
-          <FormKit label="Email" type="email" outer-class="text-left" />
-          <FormKit label="Password" type="password" outer-class="text-left" />
-          <FormKit
-            label="Re-enter Password"
-            type="password"
-            outer-class="text-left"
-          />
-          <NuxtLink to="/login">
-            <FormKit type="button" input-class="w-full">Reset Password</FormKit>
-          </NuxtLink>
-        </div>
+
       </rs-card>
     </div>
   </div>

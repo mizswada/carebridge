@@ -287,7 +287,7 @@ style="padding: 0px; background-color: transparent"
                           font-family: Montserrat, sans-serif;
                         "
                         >To reset your password, please click the
-                        button below: url:"[[verifyAccountLink]]"
+                        button below: url: "[[resetPasswordLink]]"
                       </span>
                     </p>
                   </div>
@@ -325,7 +325,7 @@ style="padding: 0px; background-color: transparent"
                   <div align="left">
                     <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:52px; v-text-anchor:middle; width:222px;" arcsize="2%"  stroke="f" fillcolor="#18163a"><w:anchorlock/><center style="color:#FFFFFF;"><![endif]-->
                     <a
-                      href="[[verifyAccountLink]]"
+                      href="[[resetPasswordLink]]"
                       target="_blank"
                       class="v-button"
                       style="
@@ -360,7 +360,7 @@ style="padding: 0px; background-color: transparent"
                             line-height: 21.6px;
                             font-family: Montserrat, sans-serif;
                           "
-                          >Verify Account</span
+                          >Reset Password</span
                         ></span
                       >
                     </a>

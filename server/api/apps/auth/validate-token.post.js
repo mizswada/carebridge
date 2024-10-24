@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    const tokenRecord = await prisma.token.findFirst({
+    const tokenRecord = await prisma.token.findMany({
       where: {
         tokenUUID: token,
         tokenStatus: "ACTIVE",
