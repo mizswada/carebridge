@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
       },
     });
 
+    console.log(user)
     if (!user) {
       return {
         statusCode: 400,
@@ -77,6 +78,13 @@ export default defineEventHandler(async (event) => {
         },
       });
     }
+    else {
+      userCareTakerClient = await prisma.user_client.findFirst({
+        where: {
+          user_id: user.userID,
+        },
+      });
+    }
 
     // Check if the userCareTaker profile exists
     if (!userCareTakerClient) {
@@ -93,7 +101,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Now check if the profile is complete
-    const isProfileComplete = checkProfileCompletion(userCareTakerClient);
+    const isProfileComplete = checkProfileCompletion(userCareTakerClient, roles);
     if (!isProfileComplete) {
       return {
         statusCode: 200,
@@ -142,29 +150,45 @@ function generateRefreshToken(user) {
 // Function to check if user profile is complete
 function checkProfileCompletion(userCareTakerClient) {
 
-  // List of required fields for profile completeness
-  const requiredFields = [
-    'identification_number',
-    'date_of_birth',
-    'gender',
-    'nationality',
-    'address_line_1',
-    'address_postcode',
-    'address_city',
-    'address_state',
-    'qualifications',
-    'emergency_contact_name',
-    'emergency_contact_relationship',
-    'emergency_contact_number',
-    'working_hours',
-    'languages_spoken',
-    'documents_ic',
-    'health_status',
-    'profile_picture',
-    'bank_account_name',
-    'bank_account_num',
-    'bank_account_beneficiary'
-  ];
+  let requiredFields;
+  if(roles === 'Caretaker'){
+    // List of required fields for profile completeness
+    requiredFields = [
+      'identification_number',
+      'date_of_birth',
+      'gender',
+      'nationality',
+      'address_line_1',
+      'address_postcode',
+      'address_city',
+      'address_state',
+      'qualifications',
+      'emergency_contact_name',
+      'emergency_contact_relationship',
+      'emergency_contact_number',
+      'working_hours',
+      'languages_spoken',
+      'documents_ic',
+      'health_status',
+      'profile_picture',
+      'bank_account_name',
+      'bank_account_num',
+      'bank_account_beneficiary'
+    ];
+  }
+  else {
+    // List of required fields for profile completeness
+    requiredFields = [
+      'identification_number',
+      'dateOfBirth',
+      'gender',
+      'nationality',
+      'addressLine1',
+      'postcode',
+      'city',
+      'state'
+    ];
+  }
 
   // Check if each required field is filled
   for (const field of requiredFields) {
