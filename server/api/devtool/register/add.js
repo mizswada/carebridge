@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { DateTime } from "luxon";
 import { v4 as uuidv4 } from "uuid";
 import mail from "@/server/helper/email";
 import registerTemplate from "@/server/template/email/verify-account";
@@ -26,7 +25,14 @@ export default defineEventHandler(async (event) => {
 
   try {
     body.roleID = parseInt(body.roleID, 10);
-    body.centerCapacity = parseInt(body.centerCapacity, 10);
+    body.centerCapacity = body.centerCapacity
+      ? parseInt(body.centerCapacity, 10)
+      : null;
+
+    // Ensure file paths are correctly handled (null if not uploaded)
+    const associationLogo = body.associationLogo || null;
+    const documentLicenses = body.documentLicenses || null;
+    const documentsCertificates = body.documentsCertificates || null;
 
     // Start a transaction to ensure atomicity
     const [newUser, newRecord, newUserRole] = await prisma.$transaction(
@@ -59,6 +65,7 @@ export default defineEventHandler(async (event) => {
         // Step 3: Insert into either user_association or user_rehab_center based on roleID
         let createdRecord;
         if (body.roleID === 4) {
+          // For associations
           createdRecord = await prisma.user_association.create({
             data: {
               user_id: createdUser.userID,
@@ -80,12 +87,13 @@ export default defineEventHandler(async (event) => {
               objectives: body.objectives,
               membership_details: body.membershipDetails,
               operational_area: body.operationalArea,
-              association_logo: body.associationLogo,
-              document_licenses: body.documentLicenses,
-              documents_certificates: body.documentsCertificates,
+              association_logo: associationLogo, // Store file path
+              document_licenses: documentLicenses, // Store file path
+              documents_certificates: documentsCertificates, // Store file path
             },
           });
         } else if (body.roleID === 3) {
+          // For rehab centers
           createdRecord = await prisma.user_rehab_center.create({
             data: {
               user_id: createdUser.userID,
@@ -106,8 +114,8 @@ export default defineEventHandler(async (event) => {
               website: body.website,
               geolocation: body.geolocation,
               center_description: body.centerDescription,
-              documents_Licenses: body.documentLicenses,
-              documents_certificates: body.documentsCertificates,
+              documents_Licenses: documentLicenses, // Store file path
+              documents_certificates: documentsCertificates, // Store file path
             },
           });
         }

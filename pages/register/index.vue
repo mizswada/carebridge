@@ -9,8 +9,10 @@ definePageMeta({
 });
 
 const router = useRouter();
-const togglePasswordVisibility = ref(false);
-const togglePasswordVisibility2 = ref(false);
+const passwordVisible = ref(false);
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
 const selectedOption = ref("Association");
 
 // Form data object
@@ -69,7 +71,6 @@ const associationTypeOptions = ref([
 const rehabCenterCategoryOptions = ref([
   { value: 0, label: "Please Select a Category" },
 ]);
-
 const centerTypeOptions = ref([{ value: 0, label: "Please Select a Type" }]);
 
 // Fetch lookup data on mount
@@ -90,25 +91,19 @@ const fetchLookupData = async () => {
   try {
     const response = await fetch("/api/devtool/register/lookup");
     const result = await response.json();
-
     if (result.success) {
-      // Populate state, country, and association type options with data from the API
       stateOptions.value = [
         { value: 0, label: "Please Select" },
         ...result.data.states,
       ];
-
       countryOptions.value = [
         { value: 0, label: "Please Select" },
         ...result.data.countries,
       ];
-
-      // Use the same associationTypes for both associationTypeOptions and centerTypeOptions
       associationTypeOptions.value = [
         { value: 0, label: "Please Select" },
         ...result.data.associationTypes,
       ];
-
       centerTypeOptions.value = [
         { value: 0, label: "Please Select" },
         ...result.data.associationTypes,
@@ -125,13 +120,10 @@ const fetchCategories = async () => {
   try {
     const response = await fetch("/api/devtool/register/categories");
     const result = await response.json();
-
     if (result.success) {
-      // Filter for association categories
       const associationCategories = result.data.filter(
         (category) => category.type === "association"
       );
-
       associationCategoryOptions.value = [
         { value: 0, label: "Please Select a Category" },
         ...associationCategories.map((category) => ({
@@ -139,12 +131,9 @@ const fetchCategories = async () => {
           label: category.label,
         })),
       ];
-
-      // Filter for rehab center categories
       const rehabCenterCategories = result.data.filter(
         (category) => category.type === "rehab_center"
       );
-
       rehabCenterCategoryOptions.value = [
         { value: 0, label: "Please Select a Type" },
         ...rehabCenterCategories.map((category) => ({
@@ -162,36 +151,138 @@ const fetchCategories = async () => {
 
 const { $swal, $router } = useNuxtApp();
 
+// Function to handle file upload and processing
+const handleFileChange = async (event, field) => {
+  const file = event.target.files[0];
+  if (file) {
+    const fileType = file.type;
+    try {
+      let fileToUpload;
+
+      if (fileType.startsWith("image/")) {
+        const compressedImage = await resizeAndCompressImage(
+          file,
+          800,
+          600,
+          0.7
+        );
+        fileToUpload = compressedImage;
+      } else if (fileType === "application/pdf") {
+        fileToUpload = file; // No need to compress PDFs
+      } else {
+        $swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Unsupported Format",
+          text: "Only images and PDF documents are supported.",
+        });
+        return;
+      }
+
+      // Convert file to base64 and upload it to the server
+      const filePath = await uploadFile(fileToUpload, file.name); // Upload the file and get the file path
+
+      formData.value[field] = filePath; // Store the file path in formData, not the Base64 string
+    } catch (error) {
+      $swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while processing the file.",
+      });
+    }
+  } else {
+    formData.value[field] = null; // If no file selected, reset field
+  }
+};
+
+// Helper function to convert image to Base64
+async function ToBase64OpsImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      resolve(event.target.result); // Resolve with Base64 string
+    };
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
+}
+
+// Helper function to resize and compress images
+function resizeAndCompressImage(file, maxWidth, maxHeight, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const img = new Image();
+      img.src = event.target.result;
+
+      img.onload = function () {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            resolve(blob);
+          },
+          file.type,
+          quality
+        );
+      };
+    };
+
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
+}
+
 // Function to handle form submission
 const handleSubmit = async () => {
-  // Ensure userCategoryCode is a string or null
+  // Ensure the roleID is a string
   formData.value.roleID = String(formData.value.roleID);
 
+  // Convert establishmentDate to ISO string if provided
   if (formData.value.establishmentDate) {
     formData.value.establishmentDate = new Date(
       formData.value.establishmentDate
     ).toISOString();
   }
 
-  await convertFileToBase64("documentLicenses");
-  await convertFileToBase64("documentsCertificates");
-  await convertFileToBase64("associationLogo");
-
+  // Sanitize empty fields to null
   replaceEmptyWithNull();
 
   try {
+    // Continue with form submission after successful uploads
     const response = await fetch("/api/devtool/register/add", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData.value),
     });
 
+    // Handle the response
     const result = await response.json();
 
     if (response.ok && result.success) {
-      // Show a success message with a timer before redirecting
+      // Show success message
       $swal.fire({
         position: "center",
         icon: "success",
@@ -206,52 +297,59 @@ const handleSubmit = async () => {
         $router.push("/login");
       }, 2000);
     } else {
+      // Show error message from backend response
       $swal.fire({
         icon: "error",
         title: "Error",
-        text: result.message,
+        text: result.message || "An unexpected error occurred.",
       });
     }
   } catch (error) {
+    // Catch and handle any errors during form submission
     $swal.fire({
       icon: "error",
       title: "An error occurred",
-      text: error.message,
+      text: error.message || "Please try again.",
     });
   }
 };
 
-// Helper function to convert file to base64
-const convertFileToBase64 = async (field) => {
-  if (formData.value[field] instanceof File) {
-    formData.value[field] = await fileToBase64(formData.value[field]);
+// Helper function to upload a file to the backend
+const uploadFile = async (file, filename) => {
+  try {
+    const base64Data = await ToBase64OpsImage(file); // Convert file to base64 string
+
+    const response = await $fetch("/api/devtool/register/upload", {
+      method: "POST",
+      body: {
+        base64Data: base64Data, // Upload base64 image
+        filename: filename, // Pass the filename to save it properly
+      },
+    });
+
+    // Check if the response contains the file path
+    if (
+      response.statusCode === 200 &&
+      response.data &&
+      response.data.filePath
+    ) {
+      return response.data.filePath; // Return the file path after successful upload
+    } else {
+      throw new Error("File upload failed: invalid response from server");
+    }
+  } catch (error) {
+    console.error("File upload error:", error);
+    throw new Error("File upload error: " + error.message);
   }
 };
 
+// Helper function to replace empty fields with null
 const replaceEmptyWithNull = () => {
   Object.keys(formData.value).forEach((key) => {
     if (formData.value[key] === "") {
       formData.value[key] = null;
     }
   });
-};
-
-const fileToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-};
-
-const handleFileChange = async (event, field) => {
-  const file = event.target.files[0];
-  if (file) {
-    formData.value[field] = await fileToBase64(file);
-  } else {
-    formData.value[field] = null;
-  }
 };
 </script>
 
