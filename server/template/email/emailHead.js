@@ -326,7 +326,7 @@ const emailHead = `
                                       <img
                                         align="center"
                                         border="0"
-                                        src="https://carebridge.my/img/logo/logo-carebridge.png"
+                                        src="https://app.carebridge.my/img/logo/logo-carebridge.png"
                                         alt="Image"
                                         title="Image"
                                         style="
