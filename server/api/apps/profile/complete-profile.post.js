@@ -136,7 +136,10 @@ export default defineEventHandler(async (event) => {
             // Insert into `user_client` table
             const newClient = await prisma.user_client.create({
                 data: {
-                    user_id: userID,
+                    //user_id: userID,
+                    user: { 
+                        connect: { userID: userID }  // Connect the existing user based on userID
+                    },
                     dateOfBirth: new Date(body.dob),
                     identification_number: body.identification_number,
                     race: parseInt(body.race),

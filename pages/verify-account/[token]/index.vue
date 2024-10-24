@@ -71,9 +71,9 @@ async function verify_account(){
       showConfirmButton: false,
     });
 
-    setTimeout(() => {
+    /* setTimeout(() => {
       window.location.href = "/login";
-    }, 2000);
+    }, 2000); */
   } else {
 
     verificationStatus.value = false;
