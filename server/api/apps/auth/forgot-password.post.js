@@ -13,14 +13,19 @@ export default defineEventHandler(async (event) => {
     // Check if email already exists
     const isEmailValid = await validateEmail(body.email);
     console.log(body.email);
-    if (!isEmailValid) {
+    if (isEmailValid) {
       return {
         statusCode: 400,
         message: "Email does not exists",
       };
     }
 
-   
+    const user = await prisma.user.findFirst({
+      where: {
+        userEmail: body.email,
+      },
+    });
+      
     // Check if there are any existing tokens for this user
     const existingToken = await prisma.token.findFirst({
     where: {
