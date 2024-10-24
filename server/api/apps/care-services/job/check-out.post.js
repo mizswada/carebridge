@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
         const getStatus = await prisma.lookup.findFirst({
             where: {
-                lookupID: 69,
+                lookupID: 198,
             },
             select: {
                 lookupID: true,
