@@ -178,7 +178,8 @@ export default defineEventHandler(async (event) => {
         console.error("Error:", error.message);
         return {
             statusCode: 500,
-            message: "Something went wrong! Please contact your administrator.",
+            //message: "Something went wrong! Please contact your administrator.",
+            message: error.message
         };
     }
   });
