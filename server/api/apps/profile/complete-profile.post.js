@@ -162,6 +162,9 @@ export default defineEventHandler(async (event) => {
                         connect: { lookupID: parseInt(body.state) }  // Connect existing state in lookup
                     },
                     postcode: body.postcode,
+                    lookup_user_client_countryTolookup: {
+                        connect: { lookupID: 1 }  // Connect existing country in lookup
+                    },
                     medicalConditions: body.medicalConditions,
                     medications: body.medications,
                 },
