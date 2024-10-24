@@ -100,7 +100,7 @@ export default defineEventHandler(async (event) => {
                     race: parseInt(body.race),
                     religion: parseInt(body.religion),
                     marital_status: parseInt(body.marital_status),
-                    date_of_birth: new Date(body.date_of_birth),
+                    date_of_birth: new Date(body.dob),
                     gender: parseInt(body.gender),
                     nationality: parseInt(body.nationality),
                     address_line_1: body.address_line_1,
@@ -123,7 +123,7 @@ export default defineEventHandler(async (event) => {
                     bank_account_beneficiary: body.bank_account_beneficiary,
                 },
             });
-    
+
             return {
                 statusCode: 200,
                 message: "User profile created successfully",
@@ -137,7 +137,7 @@ export default defineEventHandler(async (event) => {
             const newClient = await prisma.user_client.create({
                 data: {
                     user_id: userID,
-                    dateOfBirth: new Date(body.dateOfBirth),
+                    dateOfBirth: new Date(body.dob),
                     identification_number: body.identification_number,
                     race: parseInt(body.race),
                     religion: parseInt(body.religion),
