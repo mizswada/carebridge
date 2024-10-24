@@ -12,8 +12,9 @@ export default defineEventHandler(async (event) => {
 
     // Check if email already exists
     const isEmailValid = await validateEmail(body.useremail);
-    console.log(body.useremail);
-    if (isEmailValid) {
+    //console.log(isEmailValid);
+    //console.log(body.useremail);
+    if (!isEmailValid) {
       return {
         statusCode: 400,
         message: "Email already exists",
@@ -99,6 +100,8 @@ async function validateEmail(email) {
       userEmail: email,
     },
   });
+
+  console.log(user);
 
   if (user) {
     return false;
