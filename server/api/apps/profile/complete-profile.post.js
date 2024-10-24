@@ -118,9 +118,9 @@ export default defineEventHandler(async (event) => {
                     documents_certificate: responseData.upload_certificate,
                     health_status: parseInt(body.health_status),
                     profile_picture: responseData.profile_picture,
-                    bank_account_name: parseInt(body.bank_account_name),
-                    bank_account_num: body.bank_account_num,
-                    bank_account_beneficiary: body.bank_account_beneficiary,
+                    bank_account_name: parseInt(body.bank_acc_name),
+                    bank_account_num: body.bank_acc_num,
+                    bank_account_beneficiary: body.bank_acc_beneficiary,
                 },
             });
 
