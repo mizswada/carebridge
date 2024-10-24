@@ -49,6 +49,7 @@ export default defineEventHandler(async (event) => {
         },
       },
     });
+    console.log(roles);
 
     const roleNames = roles.map((r) => r.role.roleName);
 
@@ -71,7 +72,7 @@ export default defineEventHandler(async (event) => {
     ]);
 
     let userCareTakerClient;
-    if(roles === 'Caretaker'){
+    if(roleNames.includes("Caretaker")){
       userCareTakerClient = await prisma.user_care_taker.findFirst({
         where: {
           user_id: user.userID,
@@ -85,6 +86,9 @@ export default defineEventHandler(async (event) => {
         },
       });
     }
+    console.log("roleNames", roleNames);
+    console.log("uid", user.userID);
+    console.log("userCareTakerClient: ",userCareTakerClient);
 
     // Check if the userCareTaker profile exists
     if (!userCareTakerClient) {
@@ -101,7 +105,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Now check if the profile is complete
-    const isProfileComplete = checkProfileCompletion(userCareTakerClient, roles);
+    const isProfileComplete = checkProfileCompletion(userCareTakerClient, roleNames);
     if (!isProfileComplete) {
       return {
         statusCode: 200,
@@ -148,10 +152,10 @@ function generateRefreshToken(user) {
 }
 
 // Function to check if user profile is complete
-function checkProfileCompletion(userCareTakerClient) {
+function checkProfileCompletion(userCareTakerClient, role) {
 
   let requiredFields;
-  if(roles === 'Caretaker'){
+  if(role.includes("Caretaker")){
     // List of required fields for profile completeness
     requiredFields = [
       'identification_number',
@@ -182,7 +186,6 @@ function checkProfileCompletion(userCareTakerClient) {
       'identification_number',
       'dateOfBirth',
       'gender',
-      'nationality',
       'addressLine1',
       'postcode',
       'city',

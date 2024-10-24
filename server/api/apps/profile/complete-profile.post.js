@@ -142,16 +142,25 @@ export default defineEventHandler(async (event) => {
                     },
                     dateOfBirth: new Date(body.dob),
                     identification_number: body.identification_number,
-                    race: parseInt(body.race),
-                    religion: parseInt(body.religion),
-                    marital_status: parseInt(body.marital_status),
+                    lookup_user_client_raceTolookup: {
+                        connect: { lookupID: parseInt(body.race) }  // Connect existing race in lookup
+                    },
+                    lookup_user_client_religionTolookup: {
+                        connect: { lookupID: parseInt(body.religion) }  // Connect existing religion in lookup
+                    },
+                    lookup_user_client_marital_statusTolookup: {
+                        connect: { lookupID: parseInt(body.marital_status) }  // Connect existing marital status in lookup
+                    },
                     occupation: body.occupation,
-                    gender: parseInt(body.gender),
+                    lookup_user_client_genderTolookup: {
+                        connect: { lookupID: parseInt(body.gender) }  // Connect existing gender
+                    },
                     addressLine1: body.address_line_1,
                     addressLine2: body.address_line_2,
                     city: body.city,
-                    state: parseInt(body.state),
-                    country: parseInt(body.country),
+                    lookup_user_client_stateTolookup: {
+                        connect: { lookupID: parseInt(body.state) }  // Connect existing state in lookup
+                    },
                     postcode: body.postcode,
                     medicalConditions: body.medicalConditions,
                     medications: body.medications,
