@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
         // Find the existing equipment
         const existingEquipment = await prisma.equipment.findUnique({
             where: {
-                id: parseInt(body.equipment_id), // Assuming `equipment_id` is passed in the request
+                equipment_id: parseInt(body.id), // Assuming `equipment_id` is passed in the request
                 equipment_user_id: parseInt(userID),
             },
         });
@@ -79,11 +79,11 @@ export default defineEventHandler(async (event) => {
         }
 
         const parsedRent_sdate = body.rent_sdate
-            ? DateTime.fromFormat(body.rent_sdate, 'dd-MM-yyyy HH:mm:ss').toJSDate()
+            ? DateTime.fromFormat(body.rent_sdate, 'dd-MM-yyyy').toJSDate()
             : null;
 
         const parsedRent_edate = body.rent_edate
-          ? DateTime.fromFormat(body.rent_edate, 'dd-MM-yyyy HH:mm:ss').toJSDate()
+          ? DateTime.fromFormat(body.rent_edate, 'dd-MM-yyyy').toJSDate()
           : null;
 
         // Update the equipment details

@@ -18,6 +18,8 @@ export default defineEventHandler(async (event) => {
         const decodedToken = jwt.verify(token, config.auth.secretAccess); // Replace with your secret key
         const userID = decodedToken.userID;
 
+        const body = await readBody(event);
+
         // Helper function to save Base64 image to the server
         const saveBase64File = async (base64Data, uploadDir) => {
 
@@ -65,11 +67,11 @@ export default defineEventHandler(async (event) => {
         }
 
         const parsedRent_sdate = body.rent_sdate
-            ? DateTime.fromFormat(body.rent_sdate, 'dd-MM-yyyy HH:mm:ss').toJSDate()
+            ? DateTime.fromFormat(body.rent_sdate, 'dd-MM-yyyy').toJSDate()
             : null;
 
         const parsedRent_edate = body.rent_edate
-          ? DateTime.fromFormat(body.rent_edate, 'dd-MM-yyyy HH:mm:ss').toJSDate()
+          ? DateTime.fromFormat(body.rent_edate, 'dd-MM-yyyy').toJSDate()
           : null;
 
         // Create new equipment
