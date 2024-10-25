@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
         console.log("Request body:", body); // Debugging log
 
-        const newJob = await prisma.jobs.update({
+        const newJob = await prisma.emergency_contacts.update({
             where: {
                 contact_id: parseInt(body.contact_id),
             },

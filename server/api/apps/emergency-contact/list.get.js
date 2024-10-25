@@ -20,11 +20,6 @@ export default defineEventHandler(async (event) => {
         
         const userID = decodedToken.userID;
         const roles = decodedToken.roles;
-    
-        // Read the body of the request to get user data
-        const body = await readBody(event);
-
-        console.log("Request body:", body); // Debugging log
 
         const newJob = await prisma.emergency_contacts.findMany({
             where: {
