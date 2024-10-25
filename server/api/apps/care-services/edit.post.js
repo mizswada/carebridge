@@ -47,6 +47,7 @@ export default defineEventHandler(async (event) => {
                 job_payment: parseFloat(body.job_payment),
                 job_notes: body.job_notes,
                 job_additionalCare: parseInt(body.job_stayin),
+                job_caretaker_type: parseInt(body.job_caretaker_type),
                 created_at: new Date(),
             },
         });

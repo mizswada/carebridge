@@ -48,6 +48,7 @@ export default defineEventHandler(async (event) => {
                 job_notes: true,
                 job_additionalCare: true,
                 job_status: true,
+                job_caretaker_type: true,
                 jobs_user_assignation: {
                     select: {
                         jobUser_id: true,

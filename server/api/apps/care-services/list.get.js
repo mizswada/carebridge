@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
                 job_payment: true,
                 job_notes: true,
                 job_additionalCare: true,
+                job_caretaker_type: true,
                 job_status: true
             },
         });
