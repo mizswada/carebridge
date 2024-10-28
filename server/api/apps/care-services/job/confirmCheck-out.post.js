@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
 
         const getStatus = await prisma.lookup.findFirst({
             where: {
-                lookupID: 199,
+                lookupID: 200,
             },
             select: {
                 lookupID: true,
@@ -49,13 +49,15 @@ export default defineEventHandler(async (event) => {
             },
         });
 
+        //update to confirm checkout
         const assignJob = await prisma.jobs_user_assignation.update({
             where: {
                 jobUser_id: parseInt(body.jobUser_id),
             },
             data: {
                 jobUser_confirmCheckOut: parsedCheckOut,
-                jobUser_jobStatus: parseInt(getStatus.lookupID)
+                jobUser_jobStatus: parseInt(getStatus.lookupID),
+                jobUser_paymentStatus: 288
             },
         });
 
