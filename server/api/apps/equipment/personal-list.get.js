@@ -16,13 +16,11 @@ export default defineEventHandler(async (event) => {
         const userID = decodedToken.userID;
 
         const query = getQuery(event);
-        const type = query.type ? parseInt(query.type) : 0;
+        const type = parseInt(query.type);
 
         const equipmentList = await prisma.equipment.findMany({
             where: { 
-                equipment_status: {
-                    in: [26, 27]
-                },
+                equipment_user_id: parseInt(userID),
                 deleted_at: null,
                 ...(type !== 0 && {
                     equipment_type: parseInt(type),

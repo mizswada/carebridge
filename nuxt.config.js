@@ -18,6 +18,7 @@ export default defineNuxtConfig({
       categoryCode: process.env.NUXT_TYP_CATEGORY_CODE,
       returnURL: process.env.NUXT_TYP_RETURN_URL,
       callbackURL: process.env.NUXT_TYP_CALLBACK_URL,
+      apiURL: process.env.NUXT_TYP_API_URL,
     },
     public: {
       env: process.env.NUXT_ENV,
