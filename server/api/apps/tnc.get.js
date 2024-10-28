@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
     const getSetting = await prisma.setting.findFirst({
       where: {
           setting_name: "term_n_condition",
+          status: "ACTIVE"
       },
       select: {
           setting_value: true,
