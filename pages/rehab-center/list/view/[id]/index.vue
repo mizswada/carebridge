@@ -1,6 +1,4 @@
 <script setup>
-    import { ref, onMounted } from 'vue';
-
     definePageMeta({
         title: "View Rehab Center ",
     });
@@ -8,7 +6,7 @@
     const { $swal, $router } = useNuxtApp();
     const config = useRuntimeConfig();
     const apiURL = config.public.uploadURL;
-    console.log("apiURL: ", apiURL);
+    // console.log("apiURL: ", apiURL);
 
     // Editing mode toggle
     const isEditing = ref(false);
@@ -41,6 +39,8 @@
         documents_certificate: null,
         document_licensesEdit: null,
         documents_certificatesEdit: null,
+        document_licenses: null,
+        documents_certificates: null,
         center_description: '',
         geolocation: '',
         licensesFile :null,
@@ -91,74 +91,86 @@
       },
     });
 
-    // alert(JSON.stringify(detail.value.data.details.documents_certificates));
+    // alert(JSON.stringify(detail.value));
     if (detail.value.response === 200)
     {
       formData.value.userFullName = detail.value.data.user.userFullName;
       formData.value.userEmail = detail.value.data.user.userEmail;
       formData.value.userPhone = detail.value.data.user.userPhone;
-      formData.value.center_category = detail.value.data.details.center_category;
-      formData.value.center_address_line1 = detail.value.data.details.center_address_line1;
-      formData.value.center_address_line2 = detail.value.data.details.center_address_line2;
-      formData.value.center_address_city = detail.value.data.details.center_address_city;
-      formData.value.center_address_postcode = detail.value.data.details.center_address_postcode;
-      formData.value.center_address_state = detail.value.data.details.center_address_state;
-      formData.value.center_address_country = detail.value.data.details.center_address_country;
-      formData.value.registration_number = detail.value.data.details.registration_number;
-      formData.value.license_number = detail.value.data.details.license_number;  
-      formData.value.contact_number = detail.value.data.details.contact_number;
-      formData.value.email_address = detail.value.data.details.email_address;
-      formData.value.center_type = detail.value.data.details.center_type;
-      formData.value.person_in_charge = detail.value.data.details.person_in_charge;
-      formData.value.center_capacity = detail.value.data.details.center_capacity;
-      formData.value.operational_hours = detail.value.data.details.operational_hours;
-      formData.value.website = detail.value.data.details.website;
-      formData.value.document_licenses = detail.value.data.details.documents_Licenses;
-      formData.value.documents_certificates = detail.value.data.details.documents_certificates;
-      formData.value.center_description = detail.value.data.details.center_description;
-      formData.value.geolocation = detail.value.data.details.geolocation;
+      if(detail.value.data.details != null)
+      {
+        formData.value.center_category = detail.value.data.details.center_category;
+        formData.value.center_address_line1 = detail.value.data.details.center_address_line1;
+        formData.value.center_address_line2 = detail.value.data.details.center_address_line2;
+        formData.value.center_address_city = detail.value.data.details.center_address_city;
+        formData.value.center_address_postcode = detail.value.data.details.center_address_postcode;
+        formData.value.center_address_state = detail.value.data.details.center_address_state;
+        formData.value.center_address_country = detail.value.data.details.center_address_country;
+        formData.value.registration_number = detail.value.data.details.registration_number;
+        formData.value.license_number = detail.value.data.details.license_number;  
+        formData.value.contact_number = detail.value.data.details.contact_number;
+        formData.value.email_address = detail.value.data.details.email_address;
+        formData.value.center_type = detail.value.data.details.center_type;
+        formData.value.person_in_charge = detail.value.data.details.person_in_charge;
+        formData.value.center_capacity = detail.value.data.details.center_capacity;
+        formData.value.operational_hours = detail.value.data.details.operational_hours;
+        formData.value.website = detail.value.data.details.website;
+        formData.value.document_licenses = detail.value.data.details.documents_Licenses;
+        formData.value.documents_certificates = detail.value.data.details.documents_certificates;
+        formData.value.center_description = detail.value.data.details.center_description;
+        formData.value.geolocation = detail.value.data.details.geolocation;
+      }
+      
     }
 
     // Form submission handler
     const submitForm = async () => 
     {
       try {
-        const { data:uploadImageLicenses } = await useFetch("/api/rehab-center/upload", {
-          method: 'POST',
-          body: {
-            base64Data: formData.value.licensesFile,
-            fileName: formData.value.licensesFileName,              
-          },
-        });
-
-        if(uploadImageLicenses.value.respond == 200) 
+        if(formData.value.licensesFile)
         {
-          formData.value.document_licenses = uploadImageLicenses.value.data.filePath;
-          console.log("path1:", uploadImageLicenses.value.data.filePath);   
-        }
-        else 
-        {
-          $swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Error",
-            text: " Fail to upload licences.",
+            const { data:uploadImageLicenses } = await useFetch("/api/rehab-center/upload", {
+            method: 'POST',
+            body: {
+              base64Data: formData.value.licensesFile,
+              fileName: formData.value.licensesFileName,              
+            },
           });
+
+          if(uploadImageLicenses.value.respond == 200) 
+          {
+            formData.value.document_licenses = uploadImageLicenses.value.data.filePath;
+            console.log("path1:", uploadImageLicenses.value.data.filePath);   
+          }
+          else 
+          {
+            $swal.fire({
+              position: "center",
+              icon: "error",
+              title: "Error",
+              text: " Fail to upload licences.",
+            });
+          }
         }
-
-        const { data:uploadImageCertificates } = await useFetch("/api/rehab-center/upload", {
-          method: 'POST',
-          body: {
-            base64Data: formData.value.certificatesFile,
-            fileName: formData.value.certificatesFileName,              
-          },
-        });
-
-        if(uploadImageCertificates.value.respond == 200) 
+        
+        if(formData.value.certificatesFile)
         {
-          formData.value.documents_certificates = uploadImageCertificates.value.data.filePath;
-          console.log("path2:", uploadImageCertificates.value.data.filePath);     
+          const { data:uploadImageCertificates } = await useFetch("/api/rehab-center/upload", {
+            method: 'POST',
+            body: {
+              base64Data: formData.value.certificatesFile,
+              fileName: formData.value.certificatesFileName,              
+            },
+          });
+
+          if(uploadImageCertificates.value.respond == 200) 
+          {
+            formData.value.documents_certificates = uploadImageCertificates.value.data.filePath;
+            console.log("path2:", uploadImageCertificates.value.data.filePath);     
+          }
         }
+
+        
 
         // console.log("body:", formData.value);     
         
@@ -187,14 +199,14 @@
               center_capacity: formData.value.center_capacity ,
               operational_hours: formData.value.operational_hours ,
               website: formData.value.website ,
-              document_licenses: uploadImageLicenses.value.data.filePath,
-              documents_certificates: uploadImageCertificates.value.data.filePath,
+              document_licenses: formData.value.document_licenses,
+              documents_certificates: formData.value.documents_certificates,
               center_description: formData.value.center_description ,
               geolocation: formData.value.geolocation ,
               id: useRoute().params.id,
             })
         });
-        alert(JSON.stringify(edit.value));
+        // alert(JSON.stringify(edit.value));
         if (edit.value.response === 200) 
         {
           $swal.fire({
@@ -205,6 +217,10 @@
               timer: 1500,
               showConfirmButton: false,
           });
+
+          setTimeout(() => {
+            $router.go();
+          }, 1000);
         }
         else 
         {
@@ -376,7 +392,29 @@
 
 <template>
   <!-- First Row -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-x-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-6">
+    <nuxt-link :to="`/rehab-center/list/ads/`+id">
+      <!-- Summary Card #1 -->
+      <rs-card>
+        <div class="summary-2 pt-5 pb-3 px-5 flex items-center gap-4">
+          <div
+            class="p-5 flex justify-center items-center bg-yellow-100 rounded-2xl"
+          >
+            <Icon
+              class="text-yellow-500"
+              name="icon-park-solid:google-ads"
+            ></Icon>
+          </div>
+          <div class="flex-1 truncate">
+            <span class="block font-semibold text-xl leading-tight">{{ detail.data.adsCount }}</span>
+            <span class="text-base font-semibold text-gray-500">
+              Total Ads
+            </span>
+          </div>
+        </div>
+      </rs-card>
+    </nuxt-link>
+
     <nuxt-link :to="`/rehab-center/list/activity/`+id">
       <!-- Summary Card #1 -->
       <rs-card>
@@ -398,6 +436,7 @@
         </div>
       </rs-card>
     </nuxt-link>
+    
     <nuxt-link :to="`/rehab-center/list/equipment/`+id">
       <!-- Summary Card #2 -->
       <rs-card>
@@ -427,6 +466,11 @@
       <h2 class="text-xl font-semibold" v-else >Update Rehab Center</h2>
     </div>
     <div class="flex justify-end items-center mb-3 gap-2">
+      <nuxt-link :to="`/rehab-center/list/ads/`+id">
+        <rs-button variant="warning">
+            <Icon name="icon-park-solid:google-ads" class="mr-2 " /> Ads             
+        </rs-button>
+      </nuxt-link>
         <nuxt-link :to="`/rehab-center/list/activity/`+id">
           <rs-button variant="info">
               <Icon name="material-symbols:list-alt-outline-rounded" class="mr-2 " /> Activity             
@@ -583,17 +627,16 @@
           <template #label>
             License  <span class="text-red-500"></span>
           </template>
-          <template #help>              
+          <template #help v-if="formData.document_licenses">              
             <img :src="apiURL+ formData.document_licenses" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />
 
           </template>
         </FormKit>
-        
         <FormKit type="file" v-model="formData.documents_certificatesEdit" accept="image/*" :disabled="!isEditing" @change="onChangeFile2" >
           <template #label>
             Certificates  <span class="text-red-500"></span>
           </template>
-          <template #help>              
+          <template #help v-if="formData.documents_certificates">              
             <img :src="apiURL+ formData.documents_certificates" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />
           </template>
         </FormKit>

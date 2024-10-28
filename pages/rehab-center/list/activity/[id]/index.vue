@@ -53,7 +53,7 @@
         });
       } 
     };
-
+ 
     const onChangeFile2 = async (event) => {      
       const file2 = event.target.files[0];  // Get the first file from the input
       const fileType2 = file2.type;

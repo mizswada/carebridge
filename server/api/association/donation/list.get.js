@@ -1,12 +1,32 @@
+import { useUserStore } from "~/stores/user";
+
 export default defineEventHandler(async (event) => {
     const { id } = getQuery(event);
+    const userRole = useUserStore().roles[0];  // Get user role
+    let user;
     try {
+
+        if (userRole === 'Admin' || userRole === 'Superadmin') {
+            user = await prisma.user.findFirst({
+                where: {
+                    userID: parseInt(id)
+                }
+            });
+        } else {
+            user = await prisma.user.findFirst({
+                where: {
+                    userUsername: id
+                }
+            }); 
+        }
+        
+
         const totalDonationAmount = await prisma.donation.aggregate({
             _sum: {
                 donation_amount: true,
             },
             where: {
-                donation_association_id: parseInt(id),
+                donation_association_id: parseInt(user.userID),
                 donation_status:33,
                 deleted_at: null,
             },
@@ -16,7 +36,7 @@ export default defineEventHandler(async (event) => {
         // Fetch donations where association ID matches and is not deleted
         const donations = await prisma.donation.findMany({
             where: {
-                donation_association_id: parseInt(id),
+                donation_association_id: parseInt(user.userID),
                 deleted_at: null,
             },
             select: {
@@ -41,11 +61,7 @@ export default defineEventHandler(async (event) => {
             },
         });
 
-        const user = await prisma.user.findFirst({
-            where: {
-                userID: parseInt(id)
-            }
-        });
+        
 
         return {
             response: 200,

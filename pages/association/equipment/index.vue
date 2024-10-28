@@ -161,7 +161,7 @@
     const equipment = await useFetch("/api/association/equipment/list", {
         method: "GET",
         query: {
-            id: parseInt(id),
+          id: userStore.username,
         },
     });
     // alert(JSON.stringify(equipment.data.value));

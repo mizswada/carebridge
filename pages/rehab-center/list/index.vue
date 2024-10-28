@@ -107,28 +107,6 @@
                     <Icon name="solar:add-square-broken" class="mr-2" /> Add Rehab Center             
                 </rs-button>
             </nuxt-link>
-            <!-- <rs-button variant="primary" @click="showModal2 = true">            
-              <Icon name="solar:add-square-broken" class="mr-2" /> Add Rehab Center
-            </rs-button>
-            <rs-modal title="Add Rehab Center"  v-model="showModal2"  size="lg" cancel-title="Close" ok-title="Save">
-                        <template v-slot:header>
-                          Add Rehab Center
-                        </template>
-                        <template v-slot:body>
-                          <form @submit.prevent="submitRehabCenter">
-                            <FormKit type="text" label="Name"/>
-                            
-                            <FormKit type="textarea" placeholder="Center Details" rows="5" label="Details"/>
-  
-                            <FormKit
-                              type="select"
-                              label="Category"
-                              :options="optionsCategory"
-                            />
-                          </form>
-                        </template>
-                        
-            </rs-modal>   -->
             
             </div>
               <rs-table

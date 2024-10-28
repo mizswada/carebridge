@@ -8,6 +8,8 @@ export default defineEventHandler(async (event) => {
                 userID: parseInt(body?.id),
             },
             data: {
+                userSecretKey:body?.secret_key,
+                userUsername:body?.category_code,
                 userFullName:body?.userFullName,
                 userEmail: body?.userEmail,
                 userPhone :body?.userPhone,
@@ -15,45 +17,46 @@ export default defineEventHandler(async (event) => {
             },
         });
 
-        const details = await prisma.user_rehab_center.findFirst({
-            where: {
-                user_id: parseInt(body?.id),
-            }
-        })
+        // const details = await prisma.user_rehab_center.findFirst({
+        //     where: {
+        //         user_id: parseInt(body?.id),
+        //     }
+        // })
 
         // Update user
-        const updateDetails = await prisma.user_rehab_center.update({
+        const updateDetails = await prisma.user_association.updateMany({
             where: {
-                id: parseInt(details.id),
-            },
+                user_id: parseInt(body?.id),
+            }, 
             data: {
-                center_category:body?.center_category,
-                center_address_line1:body?.center_address_line1,
-                center_address_line2:body?.center_address_line2 || null,
-                center_address_city :body?.center_address_city,
-                center_address_postcode:body?.center_address_postcode,
-                center_address_state:body?.center_address_state,
-                center_address_country:body?.center_address_country,
+                association_category:body?.association_category,
                 registration_number:body?.registration_number,
                 license_number:body?.license_number,
-                contact_number:body?.contact_number,
-                email_address:body?.email_address,
-                center_type:body?.center_type,
-                person_in_charge:body?.person_in_charge,
-                center_capacity :body?.center_capacity || null,
-                operational_hours:body?.operational_hours,
+                membership_details :body?.membership,
+                establishment_date:new Date(body?.establishment_date),
+                association_type:body?.association_type,
+                objectives:body?.objective,
                 website:body?.website,
-                documents_Licenses:'abc.png',
-                documents_certificates:'abc.png',
-                center_description:body?.center_description,
-                geolocation:body?.geolocation
+                association_logo:body?.document_logo,
+                operational_area:body?.operational_areas,
+                association_address_line1:body?.association_address_line1,
+                association_address_line2:body?.association_address_line2,
+                association_address_city:body?.association_address_city,
+                association_address_postcode :body?.association_address_postcode,
+                association_address_state:body?.association_address_state,
+                association_address_country:body?.association_address_country,
+                pic_name:body?.person_in_charge,
+                pic_phoneNum:body?.contact_number,
+                pic_email:body?.email_address,
+                document_licenses:body?.document_licenses,
+                documents_certificates:body?.documents_certificates
             },
         });
   
         return {
             response: 200,
             message: "Successfully update the data",
-            data: updateuser,
+            data: updateDetails,
         };
     } 
     catch (error) 

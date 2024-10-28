@@ -1,11 +1,29 @@
+import { useUserStore } from "~/stores/user";
+
 export default defineEventHandler(async (event) => {
     const { id } = getQuery(event);
-
+    const userRole = useUserStore().roles[0];  // Get user role
+    let user;
     try {
+
+        if (userRole === 'Admin' || userRole === 'Superadmin') {
+            user = await prisma.user.findFirst({
+                where: {
+                    userID: parseInt(id)
+                }
+            });
+        } else {
+            user = await prisma.user.findFirst({
+                where: {
+                    userEmail: id
+                }
+            });
+        }
+        
         // Fetch equipments and their associated equipment_status from lookup table
         const equipments = await prisma.equipment.findMany({
             where: {
-                equipment_user_id: parseInt(id),
+                equipment_user_id: parseInt(user.userID),
                 deleted_at: null,
             },
             select: {
@@ -35,11 +53,7 @@ export default defineEventHandler(async (event) => {
             }
         });
 
-        const user = await prisma.user.findFirst({
-            where: {
-                userID: parseInt(id)
-            }
-        });
+        
 
         return {
             response: 200,

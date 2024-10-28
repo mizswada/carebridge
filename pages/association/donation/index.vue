@@ -54,7 +54,7 @@
     const donation = await useFetch("/api/association/donation/list", {
         method: "GET",
         query: {
-            id: parseInt(id),
+          id: userStore.username,
         },
     });
     // alert(JSON.stringify(donation.data.value));

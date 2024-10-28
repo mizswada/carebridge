@@ -179,6 +179,17 @@ export default [
         },        
       },
       {
+        title: "Ads",
+        path: "/rehab-center/advertising",
+        icon: "material-symbols:list-alt-check",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Rehab center"],
+          }
+        },        
+      },
+      {
         title: "Equipment",
         path: "/rehab-center/equipment",
         icon: "ep:tools",
@@ -202,9 +213,9 @@ export default [
     description: "Manage your rehab center",
     child: [
       {
-        title: "Category",
-        path: "/rehab-center/category",
-        icon: "material-symbols:category-search-outline-rounded",
+        title: "All Rehab Center",
+        path: "/rehab-center/list",
+        icon: "material-symbols-light:lists",
         child: [],
         meta: {
           auth: {
@@ -224,9 +235,9 @@ export default [
         },
       },
       {
-        title: "Rehab Center List",
-        path: "/rehab-center/list",
-        icon: "material-symbols-light:lists",
+        title: "Category",
+        path: "/rehab-center/category",
+        icon: "material-symbols:category-search-outline-rounded",
         child: [],
         meta: {
           auth: {
@@ -234,6 +245,8 @@ export default [
           }
         },
       },
+      
+      
     ],
     meta: {
       auth: {
@@ -246,11 +259,12 @@ export default [
     description: "Manage your association",
     child: [
       {
-        title: "Category",
-        path: "/association/category",
-        icon: "material-symbols:category-search-outline-rounded",
+        title: "All Association",
+        path: "/association/list",
+        icon: "material-symbols-light:lists",
         child: [],
       },
+      
       {
         title: "Pending Approval",
         path: "/association/pending",
@@ -258,11 +272,12 @@ export default [
         child: [],
       },
       {
-        title: "Association List",
-        path: "/association/list",
-        icon: "material-symbols-light:lists",
+        title: "Category",
+        path: "/association/category",
+        icon: "material-symbols:category-search-outline-rounded",
         child: [],
       },
+      
     ],
     meta: {
       auth: {
@@ -273,23 +288,29 @@ export default [
   {
     header: "Care Service",
     description: "Manage your care service",
-    child: [
+    child: [      
       {
-        title: "Category",
-        path: "/category",
-        icon: "material-symbols:category-search-outline-rounded",
-        child: [],
-      },
-      {
-        title: "Service List",
-        path: "/category",
+        title: "All Service",
+        path: "/care-servis/service",
         icon: "material-symbols-light:lists",
         child: [],
       },
       {
-        title: "Payment",
-        path: "/category",
+        title: "Job Payment",
+        path: "/care-servis/payment/job",
         icon: "material-symbols:payments-rounded",
+        child: [],
+      },
+      {
+        title: "Pending Payment",
+        path: "/care-servis/payment/pending",
+        icon: "material-symbols:payments-rounded",
+        child: [],
+      },
+      {
+        title: "Category",
+        path: "/care-servis/category",
+        icon: "material-symbols:category-search-outline-rounded",
         child: [],
       },
     ],

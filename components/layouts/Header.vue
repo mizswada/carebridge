@@ -5,9 +5,20 @@ import { useUserStore } from "~/stores/user";
     
 const userStore = useUserStore();
 const emit = defineEmits(["toggleMenu"]);
-
+// al(JSON.stringify(userStore));
 // const { locale } = useI18n();
 // const colorMode = useColorMode();
+
+const uid = await useFetch("/api/findUser", {
+    method: "GET",
+    query: {
+        id: userStore.username,
+    },
+});
+
+const userid=uid.data.value.data;
+const id = computed(() => userid);
+
 const langList = languageList();
 
 const locale = ref("en");
@@ -63,7 +74,10 @@ onMounted(() => {
     emit("toggleMenu", true);
   }
 });
+
+
 </script>
+
 
 <template>
  
@@ -223,7 +237,44 @@ onMounted(() => {
             <Icon name="ic:outline-keyboard-arrow-down" class="ml-3" />
           </button>
           <template #popper>
-            <ul class="header-dropdown w-full md:w-52">
+            <ul class="header-dropdown w-full md:w-52">              
+              <li>
+                <a 
+                  href="/change_password"
+                  class="flex items-center cursor-pointer py-2 px-4 hover:bg-[rgb(var(--bg-1))]"
+                >
+                  <Icon name="teenyicons:password-solid" class="mr-2" />
+                  Change Password
+                </a>
+              </li>
+              
+              <li v-if="userStore.roles[0] == 'Admin' || userStore.roles[0] == 'Superadmin'">
+                <nuxt-link :to="`/profile/admin/`+userid">
+                  <div class="flex items-center cursor-pointer py-2 px-4 hover:bg-[rgb(var(--bg-1))]">
+                    <Icon name="streamline:interface-user-edit-actions-close-edit-geometric-human-pencil-person-single-up-user-write" class="mr-2" />
+                    Edit Profile 
+                  </div>
+                </nuxt-link>
+              </li>
+              <!--  -->
+              <li v-if="userStore.roles[0] == 'Rehab center'">
+                <nuxt-link :to="`/rehab-center/list/view/`+userid">
+                  <div class="flex items-center cursor-pointer py-2 px-4 hover:bg-[rgb(var(--bg-1))]">
+                    <Icon name="streamline:interface-user-edit-actions-close-edit-geometric-human-pencil-person-single-up-user-write" class="mr-2" />
+                    Edit Profile
+                  </div>
+                </nuxt-link>
+              </li>
+              <!--  -->
+              <li v-if="userStore.roles[0] == 'Association'">
+                <nuxt-link :to="`/association/list/view/`+userid">
+                  <div class="flex items-center cursor-pointer py-2 px-4 hover:bg-[rgb(var(--bg-1))]">
+                    <Icon name="streamline:interface-user-edit-actions-close-edit-geometric-human-pencil-person-single-up-user-write" class="mr-2" />
+                    Edit Profile
+                  </div>
+                </nuxt-link>
+              </li>
+              
               <li>
                 <a
                   href="/logout"

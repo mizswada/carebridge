@@ -680,7 +680,7 @@
                                 <p v-if="priceError" class="text-red-500 text-sm">{{ priceError }}</p>
                             </div>
                         </div>
-
+ 
                         <!-- Image Upload -->
                         <div class="mb-4">
                             <img :src="apiURL+ imageInputEdit" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />

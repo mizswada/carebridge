@@ -1,4 +1,5 @@
 import sha256 from "crypto-js/sha256.js";
+const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
@@ -8,11 +9,11 @@ export default defineEventHandler(async (event) => {
         data: {
             userUsername : body?.userUsername,
             userPassword: sha256(body?.userPassword).toString(), // Note: In production, ensure passwords are hashed
-            userFullName:body?.userFullName,
-            userEmail: body?.userEmail,
-            userPhone :body?.userPhone,
+            userFullName:null,
+            userEmail: body?.userUsername,
+            userPhone :null,
             userStatus:'ACTIVE',
-            userIsVerify:1,
+            userIsVerify:0,
             userCreatedDate: new Date(),
         }
       });
@@ -21,30 +22,17 @@ export default defineEventHandler(async (event) => {
       await prisma.userrole.create({
           data: {
               userRoleUserID: newUser.userID,
-              userRoleRoleID: 2, 
+              userRoleRoleID: 6, 
               userRoleCreatedDate: new Date(),
           }
       });
 
-      // Create the rehab center record
-      const newAdmin = await prisma.user_admin.create({
-        data: {
-            admin_user_id: newUser.userID,
-            admin_gender:body?.admin_gender,
-            admin_date_of_birth: new Date(body?.admin_date_of_birth),
-            admin_address_line1:body?.admin_address_line1 ,
-            admin_address_line2:body?.admin_address_line2 || null,
-            admin_address_city :body?.admin_address_city,
-            admin_address_postcode:body?.admin_address_postcode,
-            admin_address_state:body?.admin_address_state,
-            admin_address_country:body?.admin_address_country,
-        }
-      });
+      
   
       return {
           response: 200,
           message: "Successfully create the data",
-          data: newAdmin,
+          data: newUser,
       };
     } 
     catch (error) 
@@ -55,3 +43,4 @@ export default defineEventHandler(async (event) => {
       };
     }
   });
+

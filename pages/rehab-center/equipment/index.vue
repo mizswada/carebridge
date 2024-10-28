@@ -162,7 +162,7 @@
     const equipment = await useFetch("/api/rehab-center/equipment/list", {
         method: "GET",
         query: {
-            id: parseInt(id),
+            id: userStore.username,
         },
     });
     // alert(JSON.stringify(equipment.data.value));

@@ -152,7 +152,7 @@
     const activity = await useFetch("/api/association/activity/list", {
         method: "GET",
         query: {
-            id: parseInt(id),
+          id: userStore.username,
         },
     });
     // alert(JSON.stringify(activity.data.value));

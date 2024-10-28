@@ -38,6 +38,8 @@
         certificatesFileName :null,
     });
 
+    formData.value.userUsername=formData.value.userEmail;
+
     
     // Dropdown options
     const categories = ref([]);
@@ -84,7 +86,7 @@
           const { data:checkusername } = await useFetch("/api/checkusername", {
             method: 'POST',
             body: {
-              userUsername: formData.value.userUsername,    
+              userUsername: formData.value.userEmail,    
             },
           });
           if(checkusername.value.response === 409)
@@ -129,7 +131,7 @@
                 const { data: add } = await useFetch('/api/rehab-center/create', {
                   method: 'POST',
                   body: JSON.stringify({
-                    userUsername: formData.value.userUsername,
+                    userUsername: formData.value.userEmail,
                     userPassword: formData.value.userPassword,
                     userFullName: formData.value.userFullName ,
                     userEmail: formData.value.userEmail ,
@@ -371,9 +373,9 @@
       <h2 class="text-xl font-semibold mb-6">Create Rehab Center</h2>
       <form @submit.prevent="submitForm">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormKit type="text" v-model="formData.userUsername" required>
+          <FormKit type="email" v-model="formData.userEmail" required>
             <template #label>
-              Username <span class="text-red-500">*</span>
+              Email <span class="text-red-500">*</span>
             </template>
           </FormKit>
           <FormKit :type="passwordVisible ? 'text' : 'password'" v-model="formData.userPassword"  required>
@@ -404,17 +406,13 @@
           </FormKit>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormKit type="text" v-model="formData.userFullName" required>
             <template #label>
               Full Name <span class="text-red-500">*</span>
             </template>
           </FormKit>
-          <FormKit type="email" v-model="formData.userEmail" required>
-            <template #label>
-              Email <span class="text-red-500">*</span>
-            </template>
-          </FormKit>
+          
           <FormKit type="tel" v-model="formData.userPhone" required>
             <template #label>
               Phone <span class="text-red-500">*</span>

@@ -7,7 +7,7 @@
     
     const userStore = useUserStore();
     const id = userStore.userId;
-
+    // alert(JSON.stringify(userStore.username));
     const config = useRuntimeConfig();
     const apiURL = config.public.uploadURL;
     // console.log("apiURL: ", apiURL);
@@ -154,7 +154,7 @@
     const activity = await useFetch("/api/rehab-center/activity/list", {
         method: "GET",
         query: {
-            id: parseInt(id),
+            id: userStore.username,
         },
     });
     // alert(JSON.stringify(activity.data.value));

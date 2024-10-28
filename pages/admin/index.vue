@@ -601,7 +601,7 @@
           </template>
             <template #action="admins">
               <div class="flex items-center gap-4">
-                <rs-button @click="editButton(admins.value.id)">
+                <rs-button @click="editButton(admins.value.id)"> 
                   <Icon
                     name="solar:pen-new-square-broken"
                     class="mr-2 !w-4 !h-4"

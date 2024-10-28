@@ -3,13 +3,13 @@
 export default defineEventHandler(async (event) => {
     try {
         // Fetch rehab centers with related user, state, country, and category details
-        const rehabCenters = await prisma.user_rehab_center.findMany({
+        const associations = await prisma.user_association.findMany({
             where: {
                 user: {
-                    userStatus: 'PENDING',
+                    userStatus: 'Pending Approval',
                     userrole: {
                         some: {
-                            userRoleRoleID: 3
+                            userRoleRoleID: 4
                         }
                     }
                 }
@@ -25,12 +25,12 @@ export default defineEventHandler(async (event) => {
                         userCreatedDate: true,
                     }
                 },
-                lookup_user_rehab_center_center_address_countryTolookup: {
+                lookup_user_association_association_address_countryTolookup: {
                     select: {
                         lookupValue: true,
                     }
                 },
-                lookup_user_rehab_center_center_address_stateTolookup: {
+                lookup_user_association_association_address_stateTolookup: {
                     select: {
                         lookupValue: true,
                     }
@@ -44,9 +44,9 @@ export default defineEventHandler(async (event) => {
         });
 
         // Map the data to format it as desired in the response
-        const formattedCenters = rehabCenters.map(center => ({
+        const formattedCenters = associations.map(center => ({
             id: center.user_id,
-            user: {
+            user: {            
                 username: center.user?.userUsername,
                 fullName: center.user?.userFullName,
                 email: center.user?.userEmail,
@@ -55,30 +55,13 @@ export default defineEventHandler(async (event) => {
                 createdDate: center.user?.userCreatedDate,
             },
             address: {
-                line1: center.center_address_line1,
-                line2: center.center_address_line2,
-                city: center.center_address_city,
-                postcode: center.center_address_postcode,
-                state: center.lookup_user_rehab_center_center_address_stateTolookup?.lookupValue,
-                country: center.lookup_user_rehab_center_center_address_countryTolookup?.lookupValue,
-            },
-            registration_number: center.registration_number,
-            license_number: center.license_number,
-            contact_number: center.contact_number,
-            email_address: center.email_address,
-            center_type: center.category?.name,
-            person_in_charge: center.person_in_charge,
-            center_capacity: center.center_capacity,
-            operational_hours: center.operational_hours,
-            website: center.website,
-            documents: {
-                licenses: center.documents_Licenses,
-                certificates: center.documents_certificates
-            },
-            center_description: center.center_description,
-            geolocation: center.geolocation,
-            status: center.status, // Assuming you may have a status field for Active/Inactive
-            createdAt: center.createdAt,
+                line1: center.association_address_line1,
+                line2: center.association_address_line2,
+                city: center.association_address_city,
+                postcode: center.association_address_postcode,
+                state: center.lookup_user_association_association_address_stateTolookup?.lookupValue,
+                country: center.lookup_user_association_association_address_countryTolookup?.lookupValue,
+            }            
         }));
 
         // Return formatted data

@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     // Specify the path where you want to save the file
     const fileUpload = path.join(process.cwd(), `public/uploads/association/register/${fileName}`);
     //const fileUpload = `/home/ascii/ALSB/public/img/uploads/${body.operationID}/${fileName}`;
-    const filePath = `/uploads/association/${fileName}`;
+    const filePath = `/uploads/association/register/${fileName}`;
 
     await fs.promises.writeFile(fileUpload, file);
 

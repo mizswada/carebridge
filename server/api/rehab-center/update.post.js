@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
                 email_address:body?.email_address,
                 center_type:body?.center_type,
                 person_in_charge:body?.person_in_charge,
-                center_capacity :body?.center_capacity || null,
+                center_capacity : parseInt(body?.center_capacity) || null,
                 operational_hours:body?.operational_hours,
                 website:body?.website,
                 documents_Licenses:body?.document_licenses,

@@ -14,6 +14,13 @@ export default defineEventHandler(async (event) => {
             }
         });
 
+        const adsCount = await prisma.advertising.count({
+            where: {
+                advertising_user_id: parseInt(id),
+                deleted_at: null,
+            },
+        });
+
         const activityCount = await prisma.activity.count({
             where: {
                 activity_user_id: parseInt(id),
@@ -31,7 +38,7 @@ export default defineEventHandler(async (event) => {
         return {
             response: 200,
             success: true,
-            data: {user,details,activityCount,equipmentCount}
+            data: {user,details,activityCount,equipmentCount,adsCount}
         };
     } catch (error) {
         console.error("Error fetching user details:", error);

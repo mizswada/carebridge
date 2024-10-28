@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
         const rehabCenters = await prisma.user_rehab_center.findMany({
             where: {
                 user: {
-                    userStatus: 'PENDING',
+                    userStatus: 'Pending Approval',
                     userrole: {
                         some: {
                             userRoleRoleID: 3
