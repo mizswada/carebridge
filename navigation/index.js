@@ -12,6 +12,24 @@ export default [
       },
     ],
   },
+  // {
+  //   header: "",
+  //   description: "",
+  //   child: [
+  //     {
+  //       title: "Manage Users",
+  //       path: "/user",
+  //       icon: "ph:user-circle-gear",
+  //       child: [],
+  //       meta: {
+  //         auth: {
+  //           role: ["Superadmin", "Admin"],
+  //         }
+  //       },
+        
+  //     },
+  //   ],
+  // },
   /* {
     header: "Administration",
     description: "Manage your application",
@@ -102,44 +120,133 @@ export default [
     },
   }, */
   {
-    header: "",
+    header: "Association",
     description: "",
     child: [
       {
-        title: "Manage Users",
-        path: "/user",
-        icon: "ph:user-circle-gear",
+        title: "Activity",
+        path: "/association/activity",
+        icon: "material-symbols:list-alt-check",
         child: [],
         meta: {
           auth: {
-            role: ["Superadmin", "Admin"],
-          },
-        },
+            role: ["Association"],
+          }
+        },        
       },
+      {
+        title: "Donation",
+        path: "/association/donation",
+        icon: "bxs:donate-heart",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Association"],
+          }
+        },        
+      },
+      {
+        title: "Equipment",
+        path: "/association/equipment",
+        icon: "ep:tools",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Association"],
+          }
+        },        
+      }
     ],
+    meta: {
+      auth: {
+        role: ["Association"],
+      }
+    },
   },
+  {
+    header: "Rehab Center",
+    description: "",
+    child: [
+      {
+        title: "Activity",
+        path: "/rehab-center/activity",
+        icon: "material-symbols:list-alt-check",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Rehab center"],
+          }
+        },        
+      },
+      {
+        title: "Ads",
+        path: "/rehab-center/advertising",
+        icon: "material-symbols:list-alt-check",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Rehab center"],
+          }
+        },        
+      },
+      {
+        title: "Equipment",
+        path: "/rehab-center/equipment",
+        icon: "ep:tools",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Rehab center"],
+          }
+        },        
+      }
+    ],
+    meta: {
+      auth: {
+        role: ["Rehab center"],
+      }
+    },
+  },
+  
   {
     header: "Rehab Center",
     description: "Manage your rehab center",
     child: [
       {
-        title: "Category",
-        path: "/category",
-        icon: "material-symbols:category-search-outline-rounded",
+        title: "All Rehab Center",
+        path: "/rehab-center/list",
+        icon: "material-symbols-light:lists",
         child: [],
+        meta: {
+          auth: {
+            role: ["Superadmin", "Admin"],
+          }
+        },
       },
       {
         title: "Pending Approval",
-        path: "/category",
+        path: "/rehab-center/pending",
         icon: "material-symbols:pending-actions",
         child: [],
+        meta: {
+          auth: {
+            role: ["Superadmin", "Admin"],
+          }
+        },
       },
       {
-        title: "Rehab Center List",
-        path: "/category",
-        icon: "material-symbols-light:lists",
+        title: "Category",
+        path: "/rehab-center/category",
+        icon: "material-symbols:category-search-outline-rounded",
         child: [],
+        meta: {
+          auth: {
+            role: ["Superadmin", "Admin"],
+          }
+        },
       },
+      
+      
     ],
     meta: {
       auth: {
@@ -152,23 +259,25 @@ export default [
     description: "Manage your association",
     child: [
       {
-        title: "Category",
-        path: "/category",
-        icon: "material-symbols:category-search-outline-rounded",
+        title: "All Association",
+        path: "/association/list",
+        icon: "material-symbols-light:lists",
         child: [],
       },
+      
       {
         title: "Pending Approval",
-        path: "/category",
+        path: "/association/pending",
         icon: "material-symbols:pending-actions",
         child: [],
       },
       {
-        title: "Association List",
-        path: "/category",
-        icon: "material-symbols-light:lists",
+        title: "Category",
+        path: "/association/category",
+        icon: "material-symbols:category-search-outline-rounded",
         child: [],
       },
+      
     ],
     meta: {
       auth: {
@@ -179,14 +288,20 @@ export default [
   {
     header: "Care Service",
     description: "Manage your care service",
-    child: [
+    child: [      
       {
         title: "Category",
         path: "/care-service/category-list",
         icon: "material-symbols:category-search-outline-rounded",
+        title: "All Service",
+        path: "/care-servis/service",
+        icon: "material-symbols-light:lists",
         child: [],
       },
       {
+        title: "Job Payment",
+        path: "/care-servis/payment/job",
+        icon: "material-symbols:payments-rounded",
         title: "Service List",
         path: "/care-service/service-list",
         icon: "material-symbols-light:lists",
@@ -199,9 +314,15 @@ export default [
       //   child: [],
       // },
       {
-        title: "Payment",
-        path: "/category",
+        title: "Pending Payment",
+        path: "/care-servis/payment/pending",
         icon: "material-symbols:payments-rounded",
+        child: [],
+      },
+      {
+        title: "Category",
+        path: "/care-servis/category",
+        icon: "material-symbols:category-search-outline-rounded",
         child: [],
       },
     ],
@@ -212,21 +333,57 @@ export default [
     },
   },
   {
-    header: "Setting",
-    description: "Manage your application",
+    header: "User",
+    description: "Manage your users",
     child: [
       {
-        title: "Equipment",
-        icon: "ep:tools",
-        path: "/emergency-contact",
-        external: true,
+        title: "Admin",
+        path: "/admin",
+        icon: "clarity:administrator-solid",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Superadmin", "Admin"],
+          }
+        },
+        
       },
       {
-        title: "Emergency Contact",
-        icon: "ri:contacts-book-3-line",
-        path: "/emergency-contact",
-        external: true,
+        title: "Caretaker",
+        path: "/caretaker",
+        icon: "hugeicons:healtcare",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Superadmin", "Admin"],
+          }
+        },
+        
       },
+      {
+        title: "Customer",
+        path: "/customer",
+        icon: "carbon:customer",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Superadmin", "Admin"],
+          }
+        },
+        
+      },
+      // {
+      //   title: "Equipment",
+      //   icon: "ep:tools",
+      //   path: "/emergency-contact",
+      //   external: true,
+      // },
+      // {
+      //   title: "Emergency Contact",
+      //   icon: "ri:contacts-book-3-line",
+      //   path: "/emergency-contact",
+      //   external: true,
+      // },
     ],
     meta: {
       auth: {

@@ -54,6 +54,7 @@
     "codemirror": "^6.0.1",
     "cross-env": "^7.0.3",
     "crypto-js": "^4.1.1",
+    "exceljs": "^4.4.0",
     "floating-vue": "^2.0.0-beta.24",
     "formidable": "^3.5.2",
     "jsonwebtoken": "^8.5.1",

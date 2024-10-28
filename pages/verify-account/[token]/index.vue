@@ -26,6 +26,7 @@ const { data: validateToken } = await useFetch("/api/apps/auth/validate-token", 
   method: "POST",
   body: {
     token: token,
+    token_type: "REGISTRATION"
   },
 });
 
@@ -41,7 +42,7 @@ if (validateToken.value.statusCode != 200) {
     timer: 2000,
     showConfirmButton: false,
   });
-
+ 
   /* setTimeout(() => {
     window.location.href = "/login";
   }, 2000); */
@@ -96,7 +97,7 @@ async function resendVerificationEmail() {
      },  
   });
 
-  if (!error && data.value.statusCode === 200) {
+  if (data.value.statusCode === 200) {
     $swal.fire({
       title: "Success",
       text: data.value.message,

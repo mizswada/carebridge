@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 708.14 170.39">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: .19em;
+      }
+
+      .cls-2 {
+        letter-spacing: .2em;
+      }
+
+      .cls-3 {
+        letter-spacing: -.01em;
+      }
+
+      .cls-4 {
+        fill: #231f20;
+        font-family: MicrosoftJhengHeiUIBold, 'Microsoft JhengHei UI';
+        font-size: 25.91px;
+      }
+
+      .cls-5 {
+        fill: #5271ff;
+        font-family: FranklinGothic-Heavy, 'Franklin Gothic Heavy';
+        font-size: 103.66px;
+        font-weight: 800;
+      }
+
+      .cls-6 {
+        letter-spacing: .18em;
+      }
+    </style>
+  </defs>
+  <text transform="translate(24.81 103.78)"><tspan class="cls-5"><tspan class="cls-3" x="0" y="0">C</tspan><tspan x="63.98" y="0">ARE BRIDGE</tspan></tspan><tspan class="cls-4"><tspan class="cls-1" x="0" y="31.1" xml:space="preserve">  </tspan><tspan class="cls-6" x="23.06" y="31.1">C</tspan><tspan class="cls-2" x="45.12" y="31.1">ONNECTING CARE, BRIDGING LIVES</tspan></tspan></text>
+</svg>
