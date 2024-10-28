@@ -9,7 +9,10 @@ export default defineEventHandler(async (event) => {
         // Decode token to get the role and user ID
         const authHeader = event.req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            throw new Error("Authorization header is missing or invalid");
+            return {
+                statusCode: 400,
+                message: "Authorization header is missing or invalid",
+              };
         }
     
         const token = authHeader.split(" ")[1];

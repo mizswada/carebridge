@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     public: {
       env: process.env.NUXT_ENV,
       feURL: process.env.NUXT_FE_URL,
+      tnc: process.env.NUXT_TNC_URL,
     },
     oneSignal: {
       appId: process.env.NUXT_ONESIGNAL_APPID,
