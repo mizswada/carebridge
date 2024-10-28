@@ -21,26 +21,24 @@ model audit {
 model user {
   userID                                          Int                     @id @default(autoincrement())
   userSecretKey                                   String?                 @db.VarChar(255)
+  userCategoryCode                                String?                 @db.VarChar(100)
   userUsername                                    String?                 @unique(map: "unique_userUsername") @db.VarChar(255)
   userPassword                                    String?                 @db.VarChar(255)
   userFullName                                    String?                 @db.VarChar(255)
   userEmail                                       String?                 @db.VarChar(255)
   userPhone                                       String?                 @db.VarChar(255)
   userStatus                                      String?                 @db.VarChar(255)
+  userIsVerify                                    Int?                    @default(0)
   userCreatedDate                                 DateTime?               @db.DateTime(0)
   userModifiedDate                                DateTime?               @db.DateTime(0)
-  userCategoryCode                                String?                 @db.VarChar(100)
-  userIsVerify                                    Int?                    @default(0)
   activity                                        activity[]
   advertising                                     advertising[]
   donation_donation_donation_user_idTouser        donation[]              @relation("donation_donation_user_idTouser")
   donation_donation_donation_association_idTouser donation[]              @relation("donation_donation_association_idTouser")
   emergency_contacts                              emergency_contacts[]
   equipment                                       equipment[]
-  jobs                                            jobs[]
   jobs_user_assignation                           jobs_user_assignation[]
   token                                           token[]
-  user_admin                                      user_admin[]
   user_association                                user_association[]
   user_care_taker                                 user_care_taker[]
   user_client                                     user_client[]
@@ -75,12 +73,9 @@ model lookup {
   equipment_equipment_equipment_typeTolookup                                equipment[]             @relation("equipment_equipment_typeTolookup")
   equipment_equipment_equipment_statusTolookup                              equipment[]             @relation("equipment_equipment_statusTolookup")
   jobs_jobs_job_location_stateTolookup                                      jobs[]                  @relation("jobs_job_location_stateTolookup")
-  jobs_jobs_job_additionalCareTolookup                                      jobs[]                  @relation("jobs_job_additionalCareTolookup")
+  jobs_jobs_job_stayinTolookup                                              jobs[]                  @relation("jobs_job_stayinTolookup")
   jobs_user_assignation_jobs_user_assignation_jobUser_paymentStatusTolookup jobs_user_assignation[] @relation("jobs_user_assignation_jobUser_paymentStatusTolookup")
   jobs_user_assignation_jobs_user_assignation_jobUser_jobStatusTolookup     jobs_user_assignation[] @relation("jobs_user_assignation_jobUser_jobStatusTolookup")
-  user_admin_user_admin_admin_address_countryTolookup                       user_admin[]            @relation("user_admin_admin_address_countryTolookup")
-  user_admin_user_admin_admin_address_stateTolookup                         user_admin[]            @relation("user_admin_admin_address_stateTolookup")
-  user_admin_user_admin_admin_genderTolookup                                user_admin[]            @relation("user_admin_admin_genderTolookup")
   user_association_user_association_association_address_countryTolookup     user_association[]      @relation("user_association_association_address_countryTolookup")
   user_association_user_association_association_address_stateTolookup       user_association[]      @relation("user_association_association_address_stateTolookup")
   user_association_user_association_association_typeTolookup                user_association[]      @relation("user_association_association_typeTolookup")
@@ -90,17 +85,10 @@ model lookup {
   user_care_taker_user_care_taker_health_statusTolookup                     user_care_taker[]       @relation("user_care_taker_health_statusTolookup")
   user_care_taker_user_care_taker_nationalityTolookup                       user_care_taker[]       @relation("user_care_taker_nationalityTolookup")
   user_care_taker_user_care_taker_qualificationsTolookup                    user_care_taker[]       @relation("user_care_taker_qualificationsTolookup")
-  user_care_taker_user_care_taker_raceTolookup                              user_care_taker[]       @relation("user_care_taker_raceTolookup")
-  user_care_taker_user_care_taker_religionTolookup                          user_care_taker[]       @relation("user_care_taker_religionTolookup")
-  user_care_taker_user_care_taker_marital_statusTolookup                    user_care_taker[]       @relation("user_care_taker_marital_statusTolookup")
-  user_care_taker_user_care_taker_emergency_contact_relationshipTolookup    user_care_taker[]       @relation("user_care_taker_emergency_contact_relationshipTolookup")
   user_care_taker_user_care_taker_working_hoursTolookup                     user_care_taker[]       @relation("user_care_taker_working_hoursTolookup")
   user_client_user_client_countryTolookup                                   user_client[]           @relation("user_client_countryTolookup")
   user_client_user_client_genderTolookup                                    user_client[]           @relation("user_client_genderTolookup")
   user_client_user_client_stateTolookup                                     user_client[]           @relation("user_client_stateTolookup")
-  user_client_user_client_raceTolookup                                      user_client[]           @relation("user_client_raceTolookup")
-  user_client_user_client_marital_statusTolookup                            user_client[]           @relation("user_client_marital_statusTolookup")
-  user_client_user_client_religionTolookup                                  user_client[]           @relation("user_client_religionTolookup")
   user_rehab_center_user_rehab_center_center_address_countryTolookup        user_rehab_center[]     @relation("user_rehab_center_center_address_countryTolookup")
   user_rehab_center_user_rehab_center_center_address_stateTolookup          user_rehab_center[]     @relation("user_rehab_center_center_address_stateTolookup")
 }
@@ -110,8 +98,8 @@ model userrole {
   userRoleUserID      Int      @default(0)
   userRoleRoleID      Int      @default(0)
   userRoleCreatedDate DateTime @db.DateTime(0)
-  role                role     @relation(fields: [userRoleRoleID], references: [roleID], onDelete: NoAction, onUpdate: NoAction, map: "FK_userrole_role")
-  user                user     @relation(fields: [userRoleUserID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "FK_userrole_user")
+  role                role     @relation(fields: [userRoleRoleID], references: [roleID], onUpdate: Restrict, map: "FK_userrole_role")
+  user                user     @relation(fields: [userRoleUserID], references: [userID], onUpdate: Restrict, map: "FK_userrole_user")
 
   @@index([userRoleRoleID], map: "FK_userrole_role")
   @@index([userRoleUserID], map: "FK_userrole_user")
@@ -128,8 +116,8 @@ model activity {
   created_at         DateTime? @db.Timestamp(0)
   updated_at         DateTime  @default(now()) @db.Timestamp(0)
   deleted_at         DateTime? @db.Timestamp(0)
-  user               user      @relation(fields: [activity_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "activity_ibfk_1")
-  lookup             lookup    @relation(fields: [activity_status], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "activity_status")
+  user               user      @relation(fields: [activity_user_id], references: [userID], onUpdate: Restrict, map: "activity_ibfk_1")
+  lookup             lookup    @relation(fields: [activity_status], references: [lookupID], onUpdate: Restrict, map: "activity_status")
 
   @@index([activity_status], map: "activity_status")
   @@index([activity_user_id], map: "activity_user_id")
@@ -144,8 +132,8 @@ model advertising {
   created_at            DateTime? @db.Timestamp(0)
   updated_at            DateTime  @default(now()) @db.Timestamp(0)
   deleted_at            DateTime? @db.Timestamp(0)
-  user                  user      @relation(fields: [advertising_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "advertising_ibfk_1")
-  lookup                lookup    @relation(fields: [advertising_status], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "advertising_status")
+  user                  user      @relation(fields: [advertising_user_id], references: [userID], onUpdate: Restrict, map: "advertising_ibfk_1")
+  lookup                lookup    @relation(fields: [advertising_status], references: [lookupID], onUpdate: Restrict, map: "advertising_status")
 
   @@index([advertising_status], map: "advertising_status")
   @@index([advertising_user_id], map: "advertising_user_id")
@@ -157,8 +145,6 @@ model category {
   name              String              @db.VarChar(255)
   description       String?             @db.VarChar(255)
   position          Int?
-  charges           Decimal?            @db.Decimal(10, 2)
-  charges_pro       Decimal?            @db.Decimal(10, 2)
   status            String              @db.VarChar(50)
   created_at        DateTime?           @default(now()) @db.Timestamp(0)
   updated_at        DateTime?           @db.Timestamp(0)
@@ -179,9 +165,9 @@ model donation {
   created_at                                  DateTime? @default(now()) @db.Timestamp(0)
   updated_at                                  DateTime? @default(now()) @db.Timestamp(0)
   deleted_at                                  DateTime? @db.Timestamp(0)
-  user_donation_donation_user_idTouser        user      @relation("donation_donation_user_idTouser", fields: [donation_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "donation_ibfk_1")
-  user_donation_donation_association_idTouser user      @relation("donation_donation_association_idTouser", fields: [donation_association_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "donation_ibfk_2")
-  lookup                                      lookup    @relation(fields: [donation_status], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "donation_ibfk_3")
+  user_donation_donation_user_idTouser        user      @relation("donation_donation_user_idTouser", fields: [donation_user_id], references: [userID], onUpdate: Restrict, map: "donation_ibfk_1")
+  user_donation_donation_association_idTouser user      @relation("donation_donation_association_idTouser", fields: [donation_association_id], references: [userID], onUpdate: Restrict, map: "donation_ibfk_2")
+  lookup                                      lookup    @relation(fields: [donation_status], references: [lookupID], onUpdate: Restrict, map: "donation_ibfk_3")
 
   @@index([donation_association_id], map: "donation_association_id")
   @@index([donation_status], map: "donation_status")
@@ -197,8 +183,8 @@ model emergency_contacts {
   created_at           DateTime? @default(now()) @db.Timestamp(0)
   updated_at           DateTime? @default(now()) @db.Timestamp(0)
   deleted_at           DateTime? @db.Timestamp(0)
-  user                 user      @relation(fields: [contact_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "emergency_contacts_ibfk_1")
-  lookup               lookup    @relation(fields: [contact_relationship], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "emergency_contacts_ibfk_2")
+  user                 user      @relation(fields: [contact_user_id], references: [userID], onUpdate: Restrict, map: "emergency_contacts_ibfk_1")
+  lookup               lookup    @relation(fields: [contact_relationship], references: [lookupID], onUpdate: Restrict, map: "emergency_contacts_ibfk_2")
 
   @@index([contact_relationship], map: "contact_relationship")
   @@index([contact_user_id], map: "contact_user_id")
@@ -207,7 +193,6 @@ model emergency_contacts {
 model equipment {
   equipment_id                              Int       @id @default(autoincrement())
   equipment_user_id                         Int
-  equipment_image                           String?   @db.VarChar(255)
   equipment_name                            String    @db.VarChar(255)
   equipment_description                     String    @db.Text
   equipment_type                            Int
@@ -222,9 +207,9 @@ model equipment {
   created_at                                DateTime? @default(now()) @db.Timestamp(0)
   updated_at                                DateTime? @db.Timestamp(0)
   deleted_at                                DateTime? @db.Timestamp(0)
-  user                                      user      @relation(fields: [equipment_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "equipment_ibfk_1")
-  lookup_equipment_equipment_typeTolookup   lookup    @relation("equipment_equipment_typeTolookup", fields: [equipment_type], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "equipment_ibfk_2")
-  lookup_equipment_equipment_statusTolookup lookup?   @relation("equipment_equipment_statusTolookup", fields: [equipment_status], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "equipment_ibfk_3")
+  user                                      user      @relation(fields: [equipment_user_id], references: [userID], onUpdate: Restrict, map: "equipment_ibfk_1")
+  lookup_equipment_equipment_typeTolookup   lookup    @relation("equipment_equipment_typeTolookup", fields: [equipment_type], references: [lookupID], onUpdate: Restrict, map: "equipment_ibfk_2")
+  lookup_equipment_equipment_statusTolookup lookup?   @relation("equipment_equipment_statusTolookup", fields: [equipment_status], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "equipment_ibfk_3")
 
   @@index([equipment_status], map: "equipment_status")
   @@index([equipment_type], map: "equipment_type")
@@ -233,7 +218,6 @@ model equipment {
 
 model jobs {
   job_id                                 Int                     @id @default(autoincrement())
-  job_user_id                            Int
   job_category                           Int?
   job_title                              String                  @db.VarChar(255)
   job_location_city                      String?                 @db.VarChar(255)
@@ -243,22 +227,20 @@ model jobs {
   job_duration                           Int?
   job_payment                            Decimal?                @db.Decimal(10, 2)
   job_notes                              String?                 @db.Text
-  job_additionalCare                     Int?
+  job_stayin                             Int?
   job_status                             String?                 @default("ACTIVE") @db.VarChar(255)
   created_at                             DateTime?               @default(now()) @db.Timestamp(0)
   updated_at                             DateTime?               @default(now()) @db.Timestamp(0)
   deleted_at                             DateTime?               @db.Timestamp(0)
-  category                               category?               @relation(fields: [job_category], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_1")
-  lookup_jobs_job_location_stateTolookup lookup?                 @relation("jobs_job_location_stateTolookup", fields: [job_location_state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_2")
-  lookup_jobs_job_additionalCareTolookup lookup?                 @relation("jobs_job_additionalCareTolookup", fields: [job_additionalCare], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_3")
-  user                                   user                    @relation(fields: [job_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_4")
+  category                               category?               @relation(fields: [job_category], references: [category_id], onDelete: Restrict, onUpdate: Restrict, map: "jobs_ibfk_1")
+  lookup_jobs_job_location_stateTolookup lookup?                 @relation("jobs_job_location_stateTolookup", fields: [job_location_state], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "jobs_ibfk_2")
+  lookup_jobs_job_stayinTolookup         lookup?                 @relation("jobs_job_stayinTolookup", fields: [job_stayin], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "jobs_ibfk_3")
   jobs_payment                           jobs_payment[]
   jobs_user_assignation                  jobs_user_assignation[]
 
   @@index([job_category], map: "job_category")
   @@index([job_location_state], map: "job_location_state")
-  @@index([job_additionalCare], map: "job_stayin")
-  @@index([job_user_id], map: "job_user_id")
+  @@index([job_stayin], map: "job_stayin")
 }
 
 model jobs_user_assignation {
@@ -270,17 +252,16 @@ model jobs_user_assignation {
   jobUser_checkOut                                           DateTime? @db.Timestamp(0)
   jobUser_confirmCheckIN                                     DateTime? @db.Timestamp(0)
   jobUser_confirmCheckOut                                    DateTime? @db.Timestamp(0)
-  jobUser_paymentStatus                                      Int?
-  jobUser_paymentAmount                                      Decimal?  @db.Decimal(10, 2)
-  jobUser_paymentTransactionNum                              String?   @db.VarChar(255)
+  jobUser_paymentStatus                                      Int
+  jobUser_paymentTransactionNum                              String    @db.VarChar(255)
   jobUser_paymentProof                                       String?   @db.VarChar(255)
   jobUser_rating                                             Decimal?  @db.Decimal(10, 2)
   jobUser_complain                                           String?   @db.VarChar(255)
   jobUser_complainFeedback                                   String?   @db.VarChar(255)
-  jobs                                                       jobs      @relation(fields: [jobUser_jobID], references: [job_id], onDelete: NoAction, onUpdate: NoAction, map: "jobUser_jobID")
-  lookup_jobs_user_assignation_jobUser_paymentStatusTolookup lookup?   @relation("jobs_user_assignation_jobUser_paymentStatusTolookup", fields: [jobUser_paymentStatus], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobUser_paymentStatus")
-  lookup_jobs_user_assignation_jobUser_jobStatusTolookup     lookup    @relation("jobs_user_assignation_jobUser_jobStatusTolookup", fields: [jobUser_jobStatus], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobUser_status")
-  user                                                       user      @relation(fields: [jobUser_userID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "jobUser_userID")
+  jobs                                                       jobs      @relation(fields: [jobUser_jobID], references: [job_id], onUpdate: Restrict, map: "jobUser_jobID")
+  lookup_jobs_user_assignation_jobUser_paymentStatusTolookup lookup    @relation("jobs_user_assignation_jobUser_paymentStatusTolookup", fields: [jobUser_paymentStatus], references: [lookupID], onUpdate: Restrict, map: "jobUser_paymentStatus")
+  lookup_jobs_user_assignation_jobUser_jobStatusTolookup     lookup    @relation("jobs_user_assignation_jobUser_jobStatusTolookup", fields: [jobUser_jobStatus], references: [lookupID], onUpdate: Restrict, map: "jobUser_status")
+  user                                                       user      @relation(fields: [jobUser_userID], references: [userID], onUpdate: Restrict, map: "jobUser_userID")
 
   @@index([jobUser_jobID], map: "jobUser_jobID")
   @@index([jobUser_paymentStatus], map: "jobUser_paymentStatus")
@@ -335,11 +316,11 @@ model user_association {
   pic_email                                                   String    @db.VarChar(255)
   document_licenses                                           String    @db.VarChar(255)
   documents_certificates                                      String?   @db.VarChar(255)
-  lookup_user_association_association_address_countryTolookup lookup    @relation("user_association_association_address_countryTolookup", fields: [association_address_country], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "association_address_country")
-  lookup_user_association_association_address_stateTolookup   lookup    @relation("user_association_association_address_stateTolookup", fields: [association_address_state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "association_address_state")
-  category                                                    category  @relation(fields: [association_category], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "association_category")
-  lookup_user_association_association_typeTolookup            lookup    @relation("user_association_association_typeTolookup", fields: [association_type], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "association_type")
-  user                                                        user?     @relation(fields: [user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_user")
+  lookup_user_association_association_address_countryTolookup lookup    @relation("user_association_association_address_countryTolookup", fields: [association_address_country], references: [lookupID], onUpdate: Restrict, map: "association_address_country")
+  lookup_user_association_association_address_stateTolookup   lookup    @relation("user_association_association_address_stateTolookup", fields: [association_address_state], references: [lookupID], onUpdate: Restrict, map: "association_address_state")
+  category                                                    category  @relation(fields: [association_category], references: [category_id], onUpdate: Restrict, map: "association_category")
+  lookup_user_association_association_typeTolookup            lookup    @relation("user_association_association_typeTolookup", fields: [association_type], references: [lookupID], onUpdate: Restrict, map: "association_type")
+  user                                                        user?     @relation(fields: [user_id], references: [userID], onDelete: Restrict, onUpdate: Restrict, map: "fk_user")
 
   @@index([association_address_country], map: "association_address_country")
   @@index([association_address_state], map: "association_address_state")
@@ -350,48 +331,41 @@ model user_association {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model user_care_taker {
-  id                                                            Int       @id @default(autoincrement())
-  user_id                                                       Int?
-  identification_number                                         String    @db.VarChar(100)
-  date_of_birth                                                 DateTime  @db.Date
-  gender                                                        Int?
-  race                                                          Int?
-  religion                                                      Int?
-  marital_status                                                Int?
-  nationality                                                   Int?
-  address_line_1                                                String    @db.VarChar(255)
-  address_line_2                                                String?   @db.VarChar(255)
-  address_postcode                                              String    @db.VarChar(10)
-  address_city                                                  String    @db.VarChar(100)
-  address_state                                                 Int?
-  qualifications                                                Int?
-  emergency_contact_name                                        String?   @db.VarChar(255)
-  emergency_contact_relationship                                Int?
-  emergency_contact_number                                      String?   @db.VarChar(50)
-  working_hours                                                 Int?
-  languages_spoken                                              String?   @db.Text
-  documents_certificate                                         String?   @db.VarChar(255)
-  documents_ic                                                  String?   @db.VarChar(255)
-  health_status                                                 Int?
-  profile_picture                                               String?   @db.VarChar(255)
-  bank_account_name                                             Int?
-  bank_account_num                                              String?   @db.VarChar(255)
-  bank_account_beneficiary                                      String?   @db.VarChar(255)
-  created_at                                                    DateTime  @default(now()) @db.Timestamp(0)
-  updated_at                                                    DateTime  @default(now()) @db.Timestamp(0)
-  deleted_at                                                    DateTime? @db.Timestamp(0)
-  lookup_user_care_taker_address_stateTolookup                  lookup?   @relation("user_care_taker_address_stateTolookup", fields: [address_state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "address_state")
-  lookup_user_care_taker_bank_account_nameTolookup              lookup?   @relation("user_care_taker_bank_account_nameTolookup", fields: [bank_account_name], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "bank_account_name")
-  user                                                          user?     @relation(fields: [user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id")
-  lookup_user_care_taker_genderTolookup                         lookup?   @relation("user_care_taker_genderTolookup", fields: [gender], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "gender")
-  lookup_user_care_taker_health_statusTolookup                  lookup?   @relation("user_care_taker_health_statusTolookup", fields: [health_status], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "health_status")
-  lookup_user_care_taker_nationalityTolookup                    lookup?   @relation("user_care_taker_nationalityTolookup", fields: [nationality], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "nationality")
-  lookup_user_care_taker_qualificationsTolookup                 lookup?   @relation("user_care_taker_qualificationsTolookup", fields: [qualifications], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "qualifications")
-  lookup_user_care_taker_raceTolookup                           lookup?   @relation("user_care_taker_raceTolookup", fields: [race], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "user_care_taker_ibfk_1")
-  lookup_user_care_taker_religionTolookup                       lookup?   @relation("user_care_taker_religionTolookup", fields: [religion], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "user_care_taker_ibfk_2")
-  lookup_user_care_taker_marital_statusTolookup                 lookup?   @relation("user_care_taker_marital_statusTolookup", fields: [marital_status], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "user_care_taker_ibfk_3")
-  lookup_user_care_taker_emergency_contact_relationshipTolookup lookup?   @relation("user_care_taker_emergency_contact_relationshipTolookup", fields: [emergency_contact_relationship], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "user_care_taker_ibfk_4")
-  lookup_user_care_taker_working_hoursTolookup                  lookup?   @relation("user_care_taker_working_hoursTolookup", fields: [working_hours], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "working_hours")
+  id                                               Int       @id @default(autoincrement())
+  user_id                                          Int?
+  identification_number                            String    @db.VarChar(100)
+  date_of_birth                                    DateTime  @db.Date
+  gender                                           Int?
+  nationality                                      Int?
+  address_line_1                                   String    @db.VarChar(255)
+  address_line_2                                   String?   @db.VarChar(255)
+  address_postcode                                 String    @db.VarChar(10)
+  address_city                                     String    @db.VarChar(100)
+  address_state                                    Int?
+  qualifications                                   Int?
+  emergency_contact_name                           String?   @db.VarChar(255)
+  emergency_contact_relationship                   String?   @db.VarChar(100)
+  emergency_contact_number                         String?   @db.VarChar(50)
+  working_hours                                    Int?
+  languages_spoken                                 String?   @db.Text
+  documents_certificate                            String?   @db.VarChar(255)
+  documents_ic                                     String?   @db.VarChar(255)
+  health_status                                    Int?
+  profile_picture                                  String?   @db.VarChar(255)
+  bank_account_name                                Int?
+  bank_account_num                                 String?   @db.VarChar(255)
+  bank_account_beneficiary                         String?   @db.VarChar(255)
+  created_at                                       DateTime  @default(now()) @db.Timestamp(0)
+  updated_at                                       DateTime  @default(now()) @db.Timestamp(0)
+  deleted_at                                       DateTime? @db.Timestamp(0)
+  lookup_user_care_taker_address_stateTolookup     lookup?   @relation("user_care_taker_address_stateTolookup", fields: [address_state], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "address_state")
+  lookup_user_care_taker_bank_account_nameTolookup lookup?   @relation("user_care_taker_bank_account_nameTolookup", fields: [bank_account_name], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "bank_account_name")
+  user                                             user?     @relation(fields: [user_id], references: [userID], onDelete: Restrict, onUpdate: Restrict, map: "fk_user_id")
+  lookup_user_care_taker_genderTolookup            lookup?   @relation("user_care_taker_genderTolookup", fields: [gender], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "gender")
+  lookup_user_care_taker_health_statusTolookup     lookup?   @relation("user_care_taker_health_statusTolookup", fields: [health_status], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "health_status")
+  lookup_user_care_taker_nationalityTolookup       lookup?   @relation("user_care_taker_nationalityTolookup", fields: [nationality], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "nationality")
+  lookup_user_care_taker_qualificationsTolookup    lookup?   @relation("user_care_taker_qualificationsTolookup", fields: [qualifications], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "qualifications")
+  lookup_user_care_taker_working_hoursTolookup     lookup?   @relation("user_care_taker_working_hoursTolookup", fields: [working_hours], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "working_hours")
 
   @@index([address_state], map: "address_state")
   @@index([bank_account_name], map: "bank_account_name")
@@ -401,10 +375,6 @@ model user_care_taker {
   @@index([nationality], map: "nationality")
   @@index([qualifications], map: "qualifications")
   @@index([working_hours], map: "working_hours")
-  @@index([emergency_contact_relationship], map: "emergency_contact_relationship")
-  @@index([marital_status], map: "marital_status")
-  @@index([race], map: "race")
-  @@index([religion], map: "religion")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -431,10 +401,10 @@ model user_rehab_center {
   documents_certificates                                  String?   @db.VarChar(255)
   center_description                                      String?   @db.Text
   geolocation                                             String?   @db.VarChar(100)
-  lookup_user_rehab_center_center_address_countryTolookup lookup    @relation("user_rehab_center_center_address_countryTolookup", fields: [center_address_country], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "center_address_country")
-  lookup_user_rehab_center_center_address_stateTolookup   lookup    @relation("user_rehab_center_center_address_stateTolookup", fields: [center_address_state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "center_address_state")
-  category                                                category? @relation(fields: [center_type], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "center_type")
-  user                                                    user?     @relation(fields: [user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "user_id")
+  lookup_user_rehab_center_center_address_countryTolookup lookup    @relation("user_rehab_center_center_address_countryTolookup", fields: [center_address_country], references: [lookupID], onUpdate: Restrict, map: "center_address_country")
+  lookup_user_rehab_center_center_address_stateTolookup   lookup    @relation("user_rehab_center_center_address_stateTolookup", fields: [center_address_state], references: [lookupID], onUpdate: Restrict, map: "center_address_state")
+  category                                                category? @relation(fields: [center_type], references: [category_id], onDelete: Restrict, onUpdate: Restrict, map: "center_type")
+  user                                                    user?     @relation(fields: [user_id], references: [userID], onDelete: Restrict, onUpdate: Restrict, map: "user_id")
 
   @@index([center_address_country], map: "center_address_country")
   @@index([center_address_state], map: "center_address_state")
@@ -450,7 +420,7 @@ model token {
   tokenExpiryDate  DateTime? @db.Date
   tokenStatus      String?   @default("ACTIVE") @db.VarChar(255)
   tokenCreatedDate DateTime? @db.DateTime(0)
-  user             user?     @relation(fields: [userID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "token_ibfk_1")
+  user             user?     @relation(fields: [userID], references: [userID], onDelete: Restrict, onUpdate: Restrict, map: "token_ibfk_1")
 
   @@index([userID], map: "userID")
 }
@@ -469,74 +439,32 @@ model jobs_payment {
   job_paymentChargeAmount          Float    @db.Float
   job_paymentBillStatus            Int
   job_paymentFlag                  Int
-  created_at                       DateTime @db.DateTime(0)
-  jobs                             jobs     @relation(fields: [jobID], references: [job_id], onDelete: NoAction, onUpdate: NoAction, map: "jobs_payment_ibfk_1")
+  created_at                       DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @db.DateTime(0)
+  jobs                             jobs     @relation(fields: [jobID], references: [job_id], onUpdate: Restrict, map: "jobs_payment_ibfk_1")
 
   @@index([jobID], map: "jobID")
 }
 
 model user_client {
-  clientID                                  Int      @id @default(autoincrement())
-  user_id                                   Int
-  identification_number                     String?  @db.VarChar(50)
-  dateOfBirth                               DateTime @db.Date
-  gender                                    Int
-  race                                      Int?
-  religion                                  Int?
-  marital_status                            Int?
-  accupation                                String?  @db.VarChar(255)
-  addressLine1                              String   @db.VarChar(255)
-  addressLine2                              String?  @db.VarChar(255)
-  city                                      String   @db.VarChar(100)
-  state                                     Int
-  country                                   Int
-  postcode                                  String   @db.VarChar(20)
-  medicalConditions                         String?  @db.Text
-  medications                               String?  @db.Text
-  lookup_user_client_countryTolookup        lookup   @relation("user_client_countryTolookup", fields: [country], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "country")
-  lookup_user_client_genderTolookup         lookup   @relation("user_client_genderTolookup", fields: [gender], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "fk_gender")
-  user                                      user     @relation(fields: [user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_c")
-  lookup_user_client_stateTolookup          lookup   @relation("user_client_stateTolookup", fields: [state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "state")
-  lookup_user_client_raceTolookup           lookup?  @relation("user_client_raceTolookup", fields: [race], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "user_client_ibfk_1")
-  lookup_user_client_marital_statusTolookup lookup?  @relation("user_client_marital_statusTolookup", fields: [marital_status], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "user_client_ibfk_3")
-  lookup_user_client_religionTolookup       lookup?  @relation("user_client_religionTolookup", fields: [religion], references: [lookupID], onDelete: Restrict, onUpdate: Restrict, map: "user_client_ibfk_4")
+  clientID                           Int      @id @default(autoincrement())
+  user_id                            Int
+  dateOfBirth                        DateTime @db.Date
+  gender                             Int
+  addressLine1                       String   @db.VarChar(255)
+  addressLine2                       String?  @db.VarChar(255)
+  city                               String   @db.VarChar(100)
+  state                              Int
+  country                            Int
+  postcode                           String   @db.VarChar(20)
+  medicalConditions                  String?  @db.Text
+  medications                        String?  @db.Text
+  lookup_user_client_countryTolookup lookup   @relation("user_client_countryTolookup", fields: [country], references: [lookupID], onUpdate: Restrict, map: "country")
+  lookup_user_client_genderTolookup  lookup   @relation("user_client_genderTolookup", fields: [gender], references: [lookupID], onUpdate: Restrict, map: "fk_gender")
+  user                               user     @relation(fields: [user_id], references: [userID], onUpdate: Restrict, map: "fk_user_id_c")
+  lookup_user_client_stateTolookup   lookup   @relation("user_client_stateTolookup", fields: [state], references: [lookupID], onUpdate: Restrict, map: "state")
 
   @@index([country], map: "Country")
   @@index([state], map: "State")
   @@index([gender], map: "fk_gender")
   @@index([user_id], map: "fk_user_id_c")
-  @@index([marital_status], map: "marital_status")
-  @@index([race], map: "race")
-  @@index([religion], map: "religion")
-}
-
-model setting {
-  setting_id    Int    @id @default(autoincrement())
-  setting_name  String @db.VarChar(255)
-  setting_value String @db.VarChar(255)
-  status        String @db.VarChar(100)
-}
-
-model user_admin {
-  admin_id                                        Int       @id @default(autoincrement())
-  admin_user_id                                   Int?
-  admin_gender                                    Int
-  admin_date_of_birth                             DateTime? @db.Date
-  admin_address_line1                             String    @db.VarChar(255)
-  admin_address_line2                             String?   @db.VarChar(255)
-  admin_address_city                              String    @db.VarChar(255)
-  admin_address_postcode                          String    @db.VarChar(10)
-  admin_address_state                             Int
-  admin_address_country                           Int
-  created_at                                      DateTime? @default(now()) @db.Timestamp(0)
-  updated_at                                      DateTime? @default(now()) @db.Timestamp(0)
-  lookup_user_admin_admin_address_countryTolookup lookup    @relation("user_admin_admin_address_countryTolookup", fields: [admin_address_country], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "admin_address_country")
-  lookup_user_admin_admin_address_stateTolookup   lookup    @relation("user_admin_admin_address_stateTolookup", fields: [admin_address_state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "admin_address_state")
-  lookup_user_admin_admin_genderTolookup          lookup    @relation("user_admin_admin_genderTolookup", fields: [admin_gender], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "admin_gender")
-  user                                            user?     @relation(fields: [admin_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "admin_user_id")
-
-  @@index([admin_address_country], map: "admin_address_country")
-  @@index([admin_address_state], map: "admin_address_state")
-  @@index([admin_gender], map: "admin_gender")
-  @@index([admin_user_id], map: "admin_user_id")
 }
