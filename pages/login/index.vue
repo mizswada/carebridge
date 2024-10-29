@@ -66,13 +66,13 @@ const login = async () => {
           class="absolute -bottom-3 left-3 img-container flex justify-start items-center mb-5"
         >
           <img
-            src="@/assets/img/logo/logo-carebridge.png"
+            src="@/assets/img/logo/logo-carebridge-word.svg"
             class="max-w-[90px]"
           />
         </div>
         <h3 class="mb-4">Login</h3>
         <p class="text-slate-500 mb-6">
-          Welcome to Corrad. Please login to continue.
+          Welcome to Care Bridge. Please login to continue.
         </p>
         <div class="grid grid-cols-2">
           <FormKit

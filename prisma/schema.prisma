@@ -19,7 +19,6 @@ model audit {
 model user {
   userID                                          Int                     @id @default(autoincrement())
   userSecretKey                                   String?                 @db.VarChar(255)
-  userCategoryCode                                String?                 @db.VarChar(100)
   userUsername                                    String?                 @unique(map: "unique_userUsername") @db.VarChar(255)
   userPassword                                    String?                 @db.VarChar(255)
   userFullName                                    String?                 @db.VarChar(255)
@@ -29,6 +28,8 @@ model user {
   userIsVerify                                    Int?                    @default(0)
   userCreatedDate                                 DateTime?               @db.DateTime(0)
   userModifiedDate                                DateTime?               @db.DateTime(0)
+  userCategoryCode                                String?                 @db.VarChar(100)
+  userIsVerify                                    Int?                    @default(0)
   activity                                        activity[]
   advertising                                     advertising[]
   donation_donation_donation_user_idTouser        donation[]              @relation("donation_donation_user_idTouser")
@@ -36,6 +37,7 @@ model user {
   emergency_contacts                              emergency_contacts[]
   equipment                                       equipment[]
   jobs                                            jobs[]
+  jobs_payment                                    jobs_payment[]
   jobs_user_assignation                           jobs_user_assignation[]
   token                                           token[]
   user_admin                                      user_admin[]
@@ -74,6 +76,8 @@ model lookup {
   equipment_equipment_equipment_statusTolookup                              equipment[]             @relation("equipment_equipment_statusTolookup")
   jobs_jobs_job_location_stateTolookup                                      jobs[]                  @relation("jobs_job_location_stateTolookup")
   jobs_jobs_job_additionalCareTolookup                                      jobs[]                  @relation("jobs_job_additionalCareTolookup")
+  jobs_jobs_job_caretaker_typeTolookup                                      jobs[]                  @relation("jobs_job_caretaker_typeTolookup")
+  jobs_jobs_job_durationTolookup                                            jobs[]                  @relation("jobs_job_durationTolookup")
   jobs_user_assignation_jobs_user_assignation_jobUser_paymentStatusTolookup jobs_user_assignation[] @relation("jobs_user_assignation_jobUser_paymentStatusTolookup")
   jobs_user_assignation_jobs_user_assignation_jobUser_jobStatusTolookup     jobs_user_assignation[] @relation("jobs_user_assignation_jobUser_jobStatusTolookup")
   user_admin_user_admin_admin_address_countryTolookup                       user_admin[]            @relation("user_admin_admin_address_countryTolookup")
@@ -242,7 +246,15 @@ model jobs {
   job_payment                            Decimal?                @db.Decimal(10, 2)
   job_notes                              String?                 @db.Text
   job_additionalCare                     Int?
-  job_status                             String?                 @default("ACTIVE") @db.VarChar(255)
+  job_caretaker_type                     Int?
+  job_status                             String?                 @default("PENDING") @db.VarChar(255)
+  job_billcode                           String?                 @db.VarChar(255)
+  job_billExternalReferenceNo            String?                 @unique(map: "unique_job_billExternalReferenceNo") @db.VarChar(255)
+  job_paymentStatus                      String?                 @db.VarChar(255)
+  job_paymentReferenceNum                String?                 @db.VarChar(255)
+  job_paymentFlag                        Int?
+  job_paymentDescription                 String?                 @db.Text
+  job_paymentDate                        DateTime?               @db.DateTime(0)
   created_at                             DateTime?               @default(now()) @db.Timestamp(0)
   updated_at                             DateTime?               @default(now()) @db.Timestamp(0)
   deleted_at                             DateTime?               @db.Timestamp(0)
@@ -250,6 +262,8 @@ model jobs {
   lookup_jobs_job_location_stateTolookup lookup?                 @relation("jobs_job_location_stateTolookup", fields: [job_location_state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_2")
   lookup_jobs_job_additionalCareTolookup lookup?                 @relation("jobs_job_additionalCareTolookup", fields: [job_additionalCare], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_3")
   user                                   user                    @relation(fields: [job_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_4")
+  lookup_jobs_job_caretaker_typeTolookup lookup?                 @relation("jobs_job_caretaker_typeTolookup", fields: [job_caretaker_type], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_5")
+  lookup_jobs_job_durationTolookup       lookup?                 @relation("jobs_job_durationTolookup", fields: [job_duration], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_6")
   jobs_payment                           jobs_payment[]
   jobs_user_assignation                  jobs_user_assignation[]
 
@@ -257,6 +271,8 @@ model jobs {
   @@index([job_location_state], map: "job_location_state")
   @@index([job_additionalCare], map: "job_stayin")
   @@index([job_user_id], map: "job_user_id")
+  @@index([job_caretaker_type], map: "job_caretaker_type")
+  @@index([job_duration], map: "job_duration")
 }
 
 model jobs_user_assignation {
@@ -272,6 +288,7 @@ model jobs_user_assignation {
   jobUser_paymentAmount                                      Decimal?  @db.Decimal(10, 2)
   jobUser_paymentTransactionNum                              String?   @db.VarChar(255)
   jobUser_paymentProof                                       String?   @db.VarChar(255)
+  jobUser_paymentDate                                        DateTime? @db.Date
   jobUser_rating                                             Decimal?  @db.Decimal(10, 2)
   jobUser_complain                                           String?   @db.VarChar(255)
   jobUser_complainFeedback                                   String?   @db.VarChar(255)
@@ -421,6 +438,7 @@ model user_rehab_center {
   center_capacity                                         Int?
   operational_hours                                       String?   @db.VarChar(100)
   website                                                 String?   @db.VarChar(255)
+  documents_logo                                          String?   @db.VarChar(255)
   documents_Licenses                                      String?   @db.VarChar(255)
   documents_certificates                                  String?   @db.VarChar(255)
   center_description                                      String?   @db.Text
@@ -458,16 +476,16 @@ model user_client {
   race                                      Int?
   religion                                  Int?
   marital_status                            Int?
-  accupation                                String?  @db.VarChar(255)
+  occupation                                String?  @db.VarChar(255)
   addressLine1                              String   @db.VarChar(255)
   addressLine2                              String?  @db.VarChar(255)
   city                                      String   @db.VarChar(100)
   state                                     Int
-  country                                   Int      @default(1)
+  country                                   Int?     @default(1)
   postcode                                  String   @db.VarChar(20)
   medicalConditions                         String?  @db.Text
   medications                               String?  @db.Text
-  lookup_user_client_countryTolookup        lookup   @relation("user_client_countryTolookup", fields: [country], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "country")
+  lookup_user_client_countryTolookup        lookup?  @relation("user_client_countryTolookup", fields: [country], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "country")
   user                                      user     @relation(fields: [user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id_c")
   lookup_user_client_stateTolookup          lookup   @relation("user_client_stateTolookup", fields: [state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "state")
   lookup_user_client_raceTolookup           lookup?  @relation("user_client_raceTolookup", fields: [race], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "user_client_ibfk_1")
@@ -487,11 +505,13 @@ model user_client {
 model jobs_payment {
   job_paymentID                    Int      @id @default(autoincrement())
   jobID                            Int
+  userID                           Int
+  job_paymentBillName              String   @db.VarChar(255)
+  job_paymentBillDescription       String   @db.VarChar(255)
   job_paymentBillCode              String   @db.VarChar(255)
-  job_paymentBillInvoiceNo         String   @db.VarChar(255)
-  job_paymentBillExternalInvoiceNo String   @db.VarChar(255)
+  job_paymentBillInvoiceNo         String?  @db.VarChar(255)
+  job_paymentBillExternalInvoiceNo String   @unique(map: "unique_job_paymentBillExternalInvoiceNo") @db.VarChar(255)
   job_paymentFPXTransactionID      String   @db.VarChar(255)
-  job_paymentType                  String   @db.VarChar(255)
   job_paymentPaymentChannel        String   @db.VarChar(255)
   job_paymentAmount                Float    @db.Float
   job_paymentAmountNett            Float    @db.Float
@@ -500,8 +520,10 @@ model jobs_payment {
   job_paymentFlag                  Int
   created_at                       DateTime @db.DateTime(0)
   jobs                             jobs     @relation(fields: [jobID], references: [job_id], onDelete: NoAction, onUpdate: NoAction, map: "jobs_payment_ibfk_1")
+  user                             user     @relation(fields: [userID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_payment_ibfk_2")
 
   @@index([jobID], map: "jobID")
+  @@index([userID], map: "userID")
 }
 
 model user_admin {

@@ -1,11 +1,24 @@
 <script setup>
 const isVertical = ref(true);
 const isDesktop = ref(true);
-
+import { useUserStore } from "~/stores/user";
+    
+const userStore = useUserStore();
 const emit = defineEmits(["toggleMenu"]);
-
+// al(JSON.stringify(userStore));
 // const { locale } = useI18n();
 // const colorMode = useColorMode();
+
+const uid = await useFetch("/api/findUser", {
+    method: "GET",
+    query: {
+        id: userStore.username,
+    },
+});
+
+const userid=uid.data.value.data;
+const id = computed(() => userid);
+
 const langList = languageList();
 
 const locale = ref("en");
@@ -61,9 +74,13 @@ onMounted(() => {
     emit("toggleMenu", true);
   }
 });
+
+
 </script>
 
+
 <template>
+ 
   <div class="w-header">
     <div class="flex items-stretch justify-between">
       <div v-if="isVertical" class="flex">
@@ -85,7 +102,7 @@ onMounted(() => {
       </div>
 
       <div class="flex gap-2 item-center justify-items-end">
-        <VDropdown placement="bottom-end" distance="13" name="language">
+        <!-- <VDropdown placement="bottom-end" distance="13" name="language">
           <button class="icon-btn h-10 w-10 rounded-full">
             <country-flag :country="languageNow.flagCode" />
           </button>
@@ -133,13 +150,13 @@ onMounted(() => {
               </li>
             </ul>
           </template>
-        </VDropdown>
+        </VDropdown> -->
 
-        <button @click="toggleSearch" class="icon-btn h-10 w-10 rounded-full">
+        <!-- <button @click="toggleSearch" class="icon-btn h-10 w-10 rounded-full">
           <Icon name="ic:round-search" class="" />
-        </button>
+        </button> -->
 
-        <VDropdown placement="bottom-end" distance="13" name="notification">
+        <!-- <VDropdown placement="bottom-end" distance="13" name="notification">
           <button class="relative icon-btn h-10 w-10 rounded-full">
             <span
               class="w-3 h-3 absolute top-1 right-2 rounded-full bg-primary"
@@ -149,7 +166,7 @@ onMounted(() => {
           <template #popper>
             <ul class="header-dropdown w-full md:w-80 text-[#4B5563]">
               <li class="d-head flex items-center justify-between py-2 px-4">
-                <span class="font-semibold">Notification</span>
+                <span class="font-semibold">Notification  {{ userStore.$id }}</span>
                 <div
                   class="flex items-center text-primary cursor-pointer hover:underline"
                 >
@@ -200,27 +217,64 @@ onMounted(() => {
               </NuxtScrollbar>
             </ul>
           </template>
-        </VDropdown>
+        </VDropdown> -->
 
         <VDropdown placement="bottom-end" distance="13" name="profile">
           <button class="icon-btn profile px-2">
             <img
               class="w-8 h-8 object-cover rounded-full"
-              src="@/assets/img/user/default.svg"
+              src="@/assets/img/user/user.webp"
             />
             <div
               v-if="isDesktop"
               class="grid grid-cols-1 text-left ml-3 flex-none"
             >
-              <p class="font-semibold text-sm truncate w-24 mb-0">John Doe</p>
+              <p class="font-semibold text-sm truncate w-24 mb-0"> {{ userStore.username }}</p>
               <span class="font-medium text-xs truncate w-24"
-                >RM 10,000.00</span
+                >{{ userStore.roles[0] }}</span
               >
             </div>
             <Icon name="ic:outline-keyboard-arrow-down" class="ml-3" />
           </button>
           <template #popper>
-            <ul class="header-dropdown w-full md:w-52">
+            <ul class="header-dropdown w-full md:w-52">              
+              <li>
+                <a 
+                  href="/change_password"
+                  class="flex items-center cursor-pointer py-2 px-4 hover:bg-[rgb(var(--bg-1))]"
+                >
+                  <Icon name="teenyicons:password-solid" class="mr-2" />
+                  Change Password
+                </a>
+              </li>
+              
+              <li v-if="userStore.roles[0] == 'Admin' || userStore.roles[0] == 'Superadmin'">
+                <nuxt-link :to="`/profile/admin/`+userid">
+                  <div class="flex items-center cursor-pointer py-2 px-4 hover:bg-[rgb(var(--bg-1))]">
+                    <Icon name="streamline:interface-user-edit-actions-close-edit-geometric-human-pencil-person-single-up-user-write" class="mr-2" />
+                    Edit Profile 
+                  </div>
+                </nuxt-link>
+              </li>
+              <!--  -->
+              <li v-if="userStore.roles[0] == 'Rehab center'">
+                <nuxt-link :to="`/rehab-center/list/view/`+userid">
+                  <div class="flex items-center cursor-pointer py-2 px-4 hover:bg-[rgb(var(--bg-1))]">
+                    <Icon name="streamline:interface-user-edit-actions-close-edit-geometric-human-pencil-person-single-up-user-write" class="mr-2" />
+                    Edit Profile
+                  </div>
+                </nuxt-link>
+              </li>
+              <!--  -->
+              <li v-if="userStore.roles[0] == 'Association'">
+                <nuxt-link :to="`/association/list/view/`+userid">
+                  <div class="flex items-center cursor-pointer py-2 px-4 hover:bg-[rgb(var(--bg-1))]">
+                    <Icon name="streamline:interface-user-edit-actions-close-edit-geometric-human-pencil-person-single-up-user-write" class="mr-2" />
+                    Edit Profile
+                  </div>
+                </nuxt-link>
+              </li>
+              
               <li>
                 <a
                   href="/logout"
@@ -238,7 +292,7 @@ onMounted(() => {
   </div>
 
   <!-- Search Nav for Layout Vertical -->
-  <div tabindex="0" class="w-header-search">
+  <!-- <div tabindex="0" class="w-header-search">
     <Icon name="ic:outline-search" class="mr-3" />
     <FormKit
       id="header-search"
@@ -248,7 +302,7 @@ onMounted(() => {
       type="search"
       placeholder="Search..."
     />
-  </div>
+  </div> -->
 </template>
 
 <style scoped>

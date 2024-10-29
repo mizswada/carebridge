@@ -35,4 +35,8 @@ async function main(to, subject, text, html) {
   }
 }
 
+<<<<<<< HEAD
 export default main;
+=======
+export default main;
+>>>>>>> suhada
