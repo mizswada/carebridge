@@ -304,7 +304,6 @@ const emailHead = `
                                 style="
                                   overflow-wrap: break-word;
                                   word-break: break-word;
-                                  padding: 25px 10px;
                                   font-family: 'Montserrat', sans-serif;
                                 "
                                 align="left"
@@ -338,7 +337,7 @@ const emailHead = `
                                           border: none;
                                           height: auto;
                                           float: none;
-                                          width: 40%;
+                                          width: 25%;
                                           max-width: 300px;
                                         "
                                         width="300"
