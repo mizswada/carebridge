@@ -180,6 +180,16 @@ export default defineEventHandler(async (event) => {
         },
     });
 
+    const job_status = await prisma.lookup.findMany({
+        where: {
+            lookupTitle: "job_status",
+        },
+        select: {
+            lookupID: true,
+            lookupValue: true,
+        },
+    });
+
 
     return {
         statusCode: 200,
@@ -200,7 +210,8 @@ export default defineEventHandler(async (event) => {
             bank: bank,
             care_servicePrice: care_servicePrice,
             equipment_type: equipment_type,
-            equipment_status: equipment_status
+            equipment_status: equipment_status,
+            job_status:job_status
         },
     };
 
