@@ -16,6 +16,9 @@ export default defineNuxtConfig({
       env: process.env.NUXT_ENV,
       feURL: process.env.NUXT_FE_URL,
     },
+    // public: {
+    //   uploadURL: process.env.NUXT_UPLOAD_URL,
+    // },
   },
   modules: [
     "@nuxtjs/tailwindcss",
@@ -23,7 +26,7 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "@vueuse/nuxt",
     "floating-vue/nuxt",
-    "@pinia/nuxt", 
+    "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
     "nuxt-security",
     "nuxt-typed-router",
