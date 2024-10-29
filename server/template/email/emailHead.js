@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> suhada
 const emailHead = `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -308,10 +304,6 @@ const emailHead = `
                                 style="
                                   overflow-wrap: break-word;
                                   word-break: break-word;
-<<<<<<< HEAD
-=======
-                                  padding: 25px 10px;
->>>>>>> suhada
                                   font-family: 'Montserrat', sans-serif;
                                 "
                                 align="left"
@@ -333,11 +325,7 @@ const emailHead = `
                                       <img
                                         align="center"
                                         border="0"
-<<<<<<< HEAD
                                         src="https://app.carebridge.my/img/logo/logo-carebridge.png"
-=======
-                                        src="https://assets-toyyibcart.s3.ap-southeast-1.amazonaws.com/logo/logo-toyyibcart.png"
->>>>>>> suhada
                                         alt="Image"
                                         title="Image"
                                         style="
@@ -349,11 +337,7 @@ const emailHead = `
                                           border: none;
                                           height: auto;
                                           float: none;
-<<<<<<< HEAD
                                           width: 25%;
-=======
-                                          width: 40%;
->>>>>>> suhada
                                           max-width: 300px;
                                         "
                                         width="300"
