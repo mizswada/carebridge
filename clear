@@ -1,0 +1,156 @@
+[33mcommit e03ba1e02483a240e9ed90e0ccc8afab66902854[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mregistration[m[33m)[m
+Merge: 3a0fccc 26b8248
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Mon Oct 28 12:36:27 2024 +0800
+
+    Merge branch 'suhada' of https://github.com/mizswada/carebridge into registration
+
+[33mcommit 3a0fccc2c31f60dc95b1d1b8670d1f1c88087bf4[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Mon Oct 28 11:56:52 2024 +0800
+
+    Storing format document testing
+
+[33mcommit 26b82488134b16716ff97da8b2b23f7b97f76656[m[33m ([m[1;31morigin/suhada[m[33m, [m[1;32msuhada[m[33m)[m
+Author: SUHADA BINTI SAMSUDIN <suhada.samsudin3110@gmail.com>
+Date:   Mon Oct 28 11:21:48 2024 +0800
+
+    all kecuali pending payment, dashboard
+
+[33mcommit 5a9b272b6d9dc91b955f1c5df8afe60c42c2a316[m[33m ([m[1;31morigin/registration[m[33m)[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Thu Oct 24 18:10:32 2024 +0800
+
+    reformat file upload name and key in database
+
+[33mcommit cfd84736c55f3c95e70e6a12053bfbc239f37259[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Thu Oct 24 07:53:49 2024 +0800
+
+    Comment the details for side bar
+
+[33mcommit 35734893233f425695f124fae0eaaca5fdb4863d[m
+Author: SUHADA BINTI SAMSUDIN <suhada.samsudin3110@gmail.com>
+Date:   Mon Oct 21 13:14:38 2024 +0800
+
+    association rehab 2
+
+[33mcommit 4831fc9ec3991ad841b36fd215815225c7d72d10[m
+Author: SUHADA BINTI SAMSUDIN <suhada.samsudin3110@gmail.com>
+Date:   Mon Oct 21 13:13:08 2024 +0800
+
+    association , rehab
+
+[33mcommit 35bcb98e08e1e91b351628625b518433115861d3[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Mon Oct 21 08:43:42 2024 +0800
+
+    Complete Input for Service List
+
+[33mcommit da7051f212ad14064f9ee046a888114110e90149[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Thu Oct 17 16:03:03 2024 +0800
+
+    Complete all input for the service list crud
+    
+    Transition for job_time from datetime to string
+
+[33mcommit 23c3fa5ec9a56deebd61d0e0bb05cbe909588aeb[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Wed Oct 16 10:42:41 2024 +0800
+
+    CRUD complete
+    
+    Problem kat time, x amek user pnye input
+
+[33mcommit 863e6ef3ab89eb7eb4efd2c596a0994cc1c4b06b[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Mon Oct 14 14:51:19 2024 +0800
+
+    Update Send Email Code
+
+[33mcommit 385b0af4aae8ef6b48a77f42dc80fe6dcd9c3709[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Mon Oct 14 12:53:52 2024 +0800
+
+    Latest Storing Register with Email (Mailtrap)
+    
+    Still x dpt hantar email tho
+
+[33mcommit b4535b966c81830d902c92e6e41114ad82b3e97c[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Mon Oct 14 12:04:20 2024 +0800
+
+    Resolved merge conflicts
+
+[33mcommit 14dd2081c9ff0ce8cebf91b5a0e4d2b5fc4cc59e[m
+Merge: 41e7870 14a0190
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Mon Oct 14 09:55:51 2024 +0800
+
+    Merge branch 'main' of https://github.com/mizswada/carebridge into registration
+
+[33mcommit 41e7870ea918f690347bdeed4911c347d5a14648[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Mon Oct 14 09:18:16 2024 +0800
+
+    Complete DB
+    
+    without email
+
+[33mcommit 14a01903781299819b36e9bc360aec1b5620560e[m
+Author: zatytombark <izzaty@tombark.my>
+Date:   Mon Oct 14 09:18:03 2024 +0800
+
+    update
+
+[33mcommit 0daead10f424fabe565a7bd689234cdd6ac2a86d[m
+Merge: 8fef4ee 8e10d19
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Fri Oct 11 17:51:03 2024 +0800
+
+    Merge branch 'main' into registration
+
+[33mcommit 8e10d19f2b5afac17ca1afc16104a2a4e1afcaf7[m
+Author: zatytombark <izzaty@tombark.my>
+Date:   Fri Oct 11 14:25:28 2024 +0800
+
+    new update on navigation
+
+[33mcommit 8fef4ee9ec7cfe02ce697e965e8f818333013fd1[m
+Author: L4NGk454 <139238400+N1RN4M4@users.noreply.github.com>
+Date:   Fri Oct 11 11:51:23 2024 +0800
+
+    store registration info
+    
+    Semua store function dpt, email blom dpt lagi
+
+[33mcommit 246892e35150ecf7ab38ab22eab0807272a141c6[m
+Author: Md Afiq Iskandar <mdafiqiskandar@gmail.com>
+Date:   Thu Jul 25 15:56:18 2024 +0800
+
+    remove logo
+
+[33mcommit b01846ca45cbebaa0f72eb7df71ea20aee5363ae[m[33m ([m[1;31mupstream/docker[m[33m)[m
+Author: Md Afiq Iskandar <mdafiqiskandar@gmail.com>
+Date:   Wed Jul 24 13:41:38 2024 +0800
+
+    Fix nav
+
+[33mcommit 0072a29635cf38ff806057ecb05511928079668f[m
+Author: Md Afiq Iskandar <mdafiqiskandar@gmail.com>
+Date:   Wed Jul 24 13:33:58 2024 +0800
+
+    Change brand to corrad
+
+[33mcommit 9c9fa2738ad0f2495f8cf4f84ee53edf0a670daf[m
+Author: Md Afiq Iskandar <mdafiqiskandar@gmail.com>
+Date:   Wed Jul 10 12:12:01 2024 +0800
+
+    Initialize Corrad
+
+[33mcommit b7a6f18cad628b8ad33eaf06f9c53f3d3d98a815[m
+Author: Md Afiq Iskandar <mdafiqiskandar@gmail.com>
+Date:   Wed Jul 10 12:11:41 2024 +0800
+
+    first commit
