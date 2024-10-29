@@ -25,7 +25,6 @@ model user {
   userEmail                                       String?                 @db.VarChar(255)
   userPhone                                       String?                 @db.VarChar(255)
   userStatus                                      String?                 @db.VarChar(255)
-  userIsVerify                                    Int?                    @default(0)
   userCreatedDate                                 DateTime?               @db.DateTime(0)
   userModifiedDate                                DateTime?               @db.DateTime(0)
   userCategoryCode                                String?                 @db.VarChar(100)
@@ -37,7 +36,6 @@ model user {
   emergency_contacts                              emergency_contacts[]
   equipment                                       equipment[]
   jobs                                            jobs[]
-  jobs_payment                                    jobs_payment[]
   jobs_user_assignation                           jobs_user_assignation[]
   token                                           token[]
   user_admin                                      user_admin[]
@@ -177,7 +175,11 @@ model donation {
   donation_amount                             Decimal   @db.Decimal(10, 2)
   donation_date                               DateTime? @default(now()) @db.DateTime(0)
   donation_status                             Int
+  donation_billcode                           String?   @db.VarChar(100)
+  donation_billExternalReferenceNo            String?   @unique(map: "unique_donation_bill_external_reference_no") @db.VarChar(100)
   donation_reference_number                   String?   @db.VarChar(100)
+  donation_paymentDescription                 String?   @db.VarChar(100)
+  donation_paymentFlag                        Int?
   created_at                                  DateTime? @default(now()) @db.Timestamp(0)
   updated_at                                  DateTime? @default(now()) @db.Timestamp(0)
   deleted_at                                  DateTime? @db.Timestamp(0)
@@ -264,7 +266,6 @@ model jobs {
   user                                   user                    @relation(fields: [job_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_4")
   lookup_jobs_job_caretaker_typeTolookup lookup?                 @relation("jobs_job_caretaker_typeTolookup", fields: [job_caretaker_type], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_5")
   lookup_jobs_job_durationTolookup       lookup?                 @relation("jobs_job_durationTolookup", fields: [job_duration], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_6")
-  jobs_payment                           jobs_payment[]
   jobs_user_assignation                  jobs_user_assignation[]
 
   @@index([job_category], map: "job_category")
@@ -500,30 +501,6 @@ model user_client {
   @@index([marital_status], map: "marital_status")
   @@index([race], map: "race")
   @@index([religion], map: "religion")
-}
-
-model jobs_payment {
-  job_paymentID                    Int      @id @default(autoincrement())
-  jobID                            Int
-  userID                           Int
-  job_paymentBillName              String   @db.VarChar(255)
-  job_paymentBillDescription       String   @db.VarChar(255)
-  job_paymentBillCode              String   @db.VarChar(255)
-  job_paymentBillInvoiceNo         String?  @db.VarChar(255)
-  job_paymentBillExternalInvoiceNo String   @unique(map: "unique_job_paymentBillExternalInvoiceNo") @db.VarChar(255)
-  job_paymentFPXTransactionID      String   @db.VarChar(255)
-  job_paymentPaymentChannel        String   @db.VarChar(255)
-  job_paymentAmount                Float    @db.Float
-  job_paymentAmountNett            Float    @db.Float
-  job_paymentChargeAmount          Float    @db.Float
-  job_paymentBillStatus            Int
-  job_paymentFlag                  Int
-  created_at                       DateTime @db.DateTime(0)
-  jobs                             jobs     @relation(fields: [jobID], references: [job_id], onDelete: NoAction, onUpdate: NoAction, map: "jobs_payment_ibfk_1")
-  user                             user     @relation(fields: [userID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_payment_ibfk_2")
-
-  @@index([jobID], map: "jobID")
-  @@index([userID], map: "userID")
 }
 
 model user_admin {
