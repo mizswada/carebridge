@@ -5,43 +5,46 @@
     const { $swal, $router } = useNuxtApp();
 
     const modalEdit = ref(false);   
+    const modalEditBulk = ref(false);   
     const selectedId = ref(null);
     const pending = ref(null);
     const sumPayment = ref(null);
     
-    const field =['customerName',"jobTitle", 'amountPay' ,'accDetails','paymentStatus','action'];
+    const field =['select','caretakeromerName',"jobTitle", 'amountPay' ,'accDetails','paymentStatus','action'];
     
     const editInput = ref('');
-    const custName = ref('');
-    const custJobTitle = ref('');
-    const custAmountPaid = ref('');
-    const custReferenceNum = ref('');
-    const custPaymentStatus = ref('');
+    const caretakerName = ref('');
+    const caretakerJobTitle = ref('');
+    const caretakerAmountPaid = ref('');
+    const caretakerReferenceNum = ref('');
+    const caretakerPaymentStatus = ref('');
+    const caretakerPaymentStatusBulk = ref('');
+    
     const statusOption=ref('');
     const lookupData = await $fetch('/api/lookup', {
         method: 'GET'
     });
-    statusOption.value = lookupData.data.filter(item => item.lookupType === 'payment_status' && item.lookupID != 228).map(item => ({ value: item.lookupValue, label: item.lookupValue }));
+    statusOption.value = lookupData.data.filter(item => item.lookupType === 'payment_status' && item.lookupID != 228).map(item => ({ value: item.lookupID, label: item.lookupValue }));
     statusOption.value.unshift({ value: "", label: "Please choose" });
     // list
     const {data : pendings} = await useFetch('/api/care-service/pending-payment/list');
-    alert(JSON.stringify(pendings.value));
+    // alert(JSON.stringify(pendings.value));
     if(pendings.value.response == 200)
     {
-        pending.value = pendings.value.data;
-        sumPayment.value=pendings.value.data;
+        pending.value = pendings.value.data.assignments;
+        sumPayment.value=pendings.value.data.totalJobPayment ;
     }
     else
     {
         alert("An error occurred while fetching pending. Please try again.");
     }
     
-
+    
+    
     // edit
     const editButton = async  (id) =>
     {       
-      selectedId.value=id;
-      
+      selectedId.value=id;      
         try {
             const { data: detail } = await useFetch("/api/care-service/pending-payment/get", {
                 method: "GET",
@@ -52,11 +55,10 @@
             
             if (detail.value.response === 200) 
             {
-              custName.value= detail.value.data.pendings.user.userFullName;
-              custJobTitle.value=detail.value.data.pendings.pending_title;
-              custAmountPaid.value=detail.value.data.pendings.pending_payment;                
-              custReferenceNum.value=detail.value.data.pendings.pending_paymentReferenceNum;                
-              custPaymentStatus.value=detail.value.data.pendings.pending_paymentStatus;  
+              caretakerName.value= detail.value.data[0].user.userFullName;
+              caretakerJobTitle.value=detail.value.data[0].jobs.job_title;
+              caretakerAmountPaid.value=detail.value.data[0].jobs.job_payment;                              
+              caretakerPaymentStatus.value=detail.value.data[0].lookup_jobs_user_assignation_jobUser_paymentStatusTolookup?.lookupValue;  
               modalEdit.value = true;
             } 
             else 
@@ -81,8 +83,8 @@
             method: "POST",
             body: JSON.stringify({                  
               id: selectedId.value,
-              refNum:custReferenceNum.value,
-              status:custPaymentStatus.value
+              refNum:caretakerReferenceNum.value,
+              status:caretakerPaymentStatus.value
             }),
         });        
 
@@ -115,6 +117,55 @@
       }
     };
 
+    const closeEditBulk= () =>{
+      modalEditBulk.value = false;
+    };
+
+    const selectedItems = ref([]);
+    // Bulk update function
+    const clickBulkUpdate = async () => {
+      if (selectedItems.value.length === 0) {
+        alert("Please select at least one payment to update.");
+        return;
+      }
+      modalEditBulk.value=true;            
+    };
+
+    const clickUpdateBulk = async () => {
+        try {
+          const { data: bulkUpdate } = await useFetch("/api/care-service/pending-payment/bulk-update", {
+            method: "POST",
+            body: JSON.stringify({
+              ids: selectedItems.value,
+              status: caretakerPaymentStatusBulk.value // Apply the same status to all selected items
+            }),
+          });
+          // alert(JSON.stringify(bulkUpdate.value));
+          if (bulkUpdate.value.response === 200) {
+            $swal.fire({
+              position: "center",
+              title: "Success",
+              text: bulkUpdate.value.message,
+              icon: "success",
+              timer: 1000,
+              showConfirmButton: false,
+            });
+            setTimeout(() => { $router.go(); }, 1000);
+          } else {
+            $swal.fire({
+              position: "center",
+              title: "Fail",
+              text: bulkUpdate.value.message,
+              icon: "error",
+              timer: 2000,
+              showConfirmButton: true,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to bulk update pendings details:", error);
+          alert("An error occurred while bulk updating. Please try again.");
+        }
+    };
     const exportExcel = async () => {
         try {
             const response = await fetch('/api/care-service/pending-payment/export-excel', {
@@ -142,7 +193,6 @@
 </script>
 
 <template>
-    {{ pending }}
     <div class="space-y-8">
       <div class="text-lg font-semibold">
         Payment Management
@@ -183,7 +233,7 @@
             ></Icon>
           </div>
           <div class="flex-1 truncate">
-            <span class="block font-semibold text-xl leading-tight">{{ pending.length }}</span>
+            <span class="block font-semibold text-xl leading-tight">{{ sumPayment }}</span>
             <span class="text-base font-semibold text-gray-500">
               Total Pending Payment
             </span>
@@ -199,6 +249,9 @@
           <div class="flex justify-end items-center mb-3 gap-5">
             <rs-button variant="primary" @click="exportExcel">
                 <Icon name="solar:add-square-broken" class="mr-2" /> Export Excel
+            </rs-button>
+            <rs-button variant="secondary" @click="clickBulkUpdate">
+              <Icon name="solar:pen-new-square-broken" class="mr-2" /> Update Selected
             </rs-button>
             
           </div>  
@@ -217,29 +270,31 @@
             advanced
           >
           <template #select="pending">
-            <input type="checkbox" :value="pending.value.pending_id" v-model="selectedItems" />
+            <input type="checkbox" :value="pending.value.jobUser_id" v-model="selectedItems" />
           </template>
-          <template #customerName ="pending" >
-                {{ pending.value.userName}}
+          <template #caretakeromerName ="pending" >
+                {{ pending.value.user.userFullName}}<br>
+                {{ pending.value.user.userPhone}}
+                
           </template>
           <template #jobTitle ="pending" >
-                {{ pending.value.jobTitle}}
+                {{ pending.value.jobs.job_title}}
           </template>
           <template #amountPay ="pending" >
-                {{ pending.value.jobPayment}}
+                {{ pending.value.jobs.job_payment}}
           </template>
           <template #accDetails ="pending" >
-            {{ pending.value.bankAccountName}}<br>
-            {{ pending.value.bankAccountNum}}<br>
-            {{ pending.value.bankAccountBeneficiary}}
-
+            <!-- {{ pending.value.user.user_care_taker.lookup_user_care_taker_bank_account_nameTolookup}}<br> -->
+            {{ pending.value.user.user_care_taker[0].lookup_user_care_taker_bank_account_nameTolookup?.lookupValue}}<br>
+            {{ pending.value.user.user_care_taker[0].bank_account_num}} <br>
+            {{ pending.value.user.user_care_taker[0].bank_account_beneficiary}} <br>
           </template>
           <template #paymentStatus ="pending" >
-                {{ pending.value.pending_paymentStatus}}
+                {{ pending.value.lookup_jobs_user_assignation_jobUser_paymentStatusTolookup?.lookupValue}}
           </template>
             <template #action="pending">
               <div class="flex items-center gap-4">
-                <rs-button @click="editButton(pending.value.assignationId)">
+                <rs-button @click="editButton(pending.value.jobUser_id)">
                   <Icon
                     name="solar:pen-new-square-broken"
                     class="mr-2 !w-4 !h-4"
@@ -252,14 +307,14 @@
                   </template>
                   <template v-slot:body>
                     <form @submit.prevent="submitPayment">
-                      <FormKit type="text" label="Customer Name" v-model="custName" readonly/>
-                      <FormKit type="text" label="Job Title" v-model="custJobTitle" readonly/>
-                      <FormKit type="text" label="Amount Pay" v-model="custAmountPaid" readonly/>
-                      <FormKit type="text" label="Payment Reference" v-model="custReferenceNum" />
+                      <FormKit type="text" label="Customer Name" v-model="caretakerName" readonly/>
+                      <FormKit type="text" label="Job Title" v-model="caretakerJobTitle" readonly/>
+                      <FormKit type="text" label="Amount Pay" v-model="caretakerAmountPaid" readonly/>
+                      <FormKit type="text" label="Payment Reference" v-model="caretakerReferenceNum" />
                       <FormKit 
                             type="select" 
                             label="Status"
-                            v-model="custPaymentStatus" 
+                            v-model="caretakerPaymentStatus" 
                             :options="statusOption"
                         />
                     </form>
@@ -268,6 +323,27 @@
                   <template v-slot:footer >
                     <rs-button @click="closeEdit">Cancel</rs-button>
                     <rs-button @click="clickUpdate">Update</rs-button>
+                  </template>
+                </rs-modal>
+
+                <rs-modal title="Edit Payment" v-model="modalEditBulk" position="center" size="lg"  :overlayClose="false">
+                  <template v-slot:header>
+                    Edit Payment Bulk
+                  </template>
+                  <template v-slot:body>
+                    <form @submit.prevent="submitPayment">                     
+                      <FormKit 
+                            type="select" 
+                            label="Status"
+                            v-model="caretakerPaymentStatusBulk" 
+                            :options="statusOption"
+                        />
+                    </form>
+                    
+                  </template>
+                  <template v-slot:footer >
+                    <rs-button @click="closeEditBulk">Cancel</rs-button>
+                    <rs-button @click="clickUpdateBulk">Update</rs-button>
                   </template>
                 </rs-modal>
                

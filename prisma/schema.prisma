@@ -75,6 +75,8 @@ model lookup {
   equipment_equipment_equipment_statusTolookup                              equipment[]             @relation("equipment_equipment_statusTolookup")
   jobs_jobs_job_location_stateTolookup                                      jobs[]                  @relation("jobs_job_location_stateTolookup")
   jobs_jobs_job_additionalCareTolookup                                      jobs[]                  @relation("jobs_job_additionalCareTolookup")
+  jobs_jobs_job_caretaker_typeTolookup                                      jobs[]                  @relation("jobs_job_caretaker_typeTolookup")
+  jobs_jobs_job_durationTolookup                                            jobs[]                  @relation("jobs_job_durationTolookup")
   jobs_user_assignation_jobs_user_assignation_jobUser_paymentStatusTolookup jobs_user_assignation[] @relation("jobs_user_assignation_jobUser_paymentStatusTolookup")
   jobs_user_assignation_jobs_user_assignation_jobUser_jobStatusTolookup     jobs_user_assignation[] @relation("jobs_user_assignation_jobUser_jobStatusTolookup")
   user_admin_user_admin_admin_address_countryTolookup                       user_admin[]            @relation("user_admin_admin_address_countryTolookup")
@@ -244,10 +246,12 @@ model jobs {
   job_notes                              String?                 @db.Text
   job_additionalCare                     Int?
   job_caretaker_type                     Int?
-  job_status                             String?                 @default("ACTIVE") @db.VarChar(255)
+  job_status                             String?                 @default("PENDING") @db.VarChar(255)
   job_billcode                           String?                 @db.VarChar(255)
+  job_billExternalReferenceNo            String?                 @unique(map: "unique_job_billExternalReferenceNo") @db.VarChar(255)
   job_paymentStatus                      String?                 @db.VarChar(255)
   job_paymentReferenceNum                String?                 @db.VarChar(255)
+  job_paymentFlag                        Int?
   created_at                             DateTime?               @default(now()) @db.Timestamp(0)
   updated_at                             DateTime?               @default(now()) @db.Timestamp(0)
   deleted_at                             DateTime?               @db.Timestamp(0)
@@ -255,6 +259,8 @@ model jobs {
   lookup_jobs_job_location_stateTolookup lookup?                 @relation("jobs_job_location_stateTolookup", fields: [job_location_state], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_2")
   lookup_jobs_job_additionalCareTolookup lookup?                 @relation("jobs_job_additionalCareTolookup", fields: [job_additionalCare], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_3")
   user                                   user                    @relation(fields: [job_user_id], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_4")
+  lookup_jobs_job_caretaker_typeTolookup lookup?                 @relation("jobs_job_caretaker_typeTolookup", fields: [job_caretaker_type], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_5")
+  lookup_jobs_job_durationTolookup       lookup?                 @relation("jobs_job_durationTolookup", fields: [job_duration], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "jobs_ibfk_6")
   jobs_payment                           jobs_payment[]
   jobs_user_assignation                  jobs_user_assignation[]
 
@@ -262,6 +268,8 @@ model jobs {
   @@index([job_location_state], map: "job_location_state")
   @@index([job_additionalCare], map: "job_stayin")
   @@index([job_user_id], map: "job_user_id")
+  @@index([job_caretaker_type], map: "job_caretaker_type")
+  @@index([job_duration], map: "job_duration")
 }
 
 model jobs_user_assignation {
@@ -277,6 +285,7 @@ model jobs_user_assignation {
   jobUser_paymentAmount                                      Decimal?  @db.Decimal(10, 2)
   jobUser_paymentTransactionNum                              String?   @db.VarChar(255)
   jobUser_paymentProof                                       String?   @db.VarChar(255)
+  jobUser_paymentDate                                        DateTime? @db.Date
   jobUser_rating                                             Decimal?  @db.Decimal(10, 2)
   jobUser_complain                                           String?   @db.VarChar(255)
   jobUser_complainFeedback                                   String?   @db.VarChar(255)
@@ -463,7 +472,7 @@ model user_client {
   race                                      Int?
   religion                                  Int?
   marital_status                            Int?
-  accupation                                String?  @db.VarChar(255)
+  occupation                                String?  @db.VarChar(255)
   addressLine1                              String   @db.VarChar(255)
   addressLine2                              String?  @db.VarChar(255)
   city                                      String   @db.VarChar(100)

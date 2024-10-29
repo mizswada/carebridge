@@ -27,7 +27,6 @@ export default defineEventHandler(async (event) => {
                 job_date: true,
                 job_time: true,
                 job_duration: true,
-                job_payment: true,
                 job_status: true,
                 job_payment:true,
                 // Include lookup for job_location_state and job_stayin
