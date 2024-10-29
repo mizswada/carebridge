@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 import mail from "@/server/helper/email";
 import registerTemplate from "@/server/template/email/verify-account";
+import sha256 from "crypto-js/sha256.js";
 
 const prisma = new PrismaClient();
 const config = useRuntimeConfig();
@@ -46,7 +47,7 @@ export default defineEventHandler(async (event) => {
             userFullName: body.userFullName,
             userCategoryCode: body.userCategoryCode,
             userSecretKey: body.userSecretKey,
-            userPassword: body.userPassword, // Use the generated password
+            userPassword: sha256(body.userPassword).toString(), // Use the generated password
             userCreatedDate: new Date(),
             userModifiedDate: new Date(),
             userStatus: "Pending Approval",
@@ -125,20 +126,20 @@ export default defineEventHandler(async (event) => {
     );
 
     // Generate the verification token without storing it
-    const verificationToken = uuidv4();
-    const verificationURL = `${config.public.feURL}/verify-account/${verificationToken}`;
+    // const verificationToken = uuidv4();
+    // const verificationURL = `${config.public.feURL}/verify-account/${verificationToken}`;
 
     // Prepare and send the verification email
-    const emailTemplate = replaceEmailTemplateURL(
-      registerTemplate,
-      verificationURL
-    );
-    await mail(
-      newUser.userEmail,
-      "Verify Your Account",
-      "Please verify your account by clicking the link below.",
-      emailTemplate
-    );
+    // const emailTemplate = replaceEmailTemplateURL(
+    //   registerTemplate,
+    //   verificationURL
+    // );
+    // await mail(
+    //   newUser.userEmail,
+    //   "Verify Your Account",
+    //   "Please verify your account by clicking the link below.",
+    //   emailTemplate
+    // );
 
     return {
       success: true,

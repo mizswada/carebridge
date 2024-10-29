@@ -73,11 +73,7 @@ const rehabCenterCategoryOptions = ref([
 ]);
 const centerTypeOptions = ref([{ value: 0, label: "Please Select a Type" }]);
 
-// Fetch lookup data on mount
-onMounted(async () => {
-  await fetchLookupData();
-  await fetchCategories();
-});
+
 
 // Watch selectedOption and update formData.roleID accordingly
 watch(selectedOption, (newVal) => {
@@ -87,68 +83,31 @@ watch(selectedOption, (newVal) => {
   );
 });
 
-const fetchLookupData = async () => {
-  try {
-    const response = await fetch("/api/register/lookup");
-    alert(JSON.stringify(response));
-    const result = await response.json();
-    if (result.success) {
-      stateOptions.value = [
-        { value: 0, label: "Please Select" },
-        ...result.data.states,
-      ];
-      countryOptions.value = [
-        { value: 0, label: "Please Select" },
-        ...result.data.countries,
-      ];
-      associationTypeOptions.value = [
-        { value: 0, label: "Please Select" },
-        ...result.data.associationTypes,
-      ];
-      centerTypeOptions.value = [
-        { value: 0, label: "Please Select" },
-        ...result.data.associationTypes,
-      ];
-    } else {
-      console.error(result.message);
-    }
-  } catch (error) {
-    console.error("Error fetching lookup data:", error);
-  }
-};
+const lookupData = await $fetch('/api/lookup', {
+    method: 'GET'
+});
+stateOptions.value = lookupData.data.filter(item => item.lookupType === 'state_list').map(item => ({ value: item.lookupID, label: item.lookupValue }));
+stateOptions.value.unshift({ value: "", label: "Please choose" });
 
-const fetchCategories = async () => {
-  try {
-    const response = await fetch("/api/register/categories");
-    const result = await response.json();
-    if (result.success) {
-      const associationCategories = result.data.filter(
-        (category) => category.type === "association"
-      );
-      associationCategoryOptions.value = [
-        { value: 0, label: "Please Select a Category" },
-        ...associationCategories.map((category) => ({
-          value: category.value,
-          label: category.label,
-        })),
-      ];
-      const rehabCenterCategories = result.data.filter(
-        (category) => category.type === "rehab_center"
-      );
-      rehabCenterCategoryOptions.value = [
-        { value: 0, label: "Please Select a Type" },
-        ...rehabCenterCategories.map((category) => ({
-          value: category.value,
-          label: category.label,
-        })),
-      ];
-    } else {
-      console.error(result.message);
-    }
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-  }
-};
+countryOptions.value = lookupData.data.filter(item => item.lookupType === 'country_list').map(item => ({ value: item.lookupID, label: item.lookupValue }));
+countryOptions.value.unshift({ value: "", label: "Please choose" });
+
+associationTypeOptions.value = lookupData.data.filter(item => item.lookupType === 'associationType_list').map(item => ({ value: item.lookupID, label: item.lookupValue }));
+associationTypeOptions.value.unshift({ value: "", label: "Please choose" });
+
+centerTypeOptions.value = lookupData.data.filter(item => item.lookupType === 'associationType_list').map(item => ({ value: item.lookupID, label: item.lookupValue }));
+centerTypeOptions.value.unshift({ value: "", label: "Please choose" });
+
+const categoryData = await $fetch('/api/category', {
+    method: 'GET'
+});
+
+associationCategoryOptions.value = categoryData.data.filter(item => item.type === 'association').map(item => ({ value: item.category_id, label: item.name  }));
+associationCategoryOptions.value.unshift({ value: "", label: "Please choose" });
+
+rehabCenterCategoryOptions.value = categoryData.data.filter(item => item.type === 'rehab_center').map(item => ({ value: item.category_id, label: item.name  }));
+rehabCenterCategoryOptions.value.unshift({ value: "", label: "Please choose" });
+
 
 const { $swal, $router } = useNuxtApp();
 
