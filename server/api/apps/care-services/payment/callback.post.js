@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
           job_id: getPayment.job_id,
         },
         data: {
-          job_status: "ACTIVE",
+          job_status: callbackData.status_id == 1 ? "ACTIVE" : "PENDING",
           job_paymentReferenceNum: callbackData.refno || null,
           job_paymentStatus: callbackData.status_id == 1 ? "Payment Success" : "Payment Failed" || null,
           job_paymentFlag: parseInt(callbackData.status_id) == 3 ? 0 : 1,
