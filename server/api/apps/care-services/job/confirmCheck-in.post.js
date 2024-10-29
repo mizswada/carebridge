@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
         if (!parsedCheckIn || isNaN(parsedCheckIn.getTime())) {
             return {
                 statusCode: 400,
-                message: "Invalid date format. Expected format is 'dd-MM-yyyy'.",
+                message: "Invalid date format. Expected format is 'dd-MM-yyyy HH:mm:ss'.",
             };
         }
 

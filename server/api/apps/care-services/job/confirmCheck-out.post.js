@@ -28,14 +28,14 @@ export default defineEventHandler(async (event) => {
         console.log("Request body:", body); // Debugging log
 
         //const parsedCheckOut = body.checkOt ? new Date(body.checkOt) : null;
-        const parsedCheckOut = body.checkOt
-            ? DateTime.fromFormat(body.checkOt, 'dd-MM-yyyy HH:mm:ss').toJSDate()
+        const parsedCheckOut = body.checkOut
+            ? DateTime.fromFormat(body.checkOut, 'dd-MM-yyyy HH:mm:ss').toJSDate()
             : null;
 
         if (!parsedCheckOut || isNaN(parsedCheckOut.getTime())) {
             return {
                 statusCode: 400,
-                message: "Invalid date format. Expected format is 'dd-MM-yyyy'.",
+                message: "Invalid date format. Expected format is 'dd-MM-yyyy HH:mm:ss'.",
             };
         }
 
@@ -49,6 +49,8 @@ export default defineEventHandler(async (event) => {
             },
         });
 
+        console.log("getStatus:", getStatus);
+
         //update to confirm checkout
         const assignJob = await prisma.jobs_user_assignation.update({
             where: {
@@ -56,8 +58,12 @@ export default defineEventHandler(async (event) => {
             },
             data: {
                 jobUser_confirmCheckOut: parsedCheckOut,
-                jobUser_jobStatus: parseInt(getStatus.lookupID),
-                jobUser_paymentStatus: 288
+                lookup_jobs_user_assignation_jobUser_jobStatusTolookup: {
+                    connect: { lookupID: getStatus.lookupID },
+                },
+                lookup_jobs_user_assignation_jobUser_paymentStatusTolookup: {
+                    connect: { lookupID: 228 },
+                },
             },
         });
 
@@ -67,6 +73,15 @@ export default defineEventHandler(async (event) => {
             },
             data: {
                 job_status: getStatus.lookupValue.toUpperCase()
+            },
+        });
+
+        const updateamtPayment = await prisma.jobs_user_assignation.update({
+            where: {
+                jobUser_id: parseInt(body.jobUser_id),
+            },
+            data: {
+                jobUser_paymentAmount: updateJob.job_payment - 2
             },
         });
 
