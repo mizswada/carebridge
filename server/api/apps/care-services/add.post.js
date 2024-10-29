@@ -226,7 +226,7 @@ async function processToyyibPay(
       const billCallbackUrl =
         config.public.env == "production" || config.public.env == "development"
           ? config.toyyibPay.callbackURL
-          : "https://field-terror-jesus-serving.trycloudflare.com/api/care-services/payment/callback";
+          : "https://field-terror-jesus-serving.trycloudflare.com/api/apps/care-services/payment/callback";
 
   
       const billReturnUrl = config.toyyibPay.returnURL;
