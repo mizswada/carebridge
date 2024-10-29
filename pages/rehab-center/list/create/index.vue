@@ -36,6 +36,9 @@
         licensesFileName :null,
         certificatesFile :null,
         certificatesFileName :null,
+        document_logo:null,
+        logoFile:null,
+        logoFileName :null
     });
 
     formData.value.userUsername=formData.value.userEmail;
@@ -127,74 +130,86 @@
                 formData.value.documents_certificates = uploadImageCertificates.value.data.filePath;
                 // console.log("path2:", uploadImageCertificates.value.data.filePath);            
                 // console.log("data:", uploadImageCertificates.value.data.filePath);            
-
-                const { data: add } = await useFetch('/api/rehab-center/create', {
+                const { data:uploadImageLogo } = await useFetch("/api/rehab-center/upload", {
                   method: 'POST',
-                  body: JSON.stringify({
-                    userUsername: formData.value.userEmail,
-                    userPassword: formData.value.userPassword,
-                    userFullName: formData.value.userFullName ,
-                    userEmail: formData.value.userEmail ,
-                    userPhone: formData.value.userPhone ,
-                    center_category: formData.value.center_category ,
-                    center_address_line1: formData.value.center_address_line1 ,
-                    center_address_line2: formData.value.center_address_line2 ,
-                    center_address_city: formData.value.center_address_city ,
-                    center_address_postcode: formData.value.center_address_postcode ,
-                    center_address_state: formData.value.center_address_state ,
-                    center_address_country: formData.value.center_address_country ,
-                    registration_number: formData.value.registration_number ,
-                    license_number: formData.value.license_number ,
-                    contact_number: formData.value.contact_number ,
-                    email_address: formData.value.email_address ,
-                    center_type: formData.value.center_type ,
-                    person_in_charge: formData.value.person_in_charge ,
-                    center_capacity: formData.value.center_capacity ,
-                    operational_hours: formData.value.operational_hours ,
-                    website: formData.value.website ,
-                    document_licenses: uploadImageLicenses.value.data.filePath,
-                    documents_certificates: uploadImageCertificates.value.data.filePath,
-                    center_description: formData.value.center_description ,
-                    geolocation: formData.value.geolocation ,
-                  })
-              });
-
-              // alert(add.value.response);
-              if (add.value.response === 200) 
-              {
-                  $swal.fire({
-                      position: "center",
-                      title: "Success",
-                      text: 'Rehab center created successfully!',
-                      icon: "success",
-                      timer: 1500,
-                      showConfirmButton: false,
-                  });
-
-                  setTimeout(() => {
-                    $router.push("/rehab-center/list");
-                  }, 1000);
-                  // await router.push('/rehab-center/list');
-              }            
-              else 
-              {              
-                  $swal.fire({
-                      icon: "error",
-                      title: "Error",
-                      text: add.value.error || 'An unexpected error occurred.',
-                  });
-                  
-              }
-                
-              }
-              else 
-              {
-                $swal.fire({
-                  position: "center",
-                  icon: "error",
-                  title: "Error",
-                  text: " Fail to upload certificate.",
+                  body: {
+                    base64Data: formData.value.logoFile,
+                    fileName: formData.value.logoFileName,              
+                  },
                 });
+
+                if(uploadImageLogo.value.respond == 200) 
+                {
+                  formData.value.document_logo = uploadImageLogo.value.data.filePath;
+                  const { data: add } = await useFetch('/api/rehab-center/create', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      userUsername: formData.value.userEmail,
+                      userPassword: formData.value.userPassword,
+                      userFullName: formData.value.userFullName ,
+                      userEmail: formData.value.userEmail ,
+                      userPhone: formData.value.userPhone ,
+                      center_category: formData.value.center_category ,
+                      center_address_line1: formData.value.center_address_line1 ,
+                      center_address_line2: formData.value.center_address_line2 ,
+                      center_address_city: formData.value.center_address_city ,
+                      center_address_postcode: formData.value.center_address_postcode ,
+                      center_address_state: formData.value.center_address_state ,
+                      center_address_country: formData.value.center_address_country ,
+                      registration_number: formData.value.registration_number ,
+                      license_number: formData.value.license_number ,
+                      contact_number: formData.value.contact_number ,
+                      email_address: formData.value.email_address ,
+                      center_type: formData.value.center_type ,
+                      person_in_charge: formData.value.person_in_charge ,
+                      center_capacity: formData.value.center_capacity ,
+                      operational_hours: formData.value.operational_hours ,
+                      website: formData.value.website ,
+                      documents_logo: uploadImageLogo.value.data.filePath,
+                      document_licenses: uploadImageLicenses.value.data.filePath,
+                      documents_certificates: uploadImageCertificates.value.data.filePath,
+                      center_description: formData.value.center_description ,
+                      geolocation: formData.value.geolocation ,
+                    })
+                  });
+
+                  // alert(add.value.response);
+                  if (add.value.response === 200) 
+                  {
+                      $swal.fire({
+                          position: "center",
+                          title: "Success",
+                          text: 'Rehab center created successfully!',
+                          icon: "success",
+                          timer: 1500,
+                          showConfirmButton: false,
+                      });
+
+                      setTimeout(() => {
+                        $router.push("/rehab-center/list");
+                      }, 1000);
+                      // await router.push('/rehab-center/list');
+                  }            
+                  else 
+                  {              
+                      $swal.fire({
+                          icon: "error",
+                          title: "Error",
+                          text: add.value.error || 'An unexpected error occurred.',
+                      });
+                      
+                  }
+                  
+                }
+                else 
+                {
+                  $swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Error",
+                    text: " Fail to upload certificate.",
+                  });
+                }
               }
             } 
             else 
@@ -272,6 +287,46 @@
 
           formData.value.certificatesFile = base64Data;  // Store the file in your form data
           formData.value.certificatesFileName = file.name;
+        }
+        else {
+          // console.error("Unsupported file format.");
+          $swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Unsupported Format",
+            text: "Only images and PDF documents are supported.",
+          });
+        }
+      } catch (error)  {
+        $swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Error",
+          text: "An error occurred while processing the file.",
+        });
+      } 
+      
+    };
+
+     //logo
+     const onChangeFile3 = async (event) => {      
+      const file = event.target.files[0];  // Get the first file from the input
+      const fileType = file.type;
+
+      try {
+        
+        if (fileType.startsWith('image/')) {
+          const compressedImage = await resizeAndCompressImage(file, 800, 600, 0.7);
+          const base64Data3 = await ToBase64OpsImage(compressedImage);
+          
+          formData.value.logoFile = base64Data3;  // Store the file in your form data
+          formData.value.logoFileName = file.name; 
+        }
+        else if (fileType === 'application/pdf') {
+          const base64Data3 = await ToBase64OpsImage(file);
+
+          formData.value.logoFile = base64Data3;  // Store the file in your form data
+          formData.value.logoFileName = file.name;
         }
         else {
           // console.error("Unsupported file format.");
@@ -520,8 +575,12 @@
           </FormKit>
         </div>
   
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <FormKit type="file" v-model="formData.document_logo" @change="onChangeFile3" required >
+            <template #label>
+              Logo <span class="text-red-500">*</span>
+            </template>
+          </FormKit>
           <FormKit type="file" v-model="formData.document_licenses" accept="image/*" @change="onChangeFile" required >
             <template #label> 
               License  <span class="text-red-500">*</span>

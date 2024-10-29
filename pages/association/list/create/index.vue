@@ -621,8 +621,7 @@
           </FormKit>
           
         </div>    
-        
-  
+          
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <FormKit type="file" v-model="formData.document_logo" @change="onChangeFile3" required >
             <template #label>

@@ -49,6 +49,7 @@ export default defineEventHandler(async (event) => {
                 center_capacity : parseInt(body?.center_capacity) || null,
                 operational_hours:body?.operational_hours,
                 website:body?.website,
+                documents_logo:body?.document_logo,
                 documents_Licenses:body?.document_licenses,
                 documents_certificates:body?.documents_certificates,
                 center_description:body?.center_description,

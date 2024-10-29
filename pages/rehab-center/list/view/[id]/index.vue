@@ -38,6 +38,8 @@
         document_licenses: null,
         documents_certificate: null,
         document_licensesEdit: null,
+        document_logoEdit: null,
+        document_logo:null,
         documents_certificatesEdit: null,
         document_licenses: null,
         documents_certificates: null,
@@ -47,6 +49,8 @@
         licensesFileName :null,
         certificatesFile :null,
         certificatesFileName :null,
+        logoFile :null,
+        logoFileName :null,
     });
 
     // Dropdown options
@@ -115,6 +119,7 @@
         formData.value.center_capacity = detail.value.data.details.center_capacity;
         formData.value.operational_hours = detail.value.data.details.operational_hours;
         formData.value.website = detail.value.data.details.website;
+        formData.value.document_logo = detail.value.data.details.documents_logo;
         formData.value.document_licenses = detail.value.data.details.documents_Licenses;
         formData.value.documents_certificates = detail.value.data.details.documents_certificates;
         formData.value.center_description = detail.value.data.details.center_description;
@@ -126,6 +131,7 @@
     // Form submission handler
     const submitForm = async () => 
     {
+      // alert(formData.value.logoFile);
       try {
         if(formData.value.licensesFile)
         {
@@ -170,6 +176,23 @@
           }
         }
 
+        if(formData.value.logoFile)
+        {
+          const { data:uploadImageLogo } = await useFetch("/api/rehab-center/upload", {
+            method: 'POST',
+            body: {
+              base64Data: formData.value.logoFile,
+              fileName: formData.value.logoFileName,              
+            },
+          });
+
+          if(uploadImageLogo.value.respond == 200) 
+          {
+            formData.value.document_logo = uploadImageLogo.value.data.filePath;
+            // alert(formData.value.document_logo);
+          }
+        }
+
         
 
         // console.log("body:", formData.value);     
@@ -201,6 +224,7 @@
               website: formData.value.website ,
               document_licenses: formData.value.document_licenses,
               documents_certificates: formData.value.documents_certificates,
+              document_logo:formData.value.document_logo,
               center_description: formData.value.center_description ,
               geolocation: formData.value.geolocation ,
               id: useRoute().params.id,
@@ -272,6 +296,47 @@
           text: "An error occurred while processing the file.",
         });
       } 
+    };
+
+     //logo
+    const onChangeFile3 = async (event) => {      
+      
+      const file3 = event.target.files[0];  // Get the first file from the input
+      const fileType3 = file3.type;
+      try {
+        
+        if (fileType3.startsWith('image/')) {
+          const compressedImage3 = await resizeAndCompressImage(file3, 800, 600, 0.7);
+          const base64Data3 = await ToBase64OpsImage(compressedImage3);
+          
+          formData.value.logoFile = base64Data3;  // Store the file in your form data
+          formData.value.logoFileName = file3.name; 
+          // alert(formData.value.logoFile);
+        }
+        else if (fileType3 === 'application/pdf') {
+          const base64Data3 = await ToBase64OpsImage(file3);
+
+          formData.value.logoFile = base64Data3;  // Store the file in your form data
+          formData.value.logoFileName = file3.name;
+        }
+        else {
+          // console.error("Unsupported file format.");
+          $swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Unsupported Format",
+            text: "Only images and PDF documents are supported.",
+          });
+        }
+      } catch (error)  {
+        $swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Error",
+          text: "An error occurred while processing the file.",
+        });
+      } 
+      
     };
 
     //certificate
@@ -622,7 +687,15 @@
         </FormKit>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <FormKit type="file" v-model="formData.document_logoEdit" accept="image/*" :disabled="!isEditing" @change="onChangeFile3" >
+          <template #label>
+            Logo  <span class="text-red-500"></span>
+          </template>
+          <template #help v-if="formData.document_logo">              
+            <img :src="apiURL+ formData.document_logo" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />
+          </template>
+        </FormKit>
         <FormKit type="file" v-model="formData.document_licensesEdit" accept="image/*" :disabled="!isEditing" @change="onChangeFile" >
           <template #label>
             License  <span class="text-red-500"></span>
