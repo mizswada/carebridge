@@ -211,12 +211,10 @@ function cutString(str, len) {
         const billPayorInfo = 1;
         const billAmount = totalPrice;
     
-        /* const billCallbackUrl =
+        const billCallbackUrl =
           config.public.env == "production" || config.public.env == "development"
             ? config.toyyibPay.donationCallbackURL
-            : "https://field-terror-jesus-serving.trycloudflare.com/api/apps/association/donate/payment/callback"; */
-
-        const billCallbackUrl = "https://field-terror-jesus-serving.trycloudflare.com/api/apps/association/donate/payment/callback"
+            : "https://dangerous-rage-bruce-quit.trycloudflare.com/api/apps/association/donate/payment/callback"; 
   
     
         const billReturnUrl = config.toyyibPay.donationReturnURL;
