@@ -1,5 +1,4 @@
-import mail from "@/server/helper/email";
-import resetPasswordTemplate from "@/server/template/email/reset-Password";
+import sendOneSignalNotification from '@/server/helper/oneSignal';
 import jwt from 'jsonwebtoken';
 
 
@@ -42,6 +41,14 @@ export default defineEventHandler(async (event) => {
                 message: "Failed to submit the rating. Please check your data and try again.",
             };
         }
+
+        // Notification content for notifying caretaker of received rating
+        await sendOneSignalNotification(
+            assignJob.jobUser_userID,  // Use the caretaker's user ID
+            "You've Received a Rating!",
+            `Your client has rated you. Check your profile to view the feedback and rating. Thank you for your hard work!`
+        );
+
 
         return {
             statusCode: 200,

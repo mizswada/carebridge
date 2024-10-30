@@ -1,7 +1,6 @@
 import { DateTime } from "luxon";
 import jwt from 'jsonwebtoken';
-import mail from "@/server/helper/email";
-import resetPasswordTemplate from "@/server/template/email/reset-Password";
+import sendOneSignalNotification from '@/server/helper/oneSignal';
 
 const config = useRuntimeConfig();
 
@@ -76,15 +75,23 @@ export default defineEventHandler(async (event) => {
             };
         }
 
-        //send email
-        /* const emailTemplate = replaceEmailTemplateURL(resetPasswordTemplate);
+        //get job
+        const getJob = await prisma.jobs.findFirst({
+            where: {
+                job_id: parseInt(updateJob.job_id),
+            },
+            select: {
+                job_user_id: true,
+                job_title: true
+            },
+        });
 
-        await mail(
-            email,
-            "Reset Password",
-            "Reset Password",
-            emailTemplate
-        ); */
+        //send notification
+        await sendOneSignalNotification(
+            getJob.job_user_id,
+            "Caretaker Check-out",
+            `Please confirm the check-out for the caretaker assigned to your job "${getJob.job_title}".`,
+        );
 
         return {
             statusCode: 200,

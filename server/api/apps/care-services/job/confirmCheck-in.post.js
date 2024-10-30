@@ -1,7 +1,6 @@
 import { DateTime } from "luxon";
 import jwt from 'jsonwebtoken';
-import mail from "@/server/helper/email";
-import resetPasswordTemplate from "@/server/template/email/reset-Password";
+import sendOneSignalNotification from '@/server/helper/oneSignal';
 
 
 const config = useRuntimeConfig();
@@ -76,15 +75,12 @@ export default defineEventHandler(async (event) => {
             };
         }
 
-        //send email
-        /* const emailTemplate = replaceEmailTemplateURL(resetPasswordTemplate);
-
-        await mail(
-            email,
-            "Reset Password",
-            "Reset Password",
-            emailTemplate
-        ); */
+        //send notification
+        await sendOneSignalNotification(
+            assignJob.jobUser_userID,
+            "Check-in Confirmed",
+            `Your check-in for the job "${updateJob.job_title}" has been confirmed by the client.`,
+        );
 
         return {
             statusCode: 200,
@@ -105,8 +101,4 @@ export default defineEventHandler(async (event) => {
             message: "Something went wrong! Please contact your administrator.",
         };
     }
-  });
-  
-  function replaceEmailTemplateURL(template) {
-    return template.replace();
-  }
+});
