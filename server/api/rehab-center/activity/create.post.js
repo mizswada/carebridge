@@ -1,12 +1,9 @@
-import { useUserStore } from "~/stores/user";
-
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
-    const userStore = useUserStore()
-    const userRole = useUserStore().roles[0];  // Get user role
+    const { userID, email, roles } = event.context.user;
     let activity_user_id;
  
-    if (userRole === 'Admin' || userRole === 'Superadmin') {
+    if(roles.includes('Superadmin') || roles.includes('Admin')) {
       activity_user_id=body?.user_id;
     }
     else

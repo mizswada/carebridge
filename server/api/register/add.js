@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
         // Step 1: Create the user record and retrieve the userID
         const createdUser = await prisma.user.create({
           data: {
-            userUsername: body.userUsername,
+            userUsername: body.userEmail,
             userEmail: body.userEmail,
             userPhone: body.userPhone,
             userFullName: body.userFullName,
@@ -125,21 +125,21 @@ export default defineEventHandler(async (event) => {
       }
     );
 
-    // Generate the verification token without storing it
-    // const verificationToken = uuidv4();
-    // const verificationURL = `${config.public.feURL}/verify-account/${verificationToken}`;
+      // Generate the verification token without storing it
+      const verificationToken = uuidv4();
+      const verificationURL = `${config.public.feURL}/verify-account/${verificationToken}`;
 
-    // Prepare and send the verification email
-    // const emailTemplate = replaceEmailTemplateURL(
-    //   registerTemplate,
-    //   verificationURL
-    // );
-    // await mail(
-    //   newUser.userEmail,
-    //   "Verify Your Account",
-    //   "Please verify your account by clicking the link below.",
-    //   emailTemplate
-    // );
+      // Prepare and send the verification email
+      const emailTemplate = replaceEmailTemplateURL(
+        registerTemplate,
+        verificationURL
+      );
+      await mail(
+        newUser.userEmail,
+        "Verify Your Account",
+        "Please verify your account by clicking the link below.",
+        emailTemplate
+      );
 
     return {
       success: true,

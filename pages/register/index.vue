@@ -392,13 +392,21 @@ const replaceEmptyWithNull = () => {
         <div v-if="selectedOption === 'Association'">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <h4 class="col-span-2 mt-4">Association Details</h4>
-            <FormKit
+            <!-- <FormKit
               label="Username"
               type="text"
               label-class="text-left"
               v-model="formData.userUsername"
               :validation="'required'"
               placeholder="Account Username"
+            /> -->
+            <FormKit
+              label="Email"
+              type="email"
+              label-class="text-left"
+              v-model="formData.userEmail"
+              :validation="'required'"
+              placeholder="Association Email"
             />
             <FormKit
               label="Password"
@@ -430,14 +438,7 @@ const replaceEmptyWithNull = () => {
               :validation="'required'"
               placeholder="Association Fullname"
             />
-            <FormKit
-              label="Email"
-              type="email"
-              label-class="text-left"
-              v-model="formData.userEmail"
-              :validation="'required'"
-              placeholder="Association Email"
-            />
+           
             <FormKit
               label="Phone"
               type="tel"
@@ -612,14 +613,23 @@ const replaceEmptyWithNull = () => {
         <div v-else>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <h4 class="col-span-2 mt-4">Center Details</h4>
-            <FormKit
+            <!-- <FormKit
               label="Username"
               type="text"
               label-class="text-left"
               v-model="formData.userUsername"
               :validation="'required'"
               placeholder="Account Username"
+            /> -->
+            <FormKit
+              label="Email"
+              type="email"
+              label-class="text-left"
+              v-model="formData.userEmail"
+              :validation="'required'"
+              placeholder="Center Email"
             />
+
             <FormKit
               label="Password"
               type="password"
@@ -628,7 +638,7 @@ const replaceEmptyWithNull = () => {
               :validation="'required'"
               placeholder="Account Password"
             />
-            <FormKit
+            <!-- <FormKit
               label="Secret Key"
               type="text"
               label-class="text-left"
@@ -641,7 +651,7 @@ const replaceEmptyWithNull = () => {
               label-class="text-left"
               v-model="formData.userCategoryCode"
               :validation="'required'"
-            />
+            /> -->
             <FormKit
               label="Full Name"
               type="text"
@@ -650,14 +660,7 @@ const replaceEmptyWithNull = () => {
               :validation="'required'"
               placeholder="Center Fullname"
             />
-            <FormKit
-              label="Email"
-              type="email"
-              label-class="text-left"
-              v-model="formData.userEmail"
-              :validation="'required'"
-              placeholder="Center Email"
-            />
+            
             <FormKit
               label="Phone"
               type="tel"

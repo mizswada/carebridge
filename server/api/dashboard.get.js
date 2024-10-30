@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
 
     console.log("roles: ", roles);
    
-    try {
+    try { 
         if(roles.includes('Superadmin') || roles.includes('Admin'))
         {
             const associations = await prisma.user_association.count({

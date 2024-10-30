@@ -4,7 +4,8 @@ import { ref, onMounted } from 'vue';
 definePageMeta({
     title: "View Association ",
 });
-
+const config = useRuntimeConfig();
+const apiURL = config.public.uploadURL;
 const { $swal, $router } = useNuxtApp();
 
 // Editing mode toggle
@@ -452,10 +453,8 @@ const { data: detail } = await useFetch("/api/association/get", {
           <template #label>
             Logo <span class="text-red-500">*</span>
           </template>
-          <template #help v-if="detail.data.details != null">              
-            <a :href="apiURL + detail.data.details.association_logo" target="_blank">
-              Logo <span class="text-red-500"></span>
-            </a>
+          <template #help v-if="detail.data.details">              
+            <img :src="apiURL+ detail.data.details.association_logo" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />
           </template>
         </FormKit>
 
@@ -463,10 +462,8 @@ const { data: detail } = await useFetch("/api/association/get", {
           <template #label >
             License Documents  <span class="text-red-500"></span>
           </template>
-          <template #help v-if="detail.data.details != null">              
-            <a :href="apiURL + detail.data.details.documents_Licenses" target="_blank">
-              License Documents <span class="text-red-500"></span>
-            </a>
+          <template #help v-if="detail.data.details != null">       
+            <img :src="apiURL+ detail.data.details.document_licenses" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />       
           </template>
         </FormKit>
         
@@ -474,11 +471,8 @@ const { data: detail } = await useFetch("/api/association/get", {
           <template #label>
             Certificates  <span class="text-red-500"></span>
           </template>
-          <template #help v-if="detail.data.details != null ">              
-            <a :href="apiURL + detail.data.details.documents_certificates" target="_blank">
-              Certificates Documents <span class="text-red-500"></span>
-            </a>
-          </template>
+          <template #help v-if="detail.data.details != null ">    
+            <img :src="apiURL+ detail.data.details.documents_certificates" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />               </template>
         </FormKit>
       </div> 
 

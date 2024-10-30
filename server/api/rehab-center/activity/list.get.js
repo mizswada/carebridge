@@ -1,14 +1,12 @@
-import { useUserStore } from "~/stores/user";
-
 export default defineEventHandler(async (event) => {
-    const userRole = useUserStore().roles[0];  // Get user role
+    const { userID, email, roles } = event.context.user;
     const { id } = getQuery(event); 
 
     let user;
 
     try { 
         // Fetch user based on role (Admin/Superadmin or others)
-        if (userRole === 'Admin' || userRole === 'Superadmin') {
+        if(roles.includes('Superadmin') || roles.includes('Admin')) {
             user = await prisma.user.findFirst({
                 where: {
                     userID: parseInt(id)

@@ -697,7 +697,7 @@
           </template>
         </FormKit>
         <FormKit type="file" v-model="formData.document_licensesEdit" accept="image/*" :disabled="!isEditing" @change="onChangeFile" >
-          <template #label>
+          <template #label> 
             License  <span class="text-red-500"></span>
           </template>
           <template #help v-if="formData.document_licenses">              

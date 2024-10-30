@@ -4,7 +4,8 @@ import { ref, onMounted } from 'vue';
 definePageMeta({
     title: "View Rehab Center ",
 });
-
+const config = useRuntimeConfig();
+const apiURL = config.public.uploadURL;
 const { $swal, $router } = useNuxtApp();
 
 // Editing mode toggle
@@ -106,10 +107,12 @@ if (detail.value.response === 200)
   formData.value.center_capacity = detail.value.data.details.center_capacity;
   formData.value.operational_hours = detail.value.data.details.operational_hours;
   formData.value.website = detail.value.data.details.website;
-  formData.value.document_licenses = detail.value.data.details.documents_Licenses;
-  formData.value.documents_certificates = detail.value.data.details.documents_certificates;
+  formData.value.document_licensesEdit = detail.value.data.details.documents_Licenses;
+  formData.value.documents_certificatesEdit = detail.value.data.details.documents_certificates;
   formData.value.center_description = detail.value.data.details.center_description;
   formData.value.geolocation = detail.value.data.details.geolocation;
+
+  // alert(formData.value.documents_certificatesEdit);
 }
 
   const showApproveModal = ref(false);
@@ -404,20 +407,20 @@ if (detail.value.response === 200)
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormKit type="file" v-model="formData.document_licensesEdit" :disabled="!isEditing" >
+          <FormKit type="file" v-model="formData.document_licenses" :disabled="!isEditing" >
             <template #label>
               License Documents <span class="text-red-500"></span>
             </template>
-            <template #help v-if="formData.document_licenses">              
-              <img :src="apiURL+ formData.document_licenses" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />
+            <template #help v-if="formData.document_licensesEdit">              
+              <img :src="apiURL+ formData.document_licensesEdit" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />
             </template>
           </FormKit>
-          <FormKit type="file" v-model="formData.documents_certificatesEdit" :disabled="!isEditing" >
+          <FormKit type="file" v-model="formData.documents_certificates" :disabled="!isEditing" >
             <template #label>
               Certificates <span class="text-red-500"></span>
             </template>
-            <template #help v-if="formData.documents_certificates">              
-              <img :src="apiURL+ formData.documents_certificates" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />
+            <template #help v-if="formData.documents_certificatesEdit">              
+              <img :src="apiURL+ formData.documents_certificatesEdit" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />
             </template>
             
           </FormKit>
