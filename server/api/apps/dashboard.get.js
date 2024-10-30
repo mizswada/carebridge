@@ -57,6 +57,7 @@ export default defineEventHandler(async (event) => {
             job_title: true, // Service Name
             job_date: true,  // Date
             job_time: true,  // Time
+            job_notes: true,
             user: {
                 select: {
                     userFullName: true, // User Name
@@ -68,6 +69,7 @@ export default defineEventHandler(async (event) => {
                     name: true, // Service Type (assuming `name` is the category name)
                 },
             },
+
         },
         orderBy: {
           job_time: 'asc', // Sort by upcoming date
@@ -98,6 +100,7 @@ export default defineEventHandler(async (event) => {
             job_title: true, // Service Name
             job_date: true,  // Date
             job_time: true,  // Time
+            job_notes: true,
             user: {
                 select: {
                     userFullName: true, // User Name
