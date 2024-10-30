@@ -1,10 +1,12 @@
-import { useUserStore } from "~/stores/user";
-
 export default defineEventHandler(async (event) => {
     const { id } = getQuery(event);
+
+    const { userID, email, roles } = event.context.user;
+
+    console.log("roles: ", roles);
    
     try {
-        if(useUserStore().roles.includes('Superadmin') || useUserStore().roles.includes('Admin'))
+        if(roles.includes('Superadmin') || roles.includes('Admin'))
         {
             const associations = await prisma.user_association.count({
                 where: {
@@ -244,11 +246,11 @@ export default defineEventHandler(async (event) => {
                 },
             };
         }
-        else if(useUserStore().roles.includes('Rehab center'))
+        else if(roles.includes('Rehab center'))
         {
             const user = await prisma.user.findFirst({
                 where: {
-                    userEmail:useUserStore().username
+                    userEmail:email
                 }
             });
 
@@ -320,11 +322,11 @@ export default defineEventHandler(async (event) => {
                 },
             };
         }
-        else if(useUserStore().roles.includes('Association'))
+        else if(roles.includes('Association'))
         {
             const user = await prisma.user.findFirst({
                 where: {
-                    userEmail:useUserStore().username
+                    userEmail:email
                 }
             });
 
