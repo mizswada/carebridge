@@ -79,6 +79,7 @@ export default defineEventHandler(async (event) => {
       const todayServicesData = todayServices.map(service => ({
         title: service.job_title,
         serviceType: service.category?.name || "Unknown",
+        notes: service.job_notes,
         dateTime: `${service.job_date.toLocaleDateString()} ${service.job_time?.toLocaleTimeString()}`,
         name: service.user?.userFullName || "N/A", // Get assigned user name
         phoneNumber: service.user?.userPhone || "N/A", // Get assigned user phone
@@ -121,6 +122,7 @@ export default defineEventHandler(async (event) => {
       const upcomingServicesData = upcomingServices.map(service => ({
         title: service.job_title,
         serviceType: service.category?.name || "Unknown",
+        notes: service.job_notes,
         dateTime: `${service.job_date.toLocaleDateString()} ${service.job_time?.toLocaleTimeString()}`,
         name: service.user?.userFullName || "N/A", // Get assigned user name
         phoneNumber: service.user?.userPhone || "N/A", // Get assigned user phone

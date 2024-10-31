@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
         const body = await readBody(event);
 
         console.log("Request body:", body); // Debugging log
+        const jobID = body.jobUser_id; // value dari job_id.job
 
         //const parsedCheckOut = body.checkOut ? new Date(body.checkOut) : null;
         // Parse checkOut date with Luxon, expecting 'dd-MM-yyyy HH:mm:ss' format
@@ -49,9 +50,9 @@ export default defineEventHandler(async (event) => {
             },
         });
 
-        const assignJob = await prisma.jobs_user_assignation.update({
+        const assignJob = await prisma.jobs_user_assignation.updateMany({
             where: {
-                jobUser_id: parseInt(body.jobUser_id),
+                jobUser_jobID: parseInt(jobID),
             },
             data: {
                 jobUser_checkOut: parsedCheckOut,
@@ -61,7 +62,7 @@ export default defineEventHandler(async (event) => {
 
         const updateJob = await prisma.jobs.update({
             where: {
-                job_id: parseInt(assignJob.jobUser_jobID),
+                job_id: parseInt(jobID),
             },
             data: {
                 job_status: getStatus.lookupValue.toUpperCase()

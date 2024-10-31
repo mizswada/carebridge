@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
     
         // Read the body of the request to get user data
         const body = await readBody(event);
+        const jobID = body.jobUser_id; // value dari job_id.job
 
         console.log("Request body:", body); // Debugging log
 
@@ -52,37 +53,41 @@ export default defineEventHandler(async (event) => {
 
         console.log("getStatus:", getStatus);
 
-        //update to confirm checkout
-        const assignJob = await prisma.jobs_user_assignation.update({
+        const getJob = await prisma.jobs.findFirst({
             where: {
-                jobUser_id: parseInt(body.jobUser_id),
+                job_id: parseInt(jobID),
+            },
+            select: {
+                job_user_id: true,
+                job_title: true,
+                job_payment: true,
+                jobs_user_assignation: {
+                    select: {
+                        jobUser_userID: true
+                    }
+                }
+            },
+        });
+
+        //update to confirm checkout
+        const assignJob = await prisma.jobs_user_assignation.updateMany({
+            where: {
+                jobUser_jobID: parseInt(jobID),
             },
             data: {
                 jobUser_confirmCheckOut: parsedCheckOut,
-                lookup_jobs_user_assignation_jobUser_jobStatusTolookup: {
-                    connect: { lookupID: getStatus.lookupID },
-                },
-                lookup_jobs_user_assignation_jobUser_paymentStatusTolookup: {
-                    connect: { lookupID: 228 },
-                },
+                jobUser_paymentAmount: getJob.job_payment - 2,
+                jobUser_jobStatus: getStatus.lookupID,        // Use the foreign key ID directly
+                jobUser_paymentStatus: 228 
             },
         });
 
         const updateJob = await prisma.jobs.update({
             where: {
-                job_id: parseInt(assignJob.jobUser_jobID),
+                job_id: parseInt(jobID),
             },
             data: {
                 job_status: getStatus.lookupValue.toUpperCase()
-            },
-        });
-
-        const updateAmtPayment = await prisma.jobs_user_assignation.update({
-            where: {
-                jobUser_id: parseInt(body.jobUser_id),
-            },
-            data: {
-                jobUser_paymentAmount: updateJob.job_payment - 2
             },
         });
 
@@ -95,9 +100,9 @@ export default defineEventHandler(async (event) => {
 
         //send notification
         await sendOneSignalNotification(
-            assignJob.jobUser_userID,
+            getJob.jobs_user_assignation[0].jobUser_userID,
             "Check-out Confirmed",
-            `Your checkout for the job "${updateJob.job_title}" has been confirmed, and the job is now marked as complete. Thank you for your hard work. Your payment will be released soon.`
+            `Your checkout for the job "${getJob.job_title}" has been confirmed, and the job is now marked as complete. Thank you for your hard work. Your payment will be released soon.`
         );
 
         // Send email reminder to admin    

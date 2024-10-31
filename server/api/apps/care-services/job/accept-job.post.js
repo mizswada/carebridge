@@ -25,6 +25,21 @@ export default defineEventHandler(async (event) => {
 
         console.log("Request body:", body); // Debugging log
 
+        // Check if the user has already accepted this job
+        const existingAssignment = await prisma.jobs_user_assignation.findFirst({
+            where: {
+                jobUser_userID: userID,
+                jobUser_jobID: parseInt(body.job_id)
+            }
+        });
+
+        if (existingAssignment) {
+            return {
+                statusCode: 400,
+                message: "You have already accepted this job."
+            };
+        }
+
         const getStatus = await prisma.lookup.findFirst({
             where: {
                 lookupID: 195,
@@ -75,7 +90,7 @@ export default defineEventHandler(async (event) => {
         await sendOneSignalNotification(
             getJob.job_user_id,
             "Job Accepted",
-            `Your job "${jobTitle}" has been accepted.`
+            `Your job "${getJob.jobTitle}" has been accepted.`
         );
     
         return {

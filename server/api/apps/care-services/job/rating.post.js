@@ -23,12 +23,13 @@ export default defineEventHandler(async (event) => {
     
         // Read the body of the request to get user data
         const body = await readBody(event);
+        const jobID = body.jobUser_id; // value dari job_id.job
 
         console.log("Request body:", body); // Debugging log
 
-        const assignJob = await prisma.jobs_user_assignation.update({
+        const assignJob = await prisma.jobs_user_assignation.updateMany({
             where: {
-                jobUser_id: parseInt(body.jobUser_id),
+                jobUser_jobID: parseInt(jobID),
             },
             data: {
                 jobUser_rating: body.rating,
