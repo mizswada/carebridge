@@ -60,7 +60,7 @@ export default defineNuxtConfig({
         content: "carebridge",
       },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    link: [{ rel: "icon", type: "image/x-icon", href: "/carebridge.ico" }],
   },
   css: ["~/assets/style/scss/main.scss"],
   tailwindcss: {

@@ -65,18 +65,26 @@
         let isValid = true;
         // Reset errors
         errorUsername.value = '';
-        errorPassword.value = '';
-        
+        errorPassword.value = '';       
 
-        // Check each required field
+         // Validate email (inputUsername)
         if (!inputUsername.value) {
-            errorUsername.value = 'Username is required';
+            errorUsername.value = 'Email is required';
             isValid = false;
+        } else {
+            // Basic email pattern check
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(inputUsername.value)) {
+                errorUsername.value = 'Please enter a valid email address';
+                isValid = false;
+            }
         }
+
         if (!inputPassword.value) {
             errorPassword.value = 'Password is required';
             isValid = false;
         }
+        
         
         return isValid;
     };

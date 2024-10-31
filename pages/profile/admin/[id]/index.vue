@@ -192,7 +192,7 @@ genders.value.unshift({ value: "", label: "Please choose" });
               <p v-if="errorEmail" class="text-red-500 text-sm">{{ errorEmail }}</p>
           </div>
           <div class="mb-4">
-              <FormKit type="text" label="Phone Num *" v-model="inputContact" :class="{'border-red-500': errorContact}" placeholder="0123654789" :disabled="!isEditing" required />
+              <FormKit type="text" label="Phone Num *" v-model="inputContact" :class="{'border-red-500': errorContact}" placeholder="0123654789" :disabled="!isEditing"  maxlength="11" required />
               <p v-if="errorContact" class="text-red-500 text-sm">{{ errorContact }}</p>
           </div>
       </div>
@@ -221,7 +221,7 @@ genders.value.unshift({ value: "", label: "Please choose" });
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="mb-4">
-              <FormKit type="text" label="Postcode *" v-model="inputPostcode" :class="{'border-red-500': errorPostcode}" placeholder="Postcode" :disabled="!isEditing" required  />
+              <FormKit type="text" label="Postcode *" v-model="inputPostcode" :class="{'border-red-500': errorPostcode}" placeholder="Postcode" :disabled="!isEditing"  maxlength="5" required  />
               <p v-if="errorPostcode" class="text-red-500 text-sm">{{ errorPostcode }}</p>
           </div>
           <div class="mb-4">

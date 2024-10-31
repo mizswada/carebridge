@@ -218,7 +218,7 @@
             isValid = false;
         }
         
-        if (!imageInput.value) {
+        if (selectedEquipment.value === null && !imageFile.value) {
             imageError.value = 'Image is required';
             isValid = false;
         }
@@ -357,6 +357,9 @@
     
     const clickUpdate = async () => 
     {
+        if (!validateFields()) {
+            return; // Stop if form is invalid
+        }
         imageInput.value=imageInputEdit.value;
         if(imageFile2.value)
         {
@@ -638,14 +641,14 @@
                 {{ equipments.value.equipment_name}}
           </template>
           <template #type ="equipments" >
-                {{ equipments.value.lookup_equipment_equipment_typeTolookup.lookupValue}}
+                {{ equipments.value.lookup_equipment_equipment_typeTolookup?.lookupValue}}
           </template>
           <template #PIC ="equipments" >
                 {{ equipments.value.equipment_pic_name}}<br>
                 {{ equipments.value.equipment_pic_phoneNum}}
           </template>
           <template #status ="equipments" >
-                {{ equipments.value.lookup_equipment_equipment_statusTolookup.lookupValue}}
+                {{ equipments.value.lookup_equipment_equipment_statusTolookup?.lookupValue}}
           </template>
           <template #createdAt ="equipments" >
                 {{ formatDate(equipments.value.created_at)}}
