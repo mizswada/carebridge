@@ -1,8 +1,6 @@
 import { DateTime } from "luxon";
 import jwt from 'jsonwebtoken';
-/* import mail from "@/server/helper/email";
-import resetPasswordTemplate from "@/server/template/email/reset-Password"; */
-
+import sendOneSignalNotification from '@/server/helper/oneSignal';
 
 const config = useRuntimeConfig();
 
@@ -25,6 +23,7 @@ export default defineEventHandler(async (event) => {
     
         // Read the body of the request to get user data
         const body = await readBody(event);
+        const jobID = body.jobUser_id; // value dari job_id.job
 
         console.log("Request body:", body); // Debugging log
 
@@ -50,9 +49,9 @@ export default defineEventHandler(async (event) => {
             },
         });
 
-        const assignJob = await prisma.jobs_user_assignation.update({
+        const assignJob = await prisma.jobs_user_assignation.updateMany({
             where: {
-                jobUser_id: parseInt(body.jobUser_id),
+                jobUser_jobID: parseInt(jobID),
             },
             data: {
                 jobUser_checkIN: parsedCheckIn,
@@ -63,22 +62,12 @@ export default defineEventHandler(async (event) => {
         console.log(getStatus);
         const updateJob = await prisma.jobs.update({
             where: {
-                job_id: parseInt(assignJob.jobUser_jobID),
+                job_id: parseInt(jobID),
             },
             data: {
                 job_status: getStatus.lookupValue.toUpperCase()
             },
         });
-
-        //send email
-        /* const emailTemplate = replaceEmailTemplateURL(resetPasswordTemplate);
-
-        await mail(
-            email,
-            "Reset Password",
-            "Reset Password",
-            emailTemplate
-        ); */
 
         if(!assignJob) {
             return {
@@ -86,6 +75,25 @@ export default defineEventHandler(async (event) => {
                 message: "Failed to checkin. Please check your data and try again.",
             };
         }
+
+        //get job
+        const getJob = await prisma.jobs.findFirst({
+            where: {
+                job_id: parseInt(jobID),
+            },
+            select: {
+                job_user_id: true,
+                job_title: true
+            },
+        });
+
+        console.log("Notify to: ",getJob.job_user_id);
+        //send notification
+        await sendOneSignalNotification(
+            getJob.job_user_id,
+            "Caretaker Check-in",
+            `Please confirm the check-in for the caretaker assigned to your job "${getJob.job_title}".`,
+        );
 
         return {
             statusCode: 200,
@@ -107,8 +115,5 @@ export default defineEventHandler(async (event) => {
             message: "Something went wrong! Please contact your administrator.",
         };
     }
-  });
+});
   
-  function replaceEmailTemplateURL(template) {
-    return template.replace();
-  }

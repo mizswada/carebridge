@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
 
         // Check if the user is a "Caretaker" and retrieve caretaker-specific data
         if (roles.includes("Caretaker")) {
-            const caretakerProfile = await prisma.user_care_taker.findUnique({
+            const caretakerProfile = await prisma.user_care_taker.findFirst({
                 where: { user_id: parseInt(userID) },
                 select: {
                     identification_number: true,
@@ -120,7 +120,8 @@ export default defineEventHandler(async (event) => {
         console.error("Error:", error.message);
         return {
             statusCode: 500,
-            message: "Something went wrong! Please contact your administrator.",
+            //message: "Something went wrong! Please contact your administrator.",
+            message: error.message
         };
     }
 });

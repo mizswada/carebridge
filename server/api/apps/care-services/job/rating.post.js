@@ -1,5 +1,4 @@
-import mail from "@/server/helper/email";
-import resetPasswordTemplate from "@/server/template/email/reset-Password";
+import sendOneSignalNotification from '@/server/helper/oneSignal';
 import jwt from 'jsonwebtoken';
 
 
@@ -24,12 +23,13 @@ export default defineEventHandler(async (event) => {
     
         // Read the body of the request to get user data
         const body = await readBody(event);
+        const jobID = body.jobUser_id; // value dari job_id.job
 
         console.log("Request body:", body); // Debugging log
 
-        const assignJob = await prisma.jobs_user_assignation.update({
+        const assignJob = await prisma.jobs_user_assignation.updateMany({
             where: {
-                jobUser_id: parseInt(body.jobUser_id),
+                jobUser_jobID: parseInt(jobID),
             },
             data: {
                 jobUser_rating: body.rating,
@@ -42,6 +42,30 @@ export default defineEventHandler(async (event) => {
                 message: "Failed to submit the rating. Please check your data and try again.",
             };
         }
+
+        const getJob = await prisma.jobs.findFirst({
+            where: {
+                job_id: parseInt(jobID),
+            },
+            select: {
+                job_user_id: true,
+                job_title: true,
+                job_payment: true,
+                jobs_user_assignation: {
+                    select: {
+                        jobUser_userID: true
+                    }
+                }
+            },
+        });
+
+        // Notification content for notifying caretaker of received rating
+        await sendOneSignalNotification(
+            getJob.jobs_user_assignation[0].jobUser_userID,  // Use the caretaker's user ID
+            "You've Received a Rating!",
+            `Your client has rated you. Check your profile to view the feedback and rating. Thank you for your hard work!`
+        );
+
 
         return {
             statusCode: 200,

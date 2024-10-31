@@ -5,7 +5,7 @@ const ENV = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   try {
-    const { useremail, password } = await readBody(event);
+    const { useremail, password, player_id } = await readBody(event);
 
     const user = await prisma.user.findFirst({
       where: {
@@ -70,6 +70,12 @@ export default defineEventHandler(async (event) => {
       `accessToken=${accessToken}; HttpOnly; Secure; SameSite=Lax; Path=/`,
       `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Lax; Path=/`,
     ]);
+
+    // Store player_id in the user table
+    await prisma.user.update({
+        where: { userID: user.userID },
+        data: { player_id },
+    });
 
     let userCareTakerClient;
     if(roleNames.includes("Caretaker")){

@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import jwt from 'jsonwebtoken';import mail from "@/server/helper/email";
-import resetPasswordTemplate from "@/server/template/email/reset-Password";
+import sendOneSignalNotification from '@/server/helper/oneSignal';
+import paymentReminderTemplate from "@/server/template/email/payment-Reminder";
 
 
 const config = useRuntimeConfig();
@@ -24,6 +25,7 @@ export default defineEventHandler(async (event) => {
     
         // Read the body of the request to get user data
         const body = await readBody(event);
+        const jobID = body.jobUser_id; // value dari job_id.job
 
         console.log("Request body:", body); // Debugging log
 
@@ -51,56 +53,108 @@ export default defineEventHandler(async (event) => {
 
         console.log("getStatus:", getStatus);
 
-        //update to confirm checkout
-        const assignJob = await prisma.jobs_user_assignation.update({
+        const getJob = await prisma.jobs.findFirst({
             where: {
-                jobUser_id: parseInt(body.jobUser_id),
+                job_id: parseInt(jobID),
+            },
+            select: {
+                job_user_id: true,
+                job_title: true,
+                job_payment: true,
+                jobs_user_assignation: {
+                    select: {
+                        jobUser_userID: true
+                    }
+                }
+            },
+        });
+
+        //update to confirm checkout
+        const assignJob = await prisma.jobs_user_assignation.updateMany({
+            where: {
+                jobUser_jobID: parseInt(jobID),
             },
             data: {
                 jobUser_confirmCheckOut: parsedCheckOut,
-                lookup_jobs_user_assignation_jobUser_jobStatusTolookup: {
-                    connect: { lookupID: getStatus.lookupID },
-                },
-                lookup_jobs_user_assignation_jobUser_paymentStatusTolookup: {
-                    connect: { lookupID: 228 },
-                },
+                jobUser_paymentAmount: getJob.job_payment - 2,
+                jobUser_jobStatus: getStatus.lookupID,        // Use the foreign key ID directly
+                jobUser_paymentStatus: 228 
             },
         });
 
         const updateJob = await prisma.jobs.update({
             where: {
-                job_id: parseInt(assignJob.jobUser_jobID),
+                job_id: parseInt(jobID),
             },
             data: {
                 job_status: getStatus.lookupValue.toUpperCase()
             },
         });
 
-        const updateamtPayment = await prisma.jobs_user_assignation.update({
-            where: {
-                jobUser_id: parseInt(body.jobUser_id),
-            },
-            data: {
-                jobUser_paymentAmount: updateJob.job_payment - 2
-            },
-        });
-
         if(!assignJob) {
             return {
                 statusCode: 400,
-                message: "Failed to verify the check in. Please check your data and try again.",
+                message: "Failed to verify the check out. Please check your data and try again.",
             };
         }
 
-        //send email
-        /* const emailTemplate = replaceEmailTemplateURL(resetPasswordTemplate);
+        //send notification
+        await sendOneSignalNotification(
+            getJob.jobs_user_assignation[0].jobUser_userID,
+            "Check-out Confirmed",
+            `Your checkout for the job "${getJob.job_title}" has been confirmed, and the job is now marked as complete. Thank you for your hard work. Your payment will be released soon.`
+        );
+
+        // Send email reminder to admin    
+        const getSetting = await prisma.setting.findFirst({
+            where: {
+                setting_name: "email",
+                status: "ACTIVE"
+            },
+            select: {
+                setting_value: true,
+            },
+        });
+
+        const getCareTaker = await prisma.jobs_user_assignation.findFirst({
+            where: {
+                jobUser_id: parseInt(body.jobUser_id),
+            },
+            select: {
+                user: {
+                    select: {
+                        userFullName: true
+                    }
+                },
+                jobUser_paymentAmount: true,
+                jobs: {  // Access related job fields through the `jobs` relation
+                    select: {
+                        job_id: true,
+                        job_title: true,
+                    },
+                },
+            },
+        });
+
+        let data = {
+            jobID: getCareTaker.jobs.job_id,
+            jobTitle: getCareTaker.jobs.job_title,
+            amtDue: getCareTaker.jobUser_paymentAmount,
+            careTakerName: getCareTaker.user.userFullName
+        };
+      
+        console.log("Data: ");
+        console.log(data);
+
+        //send email to remain admin make payment to caretaker
+       const emailTemplate = replaceEmailTemplateWord(paymentReminderTemplate, data);
 
         await mail(
-            email,
-            "Reset Password",
-            "Reset Password",
+            getSetting.setting_value,
+            "Payment Reminder for Caretaker",
+            "Payment Reminder for Caretaker",
             emailTemplate
-        ); */
+        ); 
 
         return {
             statusCode: 200,
@@ -121,8 +175,15 @@ export default defineEventHandler(async (event) => {
             message: "Something went wrong! Please contact your administrator.",
         };
     }
-  });
+});
   
-  function replaceEmailTemplateURL(template) {
-    return template.replace();
-  }
+
+function replaceEmailTemplateWord(template, data) {
+    let emailTemplate = template;
+  
+    Object.keys(data).forEach((key) => {
+      emailTemplate = emailTemplate.replace(`[[${key}]]`, data[key]);
+    });
+  
+    return emailTemplate;
+}

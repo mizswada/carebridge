@@ -26,6 +26,12 @@ export default defineEventHandler(async (event) => {
     const roles = decodedToken.roles;
     console.log("userID: ",userID)
 
+    const user = await prisma.user.findFirst({
+      where: {
+        userID: parseInt(userID),
+      },
+    });
+
     if (roles.includes("Caretaker")) {
       // Define the start and end of today for filtering by today's date
       const todayStart = DateTime.now().startOf('day').toISO(); // Start of today (e.g., "2024-10-28T00:00:00.000Z")
@@ -51,6 +57,7 @@ export default defineEventHandler(async (event) => {
             job_title: true, // Service Name
             job_date: true,  // Date
             job_time: true,  // Time
+            job_notes: true,
             user: {
                 select: {
                     userFullName: true, // User Name
@@ -62,6 +69,7 @@ export default defineEventHandler(async (event) => {
                     name: true, // Service Type (assuming `name` is the category name)
                 },
             },
+
         },
         orderBy: {
           job_time: 'asc', // Sort by upcoming date
@@ -71,6 +79,7 @@ export default defineEventHandler(async (event) => {
       const todayServicesData = todayServices.map(service => ({
         title: service.job_title,
         serviceType: service.category?.name || "Unknown",
+        notes: service.job_notes,
         dateTime: `${service.job_date.toLocaleDateString()} ${service.job_time?.toLocaleTimeString()}`,
         name: service.user?.userFullName || "N/A", // Get assigned user name
         phoneNumber: service.user?.userPhone || "N/A", // Get assigned user phone
@@ -92,6 +101,7 @@ export default defineEventHandler(async (event) => {
             job_title: true, // Service Name
             job_date: true,  // Date
             job_time: true,  // Time
+            job_notes: true,
             user: {
                 select: {
                     userFullName: true, // User Name
@@ -112,16 +122,30 @@ export default defineEventHandler(async (event) => {
       const upcomingServicesData = upcomingServices.map(service => ({
         title: service.job_title,
         serviceType: service.category?.name || "Unknown",
+        notes: service.job_notes,
         dateTime: `${service.job_date.toLocaleDateString()} ${service.job_time?.toLocaleTimeString()}`,
         name: service.user?.userFullName || "N/A", // Get assigned user name
         phoneNumber: service.user?.userPhone || "N/A", // Get assigned user phone
       }));
 
+      const emergency_contact = await prisma.user_care_taker.findFirst({
+          where: {
+              user_id: parseInt(userID),
+          },
+          select: {
+              emergency_contact_name: true,
+              emergency_contact_relationship: true,
+              emergency_contact_number: true,
+          },
+      });
+
       return {
         statusCode: 200,
         data: {
+          userName: user.userFullName,
           todayServicesData: todayServicesData,
-          upcomingServicesData:upcomingServicesData            
+          upcomingServicesData:upcomingServicesData,
+          emergency_contact: emergency_contact            
         },
       };
     }
@@ -230,6 +254,7 @@ export default defineEventHandler(async (event) => {
       return {
         statusCode: 200,
         data: {
+          userName: user.userFullName,
             upcomingServicesData: upcomingServicesData,
             recentServicesData: recentServicesData,
             emergency_contacts: emergency_contacts,

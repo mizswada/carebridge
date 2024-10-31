@@ -1,7 +1,6 @@
 import { DateTime } from "luxon";
 import jwt from 'jsonwebtoken';
-import mail from "@/server/helper/email";
-import resetPasswordTemplate from "@/server/template/email/reset-Password";
+import sendOneSignalNotification from '@/server/helper/oneSignal';
 
 
 const config = useRuntimeConfig();
@@ -27,6 +26,7 @@ export default defineEventHandler(async (event) => {
         const body = await readBody(event);
 
         console.log("Request body:", body); // Debugging log
+        const jobID = body.jobUser_id; // value dari job_id.job
 
         //const parsedCheckIn = body.checkIn ? new Date(body.checkIn) : null;
         const parsedCheckIn = body.checkIn
@@ -50,9 +50,9 @@ export default defineEventHandler(async (event) => {
             },
         });
 
-        const assignJob = await prisma.jobs_user_assignation.update({
+        const assignJob = await prisma.jobs_user_assignation.updateMany({
             where: {
-                jobUser_id: parseInt(body.jobUser_id),
+                jobUser_jobID: parseInt(jobID),
             },
             data: {
                 jobUser_confirmCheckIN: parsedCheckIn,
@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
 
         const updateJob = await prisma.jobs.update({
             where: {
-                job_id: parseInt(assignJob.jobUser_jobID),
+                job_id: parseInt(jobID),
             },
             data: {
                 job_status: getStatus.lookupValue.toUpperCase()
@@ -76,15 +76,29 @@ export default defineEventHandler(async (event) => {
             };
         }
 
-        //send email
-        /* const emailTemplate = replaceEmailTemplateURL(resetPasswordTemplate);
+        const getJob = await prisma.jobs.findFirst({
+            where: {
+                job_id: parseInt(jobID),
+            },
+            select: {
+                job_user_id: true,
+                job_title: true,
+                jobs_user_assignation: {
+                    select: {
+                        jobUser_userID: true
+                    }
+                }
+            },
+        });
 
-        await mail(
-            email,
-            "Reset Password",
-            "Reset Password",
-            emailTemplate
-        ); */
+        console.log("getJob: ", getJob);
+
+        //send notification
+        await sendOneSignalNotification(
+            getJob.jobs_user_assignation[0].jobUser_userID,
+            "Check-in Confirmed",
+            `Your check-in for the job "${getJob.job_title}" has been confirmed by the client.`,
+        );
 
         return {
             statusCode: 200,
@@ -105,8 +119,4 @@ export default defineEventHandler(async (event) => {
             message: "Something went wrong! Please contact your administrator.",
         };
     }
-  });
-  
-  function replaceEmailTemplateURL(template) {
-    return template.replace();
-  }
+});
