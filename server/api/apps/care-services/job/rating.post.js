@@ -43,9 +43,25 @@ export default defineEventHandler(async (event) => {
             };
         }
 
+        const getJob = await prisma.jobs.findFirst({
+            where: {
+                job_id: parseInt(jobID),
+            },
+            select: {
+                job_user_id: true,
+                job_title: true,
+                job_payment: true,
+                jobs_user_assignation: {
+                    select: {
+                        jobUser_userID: true
+                    }
+                }
+            },
+        });
+
         // Notification content for notifying caretaker of received rating
         await sendOneSignalNotification(
-            assignJob.jobUser_userID,  // Use the caretaker's user ID
+            getJob.jobs_user_assignation[0].jobUser_userID,  // Use the caretaker's user ID
             "You've Received a Rating!",
             `Your client has rated you. Check your profile to view the feedback and rating. Thank you for your hard work!`
         );
