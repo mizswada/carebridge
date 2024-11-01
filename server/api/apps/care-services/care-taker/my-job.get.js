@@ -88,6 +88,10 @@ export default defineEventHandler(async (event) => {
                     }
                 },
             },
+            orderBy: [
+                { job_date: 'desc' },
+                { job_time: 'desc' }
+            ],
         });
         
         // Map through the data to flatten nested objects into a more frontend-friendly structure
