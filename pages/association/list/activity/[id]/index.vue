@@ -167,6 +167,7 @@
 
     const openAdd = () =>{
       modalAdd.value=true;
+      selectedActivity.value = null;
       titleInput.value = null;
       imageInput.value = null;               
       descriptionInput.value = null;
@@ -194,10 +195,12 @@
             titleError.value = 'Title is required';
             isValid = false;
         }
-        // if (!imageInput.value) {
-        //     imageError.value = 'Image is required';
-        //     isValid = false;
-        // }
+
+        if (selectedActivity.value === null && !imageFile.value) {
+          imageError.value = 'Image is required';
+          isValid = false;
+        }
+
         if (!descriptionInput.value) {
             descriptionError.value = 'Description is required';
             isValid = false;
@@ -206,27 +209,37 @@
             urlError.value = 'URL is required';
             isValid = false;
         }
+        else {
+          const urlPattern = new RegExp(
+            '^(https?:\\/\\/)?' +                  // protocol
+            '((([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})' + // domain name and extension
+            '|localhost|' +                        // OR localhost
+            '\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})' + // OR IPv4
+            '(\\:\\d+)?' +                         // optional port
+            '(\\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?' +   // path
+            '(\\?[;&a-zA-Z0-9%_.~+=-]*)?' +        // query string
+            '(\\#[-a-zA-Z0-9_]*)?$'                // fragment locator
+          );
+
+          if (!urlPattern.test(urlInput.value)) {
+            urlError.value = 'Please enter a valid URL';
+            isValid = false;
+          }
+        }
         if (!statusInput.value) {
             statusError.value = 'Status is required';
             isValid = false;
         }
 
         return isValid;
-        };
+    };
 
     // clickAdd
     const clickAdd = async () => {
         if (!validateFields()) {
             return; // Stop if form is invalid
         }
-
-        const formData = new FormData();
-        formData.append("title", titleInput.value);
-        formData.append("image", imageInput.value);
-        formData.append("description", descriptionInput.value);
-        formData.append("url", urlInput.value);
-        formData.append("status", statusInput.value);
-        formData.append("user_id", id);
+     
 
         try {
           // upload image licenses
@@ -295,6 +308,7 @@
     {       
       selectedActivity.value=id;
         try {
+          
             const { data: detail } = await useFetch("/api/association/activity/get", {
                 method: "GET",
                 query: {
@@ -333,6 +347,9 @@
     
     const clickUpdate = async () => 
     {
+      if (!validateFields()) {
+          return; // Stop if form is invalid
+      }
       if(imageFile2.value)
       {
         const { data:uploadImage } = await useFetch("/api/association/activity/upload", {
@@ -542,7 +559,7 @@
                     <p v-if="descriptionError" class="text-red-500 text-sm">{{ descriptionError }}</p>
 
                     <!-- URL Input --> 
-                    <FormKit type="text" label="URL *" v-model="urlInput" placeholder="https://example.com" required />
+                    <FormKit type="url" label="URL *" v-model="urlInput" placeholder="https://example.com" required />
                     <p v-if="urlError" class="text-red-500 text-sm">{{ urlError }}</p>
 
                     <!-- Status Dropdown -->

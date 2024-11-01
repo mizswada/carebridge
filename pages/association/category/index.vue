@@ -15,6 +15,10 @@
     const nameInput = ref('');
     const descriptionInput = ref('');
     const statusInput = ref('');
+
+    const nameError = ref('');
+    const descriptionError = ref('');
+    const statusError = ref('');
     
     // list
     const category = await useFetch('/api/association/category/list');
@@ -31,9 +35,40 @@
       modalAdd.value = false;
     };
 
+    const validateFields = () => 
+    {
+        let isValid = true;
+        // Reset errors
+        nameError.value = '';
+        descriptionError.value='';
+        statusError.value = '';
+
+        // Check each required field
+        if (!nameInput.value) {
+            nameError.value = 'Name is required';
+            isValid = false;
+        }
+        
+        if (!descriptionInput.value) {
+          descriptionError.value = 'Description is required';
+            isValid = false;
+        }        
+
+        if (!statusInput.value) {
+            statusError.value = 'Status is required';
+            isValid = false;
+        }
+
+        return isValid;
+    };
+
     // clickAdd
     const clickAdd = async () => {
       try {
+        if (!validateFields()) {
+            return; // Stop if form is invalid
+        }
+
         const { data: add } = await useFetch("/api/association/category/create", {
             method: "POST",
             body: JSON.stringify({  
@@ -75,6 +110,7 @@
     const editButton = async  (id) =>
     {       
         try {
+          
             const { data: detail } = await useFetch("/api/association/category/get", {
                 method: "GET",
                 query: {
@@ -109,6 +145,9 @@
     
     const clickUpdate = async () => {
       try {
+        if (!validateFields()) {
+            return; // Stop if form is invalid
+        }
         const { data: update } = await useFetch("/api/association/category/update", {
             method: "POST",
             body: JSON.stringify({                  
@@ -244,9 +283,17 @@
               </template>
               <template v-slot:body>
                 <form @submit.prevent="submitCategory">
-                  <FormKit type="text" label="Name" v-model="nameInput"/>
-                  <FormKit type="textarea" v-model="descriptionInput" placeholder="Category Details" rows="5" label="Details"/>
-                  <FormKit 
+                  <div class="mb-4">
+                      <FormKit type="text" label="Name" v-model="nameInput" :class="{'border-red-500': nameError}" placeholder="Name" />
+                      <p v-if="nameError" class="text-red-500 text-sm">{{ nameError }}</p>
+                  </div>
+                  <div class="mb-4">
+                      <FormKit type="textarea" label="Category Details" v-model="descriptionInput" :class="{'border-red-500': descriptionError}" placeholder="Details" />
+                      <p v-if="descriptionError" class="text-red-500 text-sm">{{ descriptionError }}</p>
+                  </div>
+                  <div class="mb-4">
+                    <FormKit 
+                      :class="{'border-red-500': descriptionError}"
                         type="select" 
                         label="Status"
                         v-model="statusInput" 
@@ -256,6 +303,8 @@
                             { value: 'Disabled', label: 'Disabled' }
                         ]"
                     />
+                      <p v-if="statusError" class="text-red-500 text-sm">{{ statusError }}</p>
+                  </div>
                 </form>
               </template>
               <template v-slot:footer>
@@ -304,9 +353,17 @@
                   </template>
                   <template v-slot:body>
                     <form @submit.prevent="submitCategory">
-                      <FormKit type="text" label="Name" v-model="nameInput"/>
-                      <FormKit type="textarea" v-model="descriptionInput" placeholder="Category Details" rows="5" label="Details"/>
-                      <FormKit 
+                      <div class="mb-4">
+                          <FormKit type="text" label="Name" v-model="nameInput" :class="{'border-red-500': nameError}" placeholder="Name" />
+                          <p v-if="nameError" class="text-red-500 text-sm">{{ nameError }}</p>
+                      </div>
+                      <div class="mb-4">
+                          <FormKit type="textarea" label="Category Details" v-model="descriptionInput" :class="{'border-red-500': descriptionError}" placeholder="Details" />
+                          <p v-if="descriptionError" class="text-red-500 text-sm">{{ descriptionError }}</p>
+                      </div>
+                      <div class="mb-4">
+                        <FormKit 
+                          :class="{'border-red-500': descriptionError}"
                             type="select" 
                             label="Status"
                             v-model="statusInput" 
@@ -316,6 +373,8 @@
                                 { value: 'Disabled', label: 'Disabled' }
                             ]"
                         />
+                          <p v-if="statusError" class="text-red-500 text-sm">{{ statusError }}</p>
+                      </div>
                     </form>
                     
                   </template>

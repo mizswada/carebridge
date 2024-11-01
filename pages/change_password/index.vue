@@ -23,7 +23,43 @@ const togglePasswordVisibility = () => {
 const togglePasswordVisibility2 = () => {
   passwordVisible2.value = !passwordVisible2.value;
 };
+
+// Password validation function
+const validatePassword = (password) => {
+  const lengthCheck = password.length >= 8;
+  const strengthCheck = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+  
+  if (!lengthCheck) {
+    return 'Password must be at least 8 characters long.';
+  }
+  
+  if (!strengthCheck) {
+    return 'Password must contain uppercase, lowercase, number, and special character.';
+  }
+  
+  return '';
+};
+
+// Watch for changes on inputPassword2 to validate in real-time
+watch(inputPassword2, (newVal) => {
+  errorPassword2.value = validatePassword(newVal);
+});
+
 const submitForm = async () => {
+  // Reset errors
+  errorPassword.value = validatePassword(inputPassword.value);
+  errorPassword2.value = validatePassword(inputPassword2.value);
+
+  // Stop submission if there are any validation errors
+  if (errorPassword.value || errorPassword2.value) return;
+
+  // Ensure that old and new passwords are different
+  if (inputPassword.value === inputPassword2.value) {
+    errorPassword2.value = "New password must be different from the old password.";
+    return;
+  }
+
+
   try {
     const { data: update } = await useFetch("/api/changePassword", {
       initialCache: false,
@@ -35,7 +71,7 @@ const submitForm = async () => {
       }),
     });
 
-    alert(JSON.stringify(update.value));
+    // alert(JSON.stringify(update.value));
 
     if (update.value?.response === 200) {
       $swal.fire({
@@ -112,6 +148,7 @@ const submitForm = async () => {
           :class="{'border-red-500': errorPassword2}"
           placeholder="New Password"
           required
+          minlength="8"
         >
           <template #suffix>
             <button

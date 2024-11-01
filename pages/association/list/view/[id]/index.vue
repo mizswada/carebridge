@@ -546,7 +546,7 @@
             Email <span class="text-red-500">*</span>
           </template>
         </FormKit>
-        <FormKit type="tel" v-model="formData.userPhone" :disabled="!isEditing" required>
+        <FormKit type="tel" v-model="formData.userPhone"  maxlength="11" :disabled="!isEditing" required>
           <template #label>
             Phone <span class="text-red-500">*</span>
           </template>
@@ -622,7 +622,7 @@
             State <span class="text-red-500">*</span>
           </template>
         </FormKit>
-        <FormKit type="text" v-model="formData.association_address_postcode" :disabled="!isEditing" required>
+        <FormKit type="text" v-model="formData.association_address_postcode" :disabled="!isEditing" maxlength="5" required>
           <template #label>
             Postcode <span class="text-red-500">*</span>
           </template>

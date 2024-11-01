@@ -215,8 +215,9 @@
             priceError.value = 'Price is required';
             isValid = false;
         }
+        // alert(selectedEquipment.value+' - '+!imageFile.value);
         
-        if (!imageInput.value) {
+        if (selectedEquipment.value === null && !imageFile.value) {
             imageError.value = 'Image is required';
             isValid = false;
         }
@@ -355,6 +356,9 @@
     
     const clickUpdate = async () => 
     {
+      if (!validateFields()) {
+            return; // Stop if form is invalid
+        }
         imageInput.value=imageInputEdit.value;
         if(imageFile2.value)
         {

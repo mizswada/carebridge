@@ -254,7 +254,7 @@
     relationList.value = lookupData.data.filter(item => item.lookupType === 'contact_relationship').map(item => ({ value: item.lookupID, label: item.lookupValue }));
     relationList.value.unshift({ value: "", label: "Please choose relationship" });
 
-    bankList.value = lookupData.data.filter(item => item.lookupType === 'bank_name').map(item => ({ value: item.lookupID, label: item.lookupValue }));
+    bankList.value = lookupData.data.filter(item => item.lookupType === 'bank_list').map(item => ({ value: item.lookupID, label: item.lookupValue }));
     bankList.value.unshift({ value: "", label: "Please choose bank" });
 
     caretakerRace.value = lookupData.data.filter(item => item.lookupType === 'race').map(item => ({ value: item.lookupID, label: item.lookupValue }));
@@ -670,7 +670,6 @@
           </template>
         </FormKit>
       </div>
-
       <!-- Contact Info -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Contact Info -->

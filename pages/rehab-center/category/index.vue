@@ -30,10 +30,51 @@
     const closeAdd= () =>{
       modalAdd.value = false;
     };
+    const nameError = ref('');
+    const descriptionError = ref('');
+    const statusError = ref('');
 
+    const clickAdd1= () =>{
+      modalAdd.value = true;
+      nameInput.value=null;
+      descriptionInput.value=null;
+      statusInput.value=null;
+    };
+
+    
+
+    const validateFields = () => 
+    {
+        let isValid = true;
+        // Reset errors
+        nameError.value = '';
+        descriptionError.value='';
+        statusError.value = '';
+
+        // Check each required field
+        if (!nameInput.value) {
+            nameError.value = 'Name is required';
+            isValid = false;
+        }
+        
+        if (!descriptionInput.value) {
+          descriptionError.value = 'Description is required';
+            isValid = false;
+        }        
+
+        if (!statusInput.value) {
+            statusError.value = 'Status is required';
+            isValid = false;
+        }
+
+        return isValid;
+    };
     // clickAdd
     const clickAdd = async () => {
       try {
+        if (!validateFields()) {
+            return; // Stop if form is invalid
+        }
         const { data: add } = await useFetch("/api/rehab-center/category/create", {
             method: "POST",
             body: JSON.stringify({  
@@ -109,6 +150,9 @@
     
     const clickUpdate = async () => {
       try {
+        if (!validateFields()) {
+            return; // Stop if form is invalid
+        }
         const { data: update } = await useFetch("/api/rehab-center/category/update", {
             method: "POST",
             body: JSON.stringify({                  
@@ -235,7 +279,7 @@
           <div class="text-lg font-medium mb-4">List of Categories</div>
           <div class="flex justify-end items-center mb-3 gap-5">
             
-            <rs-button variant="primary" @click="modalAdd = true">            
+            <rs-button variant="primary" @click="clickAdd1">            
               <Icon name="solar:add-square-broken" class="mr-2" /> Add Category
             </rs-button>
             <rs-modal title="Add Category" v-model="modalAdd" size="lg" position="center"  :overlayClose="false">
@@ -244,9 +288,17 @@
               </template>
               <template v-slot:body>
                 <form @submit.prevent="submitCategory">
-                  <FormKit type="text" label="Name" v-model="nameInput"/>
-                  <FormKit type="textarea" v-model="descriptionInput" placeholder="Category Details" rows="5" label="Details"/>
-                  <FormKit 
+                  <div class="mb-4">
+                      <FormKit type="text" label="Name" v-model="nameInput" :class="{'border-red-500': nameError}" placeholder="Name" />
+                      <p v-if="nameError" class="text-red-500 text-sm">{{ nameError }}</p>
+                  </div>
+                  <div class="mb-4">
+                      <FormKit type="textarea" label="Category Details" v-model="descriptionInput" :class="{'border-red-500': descriptionError}" placeholder="Details" />
+                      <p v-if="descriptionError" class="text-red-500 text-sm">{{ descriptionError }}</p>
+                  </div>
+                  <div class="mb-4">
+                    <FormKit 
+                      :class="{'border-red-500': descriptionError}"
                         type="select" 
                         label="Status"
                         v-model="statusInput" 
@@ -256,6 +308,8 @@
                             { value: 'Disabled', label: 'Disabled' }
                         ]"
                     />
+                      <p v-if="statusError" class="text-red-500 text-sm">{{ statusError }}</p>
+                  </div>
                 </form>
               </template>
               <template v-slot:footer>
@@ -304,9 +358,17 @@
                   </template>
                   <template v-slot:body>
                     <form @submit.prevent="submitCategory">
-                      <FormKit type="text" label="Name" v-model="nameInput"/>
-                      <FormKit type="textarea" v-model="descriptionInput" placeholder="Category Details" rows="5" label="Details"/>
-                      <FormKit 
+                      <div class="mb-4">
+                          <FormKit type="text" label="Name" v-model="nameInput" :class="{'border-red-500': nameError}" placeholder="Name" />
+                          <p v-if="nameError" class="text-red-500 text-sm">{{ nameError }}</p>
+                      </div>
+                      <div class="mb-4">
+                          <FormKit type="textarea" label="Category Details" v-model="descriptionInput" :class="{'border-red-500': descriptionError}" placeholder="Details" />
+                          <p v-if="descriptionError" class="text-red-500 text-sm">{{ descriptionError }}</p>
+                      </div>
+                      <div class="mb-4">
+                        <FormKit 
+                          :class="{'border-red-500': descriptionError}"
                             type="select" 
                             label="Status"
                             v-model="statusInput" 
@@ -316,6 +378,8 @@
                                 { value: 'Disabled', label: 'Disabled' }
                             ]"
                         />
+                          <p v-if="statusError" class="text-red-500 text-sm">{{ statusError }}</p>
+                      </div>
                     </form>
                     
                   </template>

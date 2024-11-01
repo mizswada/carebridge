@@ -348,15 +348,15 @@
                 <template v-slot:body>
                   <form>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- PIC Name Input -->
+                    <!-- Name Input -->
                     <div class="mb-4">
-                        <FormKit type="text" label="Name" v-model="contactName" :class="{'border-red-500': contactNameError}" placeholder="PIC Name" />
+                        <FormKit type="text" label="Name" v-model="contactName" :class="{'border-red-500': contactNameError}" placeholder="Name" />
                         <p v-if="contactNameError" class="text-red-500 text-sm">{{ contactNameError }}</p>
                     </div>
 
-                    <!-- PIC Phone Input -->
+                    <!-- Phone Input -->
                     <div class="mb-4">
-                        <FormKit type="text" label="Contact" v-model="contactPhone" :class="{'border-red-500': contactPhoneError}" placeholder="PIC Contact" />
+                        <FormKit type="text" label="Contact" v-model="contactPhone" :class="{'border-red-500': contactPhoneError}" maxlength="11" placeholder="0123654789" />
                         <p v-if="contactPhoneError" class="text-red-500 text-sm">{{ contactPhoneError }}</p>
                     </div>
                     </div>
@@ -419,15 +419,15 @@
                   <template v-slot:body>
                     <form>
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- PIC Name Input -->
+                        <!-- Name Input -->
                         <div class="mb-4">
-                            <FormKit type="text" label="Name" v-model="contactName" :class="{'border-red-500': contactNameError}" placeholder="PIC Name" />
+                            <FormKit type="text" label="Name" v-model="contactName" :class="{'border-red-500': contactNameError}" placeholder="Name" />
                             <p v-if="contactNameError" class="text-red-500 text-sm">{{ contactNameError }}</p>
                         </div>
 
-                        <!-- PIC Phone Input -->
+                        <!-- Phone Input -->
                         <div class="mb-4">
-                            <FormKit type="text" label="Contact" v-model="contactPhone" :class="{'border-red-500': contactPhoneError}" placeholder="PIC Contact" />
+                            <FormKit type="text" label="Contact" v-model="contactPhone" :class="{'border-red-500': contactPhoneError}" placeholder="Contact" />
                             <p v-if="contactPhoneError" class="text-red-500 text-sm">{{ contactPhoneError }}</p>
                         </div>
                       </div>

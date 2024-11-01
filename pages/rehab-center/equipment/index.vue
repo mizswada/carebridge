@@ -357,6 +357,9 @@
     
     const clickUpdate = async () => 
     {
+      if (!validateFields()) {
+            return; // Stop if form is invalid
+        }
         imageInput.value=imageInputEdit.value;
         if(imageFile2.value)
         {

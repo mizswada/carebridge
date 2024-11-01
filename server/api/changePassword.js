@@ -23,6 +23,14 @@ export default defineEventHandler(async (event) => {
             };
         }
 
+        if (currentUser.userPassword == sha256(body?.newPassword).toString()) {
+            return {
+                response: 401,
+                success: true,
+                message: "New password cannot be same as old password",
+            };
+        }
+
         const update = await prisma.user.updateMany({
             where: {
                 userEmail: body?.id,
