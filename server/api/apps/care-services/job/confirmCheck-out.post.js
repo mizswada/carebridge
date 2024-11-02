@@ -118,7 +118,7 @@ export default defineEventHandler(async (event) => {
 
         const getCareTaker = await prisma.jobs_user_assignation.findFirst({
             where: {
-                jobUser_id: parseInt(body.jobUser_id),
+                jobUser_jobID: parseInt(body.jobUser_id),
             },
             select: {
                 user: {
@@ -127,18 +127,13 @@ export default defineEventHandler(async (event) => {
                     }
                 },
                 jobUser_paymentAmount: true,
-                jobs: {  // Access related job fields through the `jobs` relation
-                    select: {
-                        job_id: true,
-                        job_title: true,
-                    },
-                },
             },
         });
 
+        console.log(getCareTaker)
         let data = {
-            jobID: getCareTaker.jobs.job_id,
-            jobTitle: getCareTaker.jobs.job_title,
+            jobID: updateJob.job_id,
+            jobTitle: updateJob.job_title,
             amtDue: getCareTaker.jobUser_paymentAmount,
             careTakerName: getCareTaker.user.userFullName
         };
@@ -172,7 +167,8 @@ export default defineEventHandler(async (event) => {
         console.error("Error:", error.message);
         return {
             statusCode: 500,
-            message: "Something went wrong! Please contact your administrator.",
+            //message: "Something went wrong! Please contact your administrator.",
+            message: error.message,
         };
     }
 });
