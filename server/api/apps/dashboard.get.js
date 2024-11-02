@@ -172,7 +172,7 @@ export default defineEventHandler(async (event) => {
                   gte: DateTime.now().toJSDate(), // Only future dates
               },
               job_status: {
-                notIn: ["COMPLETED"], // Exclude jobs with status "ACTIVE" or "COMPLETE"
+                notIn: ["PENDING", "COMPLETED"], // Exclude jobs with status "ACTIVE" or "COMPLETE"
             },
           },
           select: {
