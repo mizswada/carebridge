@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import sendOneSignalNotification from '@/server/helper/oneSignal';
+import { DateTime } from "luxon";
 
 
 const config = useRuntimeConfig();
@@ -52,7 +53,7 @@ export default defineEventHandler(async (event) => {
 
         // Retrieve the start time of the new job
         const getJob = await prisma.jobs.findFirst({
-            where: { job_id: body.job_id },
+            where: { job_id: parseInt(body.job_id) },
             select: { 
                 job_user_id: true,
                 job_title: true,
@@ -129,6 +130,7 @@ export default defineEventHandler(async (event) => {
         return {
             statusCode: 500,
             message: "Something went wrong! Please contact your administrator.",
+            //message:  error.message
         };
     }
 });
