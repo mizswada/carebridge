@@ -45,6 +45,7 @@ export default defineEventHandler(async (event) => {
                 job_additionalCare: true,
                 job_caretaker_type: true,
                 job_status: true,
+                job_billcode: true,
                 
                 // Flattening the related category fields
                 category: {
@@ -77,43 +78,67 @@ export default defineEventHandler(async (event) => {
                     }
                 },
 
-                lookup_jobs_job_durationTolookup: {
+                jobs_user_assignation: {
                     select: {
-                        lookupID: true,
-                        lookupValue: true
+                        user: {
+                            select: {
+                                userFullName: true,
+                                userPhone: true
+                            }
+                        },
+                        jobUser_checkIN: true,
+                        jobUser_checkOut: true,
+                        jobUser_confirmCheckIN: true,
+                        jobUser_confirmCheckOut: true,
                     }
-                },
+                }
             },
         });
         
         // Map through the data to flatten nested objects into a more frontend-friendly structure
-        const flattenedJobs = getJob.map(job => ({
-            job_id: job.job_id,
-            job_category: job.category?.name,
-            job_title: job.job_title,
-            job_location_city: job.job_location_city,
-            job_location_state: job.lookup_jobs_job_location_stateTolookup?.lookupValue,
-            job_date: job.job_date,
-            job_time: job.job_time,
-            job_duration: job.lookup_jobs_job_durationTolookup?.lookupValue,
-            job_payment: job.job_payment,
-            job_notes: job.job_notes,
-            job_additionalCare: job.lookup_jobs_job_additionalCareTolookup?.lookupValue,
-            job_caretaker_type: job.lookup_jobs_job_caretaker_typeTolookup?.lookupValue,
-            job_status: job.job_status,
+        const flattenedJobs = getJob.map(job => {
+            const formattedJobDate = job.job_date
+                ? DateTime.fromJSDate(job.job_date).setZone("Asia/Kuala_Lumpur").toFormat("dd MMM yyyy")
+                : null;
+            const formattedJobTime = job.job_time
+                ? DateTime.fromJSDate(job.job_time).setZone("Asia/Kuala_Lumpur").toFormat("hh:mm a")
+                : null;
             
-            // Flattened category fields
-            /* category_id: job.category?.category_id,
-            category_name: job.category?.name,
+            // Combine date and time if both exist
+            const job_datetime = formattedJobDate && formattedJobTime
+                ? `${formattedJobDate} ${formattedJobTime}`
+                : null;
+
+                // Format each assignation
+            const formattedAssignations = job.jobs_user_assignation.map(assignation => ({
+                userFullName: assignation.user.userFullName,
+                userPhone: assignation.user.userPhone,
+                checkIN: assignation.jobUser_checkIN ? DateTime.fromJSDate(assignation.jobUser_checkIN).toFormat("dd MMM yyyy hh:mm a") : null,
+                checkOut: assignation.jobUser_checkOut ? DateTime.fromJSDate(assignation.jobUser_checkOut).toFormat("dd MMM yyyy hh:mm a") : null,
+                confirmCheckIN: assignation.jobUser_confirmCheckIN ? DateTime.fromJSDate(assignation.jobUser_confirmCheckIN).toFormat("dd MMM yyyy hh:mm a") : null,
+                confirmCheckOut: assignation.jobUser_confirmCheckOut ? DateTime.fromJSDate(assignation.jobUser_confirmCheckOut).toFormat("dd MMM yyyy hh:mm a") : null,
+            }));
             
-            // Flattened job location state lookup fields
-            location_state_id: job.lookup_jobs_job_location_stateTolookup?.lookupID,
-            location_state_name: job.lookup_jobs_job_location_stateTolookup?.lookupValue,
-            
-            // Flattened additional care lookup fields
-            additional_care_id: job.lookup_jobs_job_additionalCareTolookup?.lookupID,
-            additional_care_name: job.lookup_jobs_job_additionalCareTolookup?.lookupValue */
-        }));
+            return {
+                job_id: job.job_id,
+                job_category: job.category?.name,
+                job_title: job.job_title,
+                job_location_city: job.job_location_city,
+                job_location_state: job.lookup_jobs_job_location_stateTolookup?.lookupValue,
+                job_date: formattedJobDate,
+                job_time: formattedJobTime,
+                //job_datetime, // Combined date and time
+                job_duration: job.job_duration,
+                job_payment: job.job_payment,
+                job_notes: job.job_notes,
+                job_additionalCare: job.lookup_jobs_job_additionalCareTolookup?.lookupValue,
+                job_caretaker_type: job.lookup_jobs_job_caretaker_typeTolookup?.lookupValue,
+                job_status: job.job_status,
+                job_billcode: job.job_status === "PENDING" ? job.job_billcode : null,
+                assignations: formattedAssignations
+            };
+        });
+
         
         if (!flattenedJobs.length) {
             return {

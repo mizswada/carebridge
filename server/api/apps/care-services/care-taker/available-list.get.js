@@ -24,9 +24,19 @@ export default defineEventHandler(async (event) => {
         // Read the body of the request to get user data
         const query = getQuery(event);
 
+        const getQualification = await prisma.user_care_taker.findFirst({
+            where: {
+                user_id: userID,
+            },
+            select: {
+                qualifications: true
+            }
+        });
+
         const getJob = await prisma.jobs.findMany({
             where: {
                 job_status: "ACTIVE",
+                job_caretaker_type: getQualification.qualifications
             },
             select: {
                 job_id: true,
@@ -73,13 +83,6 @@ export default defineEventHandler(async (event) => {
                         lookupValue: true
                     }
                 },
-
-                lookup_jobs_job_durationTolookup: {
-                    select: {
-                        lookupID: true,
-                        lookupValue: true
-                    }
-                },
             },
         });
         
@@ -92,7 +95,7 @@ export default defineEventHandler(async (event) => {
             job_location_state: job.lookup_jobs_job_location_stateTolookup?.lookupValue,
             job_date: job.job_date,
             job_time: job.job_time,
-            job_duration: job.lookup_jobs_job_durationTolookup?.lookupValue,
+            job_duration: job.job_duration,
             job_payment: job.job_payment,
             job_notes: job.job_notes,
             job_additionalCare: job.lookup_jobs_job_additionalCareTolookup?.lookupValue,
