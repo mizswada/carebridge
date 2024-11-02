@@ -61,6 +61,9 @@ export default defineEventHandler(async (event) => {
                 gte: todayStart,  // Greater than or equal to start of today
                 lte: todayEnd,    // Less than or equal to end of today
               },
+              job_status: {
+                notIn: ["COMPLETED"], // Exclude jobs with status "ACTIVE" or "COMPLETE"
+            },
               //job_status: "ASSIGN", // Filter for active jobs if applicable
           },
           select: {
@@ -106,7 +109,7 @@ export default defineEventHandler(async (event) => {
                   gte: DateTime.now().toJSDate(), // Only future dates
               },
               job_status: {
-                  notIn: ["ACTIVE", "COMPLETED"], // Exclude jobs with status "ACTIVE" or "COMPLETE"
+                  notIn: ["PENDING", "ACTIVE", "COMPLETED"], // Exclude jobs with status "ACTIVE" or "COMPLETE"
               },
               //job_status: "ASSIGN", // Filter for active jobs if applicable
           },
