@@ -114,20 +114,12 @@ function generateTokenID() {
   return uuidv4();
 }
 
-/* function replaceEmailTemplateURL(template, params) {
-  let modifiedTemplate = template;
-
-  Object.keys(params).forEach((key) => {
-    const placeholder = `[[${key}]]`;
-    modifiedTemplate = modifiedTemplate.replace(new RegExp(placeholder, 'g'), params[key]);
-  });
-
-  return modifiedTemplate;
-} */
-
-function replaceEmailTemplateURL(template, url) {
+/* function replaceEmailTemplateURL(template, url) {
   return template.replace(
     "[[verifyAccountLink]]", url
   );
-} 
+}  */
+  function replaceEmailTemplateURL(template, url) {
+    return template.replace(/\[\[verifyAccountLink\]\]/g, url); // Using regex to replace all occurrences
+  }
 
