@@ -12,36 +12,35 @@ export default defineEventHandler(async (event) => {
   
     // Fetch jobs for the specific user
     try {
+
         const jobs = await prisma.jobs_user_assignation.findMany({
-        where: {
-            jobUser_userID: parseInt(id),
-        },
-        include: {
-            jobs: {
-            select: {
-                job_id: true,
-                job_title: true,
-                job_location_city: true,
-                job_location_state: true,
-                job_stayin: true,
-                job_date: true,
-                job_time: true,
-                job_duration: true,
-                job_status: true,
-                job_payment:true,
-                // Include lookup for job_location_state and job_stayin
-                lookup_jobs_job_location_stateTolookup: true, // Lookup for job location state
-                lookup_jobs_job_stayinTolookup: true, // Lookup for job stay-in status
-                category: {
-                select: {
-                    name: true,
-                },
-                },
-            },
-            },
-            lookup_jobs_user_assignation_jobUser_jobStatusTolookup: true, // Include job status lookup
-            lookup_jobs_user_assignation_jobUser_paymentStatusTolookup: true, // Include payment status lookup
-        },
+          where: {
+              jobUser_userID: parseInt(id),
+          },
+          include: {
+              jobs: {
+              select: {
+                  job_id: true,
+                  job_title: true,
+                  job_location_city: true,
+                  job_location_state: true,
+                  job_date: true,
+                  job_time: true,
+                  job_duration: true,
+                  job_status: true,
+                  job_payment:true,
+                  // Include lookup for job_location_state and job_stayin
+                  lookup_jobs_job_location_stateTolookup: true, // Lookup for job location state
+                  category: {
+                  select: {
+                      name: true,
+                  },
+                  },
+              },
+              },
+              lookup_jobs_user_assignation_jobUser_jobStatusTolookup: true, // Include job status lookup
+              lookup_jobs_user_assignation_jobUser_paymentStatusTolookup: true, // Include payment status lookup
+          },
         });
 
         const user = await prisma.user.findFirst({

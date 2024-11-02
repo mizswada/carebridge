@@ -1,6 +1,12 @@
 export default defineEventHandler(async (event) => {
     const {id} = getQuery(event);
     try {
+        
+        const adminCount = await prisma.user_care_taker.count({
+            where: {
+                user_id: parseInt(id), // Ensure `id` is parsed to an integer
+            },
+        });
         // Fetch user where type is 'admin'
         const details = await prisma.user_care_taker.findFirst({
             where: {
@@ -8,23 +14,19 @@ export default defineEventHandler(async (event) => {
             }
         });
 
-        const adminCount = await prisma.user_care_taker.count({
+        const jobs = await prisma.jobs_user_assignation.findMany({
             where: {
-                user_id: parseInt(id), // Ensure `id` is parsed to an integer
+                jobUser_userID: parseInt(id),
             },
         });
-
-        const emergencyCount = await prisma.emergency_contacts.count({
-            where: {
-                contact_user_id	: parseInt(id), // Ensure `id` is parsed to an integer
-            },
-        });
+       
 
         const equipmentCount = await prisma.equipment.count({
             where: {
                 equipment_user_id	: parseInt(id), // Ensure `id` is parsed to an integer
             },
         });
+
         const user = await prisma.user.findUnique({
             where: {
                 userID: parseInt(id),
@@ -34,7 +36,7 @@ export default defineEventHandler(async (event) => {
         return {
             response: 200,
             success: true,
-            data: {user,adminCount,emergencyCount,equipmentCount,details}
+            data: {user,adminCount,equipmentCount,details,jobs}
         };
     } catch (error) {
         console.error("Error fetching user details:", error);
