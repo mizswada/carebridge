@@ -89,7 +89,7 @@ export default defineEventHandler(async (event) => {
               equipment_rent_edate: parsedRent_edate,
               equipment_pic_name: body.pic_name,
               equipment_pic_phoneNum: body.pic_phoneNum,
-              equipment_status: 112
+              equipment_status: 26
           },
         });
 
