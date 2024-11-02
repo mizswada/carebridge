@@ -106,5 +106,5 @@ function generateTokenID() {
 }
 
 function replaceEmailTemplateURL(template, url) {
-  return template.replace("[[resetPasswordLink]]", url);
+    return template.replace(/\[\[resetPasswordLink\]\]/g, url); // Using regex to replace all occurrences
 }

@@ -90,8 +90,6 @@ function generateTokenID() {
 }
   
 function replaceEmailTemplateURL(template, url) {
-    return template.replace(
-      "[[verifyAccountLink]]", url
-    );
-} 
+    return template.replace(/\[\[verifyAccountLink\]\]/g, url); // Using regex to replace all occurrences
+}
   

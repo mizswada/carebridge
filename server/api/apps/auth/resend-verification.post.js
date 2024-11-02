@@ -87,10 +87,8 @@ export default defineEventHandler(async (event) => {
 function generateTokenID() {
     return uuidv4();
 }
-  
+    
 function replaceEmailTemplateURL(template, url) {
-    return template.replace(
-      "[[verifyAccountLink]]", url
-    );
-} 
+    return template.replace(/\[\[verifyAccountLink\]\]/g, url); // Using regex to replace all occurrences
+}
   
