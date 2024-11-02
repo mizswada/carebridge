@@ -45,6 +45,7 @@ export default defineEventHandler(async (event) => {
             const existingCaretaker = await prisma.user_care_taker.findFirst({
                 where: { user_id: userID },
                 select: {
+                    id: true,
                     documents_ic: true,
                     documents_certificate: true,
                     profile_picture: true,
@@ -79,8 +80,8 @@ export default defineEventHandler(async (event) => {
             }  */
             
             // Insert into `user_care_taker` table
-            const newCaretaker = await prisma.user_care_taker.updateMany({
-                where: { user_id: userID },
+            const newCaretaker = await prisma.user_care_taker.update({
+                where: { id: existingCaretaker.id },
                 data: { 
                     //...(body.identification_number && { identification_number: body.identification_number }),
                     //...(body.race && !isNaN(parseInt(body.race)) && { race: parseInt(body.race) }),
@@ -119,9 +120,24 @@ export default defineEventHandler(async (event) => {
     
         // Check if the user is a "Client"
         if (roles.includes("Client")) {
-            // Insert into `user_client` table
-            const newClient = await prisma.user_client.updateMany({
+
+            const clientRecord = await prisma.user_client.findFirst({
                 where: { user_id: userID },
+                select: { clientID: true },
+            });
+
+            if (!clientRecord) {
+                return {
+                    statusCode: 404,
+                    message: "User record not found",
+                };
+            }
+        
+            const clientID = clientRecord.clientID;
+
+            // Insert into `user_client` table
+            const newClient = await prisma.user_client.update({
+                where: { clientID: clientID },
                 data: {
                     ...(body.dob && { dateOfBirth: parseDate(body.dob) }),
                     //...(body.identification_number && { identification_number: body.identification_number }),
