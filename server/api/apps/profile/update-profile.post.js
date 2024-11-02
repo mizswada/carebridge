@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
             }
         
             // Process upload_ic if provided
-            if (body.upload_ic) {
+            /* if (body.upload_ic) {
                 if (existingCaretaker?.documents_ic) {
                     deleteFile(existingCaretaker.documents_ic);
                 }
@@ -76,37 +76,37 @@ export default defineEventHandler(async (event) => {
                     deleteFile(existingCaretaker.documents_certificate);
                 }
                 responseData.upload_certificate = await saveBase64File(body.upload_certificate, path.join(process.cwd(), 'public/uploads/upload_certificate'));
-            } 
+            }  */
             
             // Insert into `user_care_taker` table
             const newCaretaker = await prisma.user_care_taker.updateMany({
                 where: { user_id: userID },
                 data: { 
-                    ...(body.identification_number && { identification_number: body.identification_number }),
-                    ...(body.race && !isNaN(parseInt(body.race)) && { race: parseInt(body.race) }),
-                    ...(body.religion && !isNaN(parseInt(body.religion)) && { religion: parseInt(body.religion) }),
-                    ...(body.marital_status && !isNaN(parseInt(body.marital_status)) && { marital_status: parseInt(body.marital_status) }),
+                    //...(body.identification_number && { identification_number: body.identification_number }),
+                    //...(body.race && !isNaN(parseInt(body.race)) && { race: parseInt(body.race) }),
+                   // ...(body.religion && !isNaN(parseInt(body.religion)) && { religion: parseInt(body.religion) }),
+                    //...(body.marital_status && !isNaN(parseInt(body.marital_status)) && { marital_status: parseInt(body.marital_status) }),
                     ...(body.dob && { date_of_birth: parseDate(body.dob) }),
-                    ...(body.gender && !isNaN(parseInt(body.gender)) && { gender: parseInt(body.gender) }),
-                    ...(body.nationality && !isNaN(parseInt(body.nationality)) && { nationality: parseInt(body.nationality) }),
+                    //...(body.gender && !isNaN(parseInt(body.gender)) && { gender: parseInt(body.gender) }),
+                    //...(body.nationality && !isNaN(parseInt(body.nationality)) && { nationality: parseInt(body.nationality) }),
                     address_line_1: body.address_line_1,
                     address_line_2: body.address_line_2,
                     address_postcode: body.postcode,
                     address_city: body.city,
                     ...(body.state && !isNaN(parseInt(body.state)) && { address_state: parseInt(body.state) }),
-                    ...(body.qualifications && !isNaN(parseInt(body.qualifications)) && { qualifications: parseInt(body.qualifications) }),
-                    emergency_contact_name: body.emergency_contact_name,
-                    ...(body.emergency_contact_relationship && !isNaN(parseInt(body.emergency_contact_relationship)) && { emergency_contact_relationship: parseInt(body.emergency_contact_relationship) }),
-                    emergency_contact_number: body.emergency_contact_number,
-                    ...(body.working_hours && !isNaN(parseInt(body.working_hours)) && { working_hours: parseInt(body.working_hours) }),
-                    languages_spoken: body.languages_spoken,
-                    documents_ic: responseData.upload_ic || existingCaretaker?.documents_ic,
-                    documents_certificate: responseData.upload_certificate || existingCaretaker?.documents_certificate,
-                    ...(body.health_status && !isNaN(parseInt(body.health_status)) && { health_status: parseInt(body.health_status) }),
+                    //...(body.qualifications && !isNaN(parseInt(body.qualifications)) && { qualifications: parseInt(body.qualifications) }),
+                    //emergency_contact_name: body.emergency_contact_name,
+                    //...(body.emergency_contact_relationship && !isNaN(parseInt(body.emergency_contact_relationship)) && { emergency_contact_relationship: parseInt(body.emergency_contact_relationship) }),
+                    //emergency_contact_number: body.emergency_contact_number,
+                    //...(body.working_hours && !isNaN(parseInt(body.working_hours)) && { working_hours: parseInt(body.working_hours) }),
+                    //languages_spoken: body.languages_spoken,
+                    //documents_ic: responseData.upload_ic || existingCaretaker?.documents_ic,
+                    //documents_certificate: responseData.upload_certificate || existingCaretaker?.documents_certificate,
+                    //...(body.health_status && !isNaN(parseInt(body.health_status)) && { health_status: parseInt(body.health_status) }),
                     profile_picture: responseData.profile_picture || existingCaretaker?.profile_picture,
-                    ...(body.bank_acc_name && { bank_account_name: body.bank_acc_name }),
-                    bank_account_num: body.bank_acc_num,
-                    bank_account_beneficiary: body.bank_acc_beneficiary,
+                    //...(body.bank_acc_name && { bank_account_name: body.bank_acc_name }),
+                    //bank_account_num: body.bank_acc_num,
+                    //bank_account_beneficiary: body.bank_acc_beneficiary,
                 },
             });
 
@@ -124,20 +124,20 @@ export default defineEventHandler(async (event) => {
                 where: { user_id: userID },
                 data: {
                     ...(body.dob && { dateOfBirth: parseDate(body.dob) }),
-                    ...(body.identification_number && { identification_number: body.identification_number }),
-                    ...(body.race && !isNaN(parseInt(body.race)) && {
-                        lookup_user_client_raceTolookup: { connect: { lookupID: parseInt(body.race) } }
-                    }),
-                    ...(body.religion && !isNaN(parseInt(body.religion)) && {
-                        lookup_user_client_religionTolookup: { connect: { lookupID: parseInt(body.religion) } }
-                    }),
-                    ...(body.marital_status && !isNaN(parseInt(body.marital_status)) && {
-                        lookup_user_client_marital_statusTolookup: { connect: { lookupID: parseInt(body.marital_status) } }
-                    }),
-                    occupation: body.occupation,
-                    ...(body.gender && !isNaN(parseInt(body.gender)) && {
-                        lookup_user_client_genderTolookup: { connect: { lookupID: parseInt(body.gender) } }
-                    }),
+                    //...(body.identification_number && { identification_number: body.identification_number }),
+                    //...(body.race && !isNaN(parseInt(body.race)) && {
+                        //lookup_user_client_raceTolookup: { connect: { lookupID: parseInt(body.race) } }
+                    //}),
+                    //...(body.religion && !isNaN(parseInt(body.religion)) && {
+                        //lookup_user_client_religionTolookup: { connect: { lookupID: parseInt(body.religion) } }
+                    //}),
+                    //...(body.marital_status && !isNaN(parseInt(body.marital_status)) && {
+                        //lookup_user_client_marital_statusTolookup: { connect: { lookupID: parseInt(body.marital_status) } }
+                    //}),
+                    //occupation: body.occupation,
+                    //...(body.gender && !isNaN(parseInt(body.gender)) && {
+                        //lookup_user_client_genderTolookup: { connect: { lookupID: parseInt(body.gender) } }
+                    //}),
                     addressLine1: body.address_line_1,
                     addressLine2: body.address_line_2,
                     city: body.city,
@@ -145,8 +145,8 @@ export default defineEventHandler(async (event) => {
                         lookup_user_client_stateTolookup: { connect: { lookupID: parseInt(body.state) } }
                     }),
                     postcode: body.postcode,
-                    medicalConditions: body.medicalConditions,
-                    medications: body.medications,
+                    //medicalConditions: body.medicalConditions,
+                    //medications: body.medications,
                 },
             });
     

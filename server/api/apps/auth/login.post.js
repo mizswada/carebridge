@@ -29,13 +29,6 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    if(user.userIsVerify === 0){
-      return {
-        statusCode: 400,
-        message: "Please verify your account first",
-      };
-    }
-
     // Get user roles
     const roles = await prisma.userrole.findMany({
       where: {
@@ -52,6 +45,22 @@ export default defineEventHandler(async (event) => {
     console.log(roles);
 
     const roleNames = roles.map((r) => r.role.roleName);
+
+    // Allow only "Caretaker" or "Client" roles
+    if (!roleNames.includes("Caretaker") && !roleNames.includes("Client")) {
+      return {
+        statusCode: 400,
+        message: "Access denied.",
+      };
+    }
+    
+    if(user.userIsVerify === 0){
+      return {
+        statusCode: 400,
+        message: "Please verify your account first",
+      };
+    }
+
 
     const accessToken = generateAccessToken({
       userID: user.userID,

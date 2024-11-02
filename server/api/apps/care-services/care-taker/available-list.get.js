@@ -24,9 +24,19 @@ export default defineEventHandler(async (event) => {
         // Read the body of the request to get user data
         const query = getQuery(event);
 
+        const getQualification = await prisma.user_care_taker.findFirst({
+            where: {
+                user_id: userID,
+            },
+            select: {
+                qualifications: true
+            }
+        });
+
         const getJob = await prisma.jobs.findMany({
             where: {
                 job_status: "ACTIVE",
+                job_caretaker_type: getQualification.qualifications
             },
             select: {
                 job_id: true,
@@ -73,44 +83,41 @@ export default defineEventHandler(async (event) => {
                         lookupValue: true
                     }
                 },
-
-                lookup_jobs_job_durationTolookup: {
-                    select: {
-                        lookupID: true,
-                        lookupValue: true
-                    }
-                },
             },
         });
         
         // Map through the data to flatten nested objects into a more frontend-friendly structure
-        const flattenedJobs = getJob.map(job => ({
-            job_id: job.job_id,
-            job_category: job.category?.name,
-            job_title: job.job_title,
-            job_location_city: job.job_location_city,
-            job_location_state: job.lookup_jobs_job_location_stateTolookup?.lookupValue,
-            job_date: job.job_date,
-            job_time: job.job_time,
-            job_duration: job.lookup_jobs_job_durationTolookup?.lookupValue,
-            job_payment: job.job_payment,
-            job_notes: job.job_notes,
-            job_additionalCare: job.lookup_jobs_job_additionalCareTolookup?.lookupValue,
-            job_caretaker_type: job.lookup_jobs_job_caretaker_typeTolookup?.lookupValue,
-            job_status: job.job_status,
+
+        const flattenedJobs = getJob.map(job => {
+            const formattedJobDate = job.job_date
+                ? DateTime.fromJSDate(job.job_date).setZone("Asia/Kuala_Lumpur").toFormat("dd MMM yyyy")
+                : null;
+            const formattedJobTime = job.job_time
+                ? DateTime.fromJSDate(job.job_time).setZone("Asia/Kuala_Lumpur").toFormat("hh:mm a")
+                : null;
             
-            // Flattened category fields
-            /* category_id: job.category?.category_id,
-            category_name: job.category?.name,
+            // Combine date and time if both exist
+            const job_datetime = formattedJobDate && formattedJobTime
+                ? `${formattedJobDate} ${formattedJobTime}`
+                : null;
             
-            // Flattened job location state lookup fields
-            location_state_id: job.lookup_jobs_job_location_stateTolookup?.lookupID,
-            location_state_name: job.lookup_jobs_job_location_stateTolookup?.lookupValue,
-            
-            // Flattened additional care lookup fields
-            additional_care_id: job.lookup_jobs_job_additionalCareTolookup?.lookupID,
-            additional_care_name: job.lookup_jobs_job_additionalCareTolookup?.lookupValue */
-        }));
+            return {
+                job_id: job.job_id,
+                job_category: job.category?.name,
+                job_title: job.job_title,
+                job_location_city: job.job_location_city,
+                job_location_state: job.lookup_jobs_job_location_stateTolookup?.lookupValue,
+                job_date: formattedJobDate,
+                job_time: formattedJobTime,
+                //job_datetime, // Combined date and time
+                job_duration: job.job_duration,
+                job_payment: job.job_payment,
+                job_notes: job.job_notes,
+                job_additionalCare: job.lookup_jobs_job_additionalCareTolookup?.lookupValue,
+                job_caretaker_type: job.lookup_jobs_job_caretaker_typeTolookup?.lookupValue,
+                job_status: job.job_status,
+            };
+        });
         
         if (!flattenedJobs.length) {
             return {

@@ -67,9 +67,35 @@ export default defineEventHandler(async (event) => {
             };
         }
 
+        const today = DateTime.now().startOf("day");
+        const jobDate = DateTime.fromJSDate(parsedJobDate).startOf("day");
+
+        if (jobDate < today) {
+            return {
+                statusCode: 400,
+                message: "Job date must be today or a future date.",
+            };
+        }
+
         const parsedJobTime = body.job_time
             ? DateTime.fromISO(`1970-01-01T${body.job_time}`).toJSDate()
             : null;
+
+        if (jobDate.equals(today) && parsedJobTime) {
+            const currentTime = DateTime.now();
+            const jobTime = DateTime.fromJSDate(parsedJobTime).set({
+                year: currentTime.year,
+                month: currentTime.month,
+                day: currentTime.day,
+            });
+
+            if (jobTime < currentTime) {
+                return {
+                    statusCode: 400,
+                    message: "Job time must be in the future if the job date is today.",
+                };
+            }
+        }
 
         const newJob = await prisma.jobs.create({
             data: {

@@ -72,15 +72,21 @@ export default defineEventHandler(async (event) => {
             };
         }
 
-        // Format job_time to only return the time in "HH:mm" format
-        const formattedJobTime = DateTime.fromJSDate(getJob.job_time).toFormat('HH:mm');
+        // Format job_date and job_time
+        const formattedJobDate = getJob.job_date
+            ? DateTime.fromJSDate(getJob.job_date).setZone("Asia/Kuala_Lumpur").toFormat("dd MMM yyyy")
+            : null;
+        const formattedJobTime = getJob.job_time
+            ? DateTime.fromJSDate(getJob.job_time).setZone("Asia/Kuala_Lumpur").toFormat("hh:mm a")
+            : null;
 
         return {
             statusCode: 200,
             message: "Job retrieved successfully",
             data: {
                 ...getJob,
-                job_time: formattedJobTime // Replace full datetime with just the time
+                job_date: formattedJobDate,
+                job_time: formattedJobTime,
             }
         };
   

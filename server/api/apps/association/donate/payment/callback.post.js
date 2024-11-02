@@ -136,17 +136,17 @@ async function sendEmailReceipt(callbackData, getPayment) {
   try {
  
     // Convert database datetime to dd/mm/yyyy hh:mm:ss
-    let datetimeFormat = DateTime.fromJSDate(getPayment.job_paymentDate)
+    let datetimeFormat = DateTime.fromJSDate(getPayment.donation_date)
       .setZone("Asia/Kuala_Lumpur")
       .toFormat("dd/MM/yyyy hh:mm:ss");
 
     let data = {
-        receiptID: getPayment.job_paymentReferenceNum,
+        receiptID: getPayment.donation_reference_number,
         amountPaid: parseFloat(callbackData.amount),
         datePaid: datetimeFormat,
         status:
             callbackData.status_id == 1 ? "Payment Success" : "Payment Failed",
-        description: getPayment.job_paymentDescription,
+        description: getPayment.donation_paymentDescription,
     };
 
     console.log("Data: ");
