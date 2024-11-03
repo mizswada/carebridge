@@ -67,11 +67,11 @@ export default defineEventHandler(async (event) => {
 
         // Initialize response data
         let imagePath;
+        let equipmentPath;
 
         // Process profile_picture if provided
         if (body.image) {
-            const equipmentPath = await saveBase64File(body.image, path.join("/home/carebridge/", 'public/uploads/equipment_images'));
-            imagePath = equipmentPath;
+            equipmentPath = await saveBase64File(body.image, path.join("/home/carebridge/", 'public/uploads/equipment_images'));
         }
 
 
