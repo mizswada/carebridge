@@ -44,6 +44,7 @@ export default defineEventHandler(async (event) => {
 
         // Create a unique filename with the extension
         const uniqueFilename = `${Date.now()}_${Math.floor(Math.random() * 1000)}.${fileExtension}`;
+        const uploadDir = '/home/carebridge/public/uploads/equipment_images';
         
         // Ensure the directory exists
         if (!fs.existsSync(uploadDir)) {
