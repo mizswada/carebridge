@@ -6,6 +6,7 @@
     import { useUserStore } from "~/stores/user";
     const userStore = useUserStore();
     const id = userStore.userId;
+    const modalDelete = ref(false);
 
     const modalEdit = ref(false);
     const selectedDonation = ref(null);

@@ -494,7 +494,7 @@
             ></Icon>
           </div>
           <div class="flex-1 truncate">
-            <span class="block font-semibold text-xl leading-tight">{{ detail.data.totalPayment }}</span>
+            <span class="block font-semibold text-xl leading-tight">{{ detail.data.jobs.length }}</span>
             <span class="text-base font-semibold text-gray-500">
               Total Complete Job
             </span>

@@ -50,12 +50,14 @@
     const errorPostcode = ref('');
     const errorState = ref('');
     const errorCountry = ref('');
+    const jobs = ref([]);
 
     // list
     const caretaker = await useFetch('/api/caretaker/list');
     // alert(JSON.stringify(caretaker.data.value));
     if(caretaker.data.value.response == 200){
         caretakers.value = caretaker.data.value.data.user;
+        jobs.value=caretaker.data.value.data.jobs;
     }
     else{
         alert("An error occurred while fetching caretakers. Please try again.");
