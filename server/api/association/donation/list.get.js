@@ -20,13 +20,13 @@ export default defineEventHandler(async (event) => {
         
 
         const totalDonationAmount = await prisma.donation.aggregate({
-            _sum: {
-                donation_amount: true,
-            },
             where: {
                 donation_association_id: parseInt(user.userID),
                 donation_status:33,
                 deleted_at: null,
+            },
+            _sum: {
+                donation_amount: true,
             },
         });
 
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
                 // Fetch the user related to donation_user_id
                 user_donation_donation_user_idTouser: {
                     select: {
-                        userUsername: true,
+                        userFullName: true,
                     },
                 },
                 // Fetch the lookup value related to donation_status
