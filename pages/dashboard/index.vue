@@ -460,12 +460,18 @@ onMounted(() => {
                 </div>
               </div>
               <div>
+  
                 <button
                   class="flex items-center p-4 rounded-full bg-[rgb(var(--bg-2))] hover:bg-[rgb(var(--bg-2))]/10 shadow-md"
                 >
-                  <Icon v-if="val.job_status =='PENDING'" size="20px" name="streamline:warning-triangle-solid"></Icon>
                   <Icon v-if="val.job_status =='ASSIGN'" size="20px" name="clarity:assign-user-solid"></Icon>
-                  <Icon v-if="val.job_status =='COMPLETED'" size="20px" name="octicon:tracked-by-closed-completed-16"></Icon>
+                  <Icon v-if="val.job_status =='Check In' || val.job_status =='CHECK IN'" size="20px" name="material-symbols:open-in-phone"></Icon>
+                  <Icon v-if="val.job_status =='Confirm Check In' || val.job_status =='CONFIRM CHECK IN'" size="20px" name="material-symbols:open-in-phone-rounded"></Icon>
+                  <Icon v-if="val.job_status =='Check Out' || val.job_status =='CHECK OUT'" size="20px" name="material-symbols:add-to-home-screen-outline"></Icon>
+                  <Icon v-if="val.job_status =='Confirm Check Out' || val.job_status =='CONFIRM CHECK OUT'" size="20px" name="material-symbols:add-to-home-screen-outline"></Icon>
+                  <Icon v-if="val.job_status =='PENDING' || val.job_status =='PENDING'" size="20px" name="streamline:warning-triangle-solid"></Icon>
+                  <Icon v-if="val.job_status =='Active' || val.job_status =='ACTIVE'" size="20px" name="octicon:tracked-by-closed-completed-16material-symbols:check-box-sharp"></Icon>
+                  <Icon v-if="val.job_status =='COMPLETED' || val.job_status =='COMPLETED'" size="20px" name="octicon:tracked-by-closed-completed-16"></Icon>
                 </button>
               </div>
             </div>
