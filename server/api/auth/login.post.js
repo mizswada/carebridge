@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
     const user = await prisma.user.findFirst({
       where: {
-        userUsername: username,
+        userEmail: username,
       },
     });
 
@@ -50,6 +50,14 @@ export default defineEventHandler(async (event) => {
     });
 
     const roleNames = roles.map((r) => r.role.roleName);
+
+    if(roleNames.includes('Client') || roles.includes('Caretaker')) {
+      return {
+        statusCode: 500,
+        message: "Please login use mobile app",
+      };
+    }
+
 
     const accessToken = generateAccessToken({
       username: user.userUsername,
