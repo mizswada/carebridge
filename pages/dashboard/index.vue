@@ -470,7 +470,7 @@ onMounted(() => {
                   <Icon v-if="val.job_status =='Check Out' || val.job_status =='CHECK OUT'" size="20px" name="material-symbols:add-to-home-screen-outline"></Icon>
                   <Icon v-if="val.job_status =='Confirm Check Out' || val.job_status =='CONFIRM CHECK OUT'" size="20px" name="material-symbols:add-to-home-screen-outline"></Icon>
                   <Icon v-if="val.job_status =='PENDING' || val.job_status =='PENDING'" size="20px" name="streamline:warning-triangle-solid"></Icon>
-                  <Icon v-if="val.job_status =='Active' || val.job_status =='ACTIVE'" size="20px" name="octicon:tracked-by-closed-completed-16material-symbols:check-box-sharp"></Icon>
+                  <Icon v-if="val.job_status =='Active' || val.job_status =='ACTIVE'" size="20px" name="material-symbols-light:check-box"></Icon>
                   <Icon v-if="val.job_status =='COMPLETED' || val.job_status =='COMPLETED'" size="20px" name="octicon:tracked-by-closed-completed-16"></Icon>
                 </button>
               </div>
