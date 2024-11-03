@@ -659,7 +659,7 @@ onMounted(() => {
           <div class="flex-1 truncate">
             <span class="block font-semibold text-xl leading-tight">RM {{ asssociationDonation }}</span>
             <span class="text-base font-semibold text-gray-500">
-              Total Ads
+              Total Donation
             </span>
           </div>
         </div>

@@ -174,7 +174,7 @@
       imageInput.value = null;               
       descriptionInput.value = null;
       urlInput.value= null;
-      statusInput.value = nulls;
+      statusInput.value = null;
 
     };
 
