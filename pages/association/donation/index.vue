@@ -144,6 +144,40 @@
           alert("An error occurred while updated donation details. Please try again.");
       }
     };   
+
+    const exportExcel = async () => {
+        try {
+            
+            const uid = await useFetch("/api/findUser", {
+                method: "GET",
+                query: {
+                    id: userStore.username,
+                },
+            });
+
+            const userid=uid.data.value.data;
+            console.log("Exporting with ID:", userid);
+            const response = await fetch(`/api/association/donation/export?id=${userid}`, {
+                method: 'GET',
+            });
+            const blob = await response.blob();
+
+            // Create a download link for the file
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'donation_data.xlsx';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error exporting Excel file:', error);
+            $swal.fire({
+            title: "Error",
+            text: "An error occurred while exporting the Excel file.",
+            icon: "error",
+            });
+        }
+    }; 
    
 </script>
 
@@ -198,7 +232,11 @@
       <div class="pb-20">
         <div class="bg-white p-6 rounded-lg shadow-md">
           <div class="text-lg font-medium mb-4">List of Donation</div>
-          <div class="flex justify-end items-center mb-3 gap-5"></div>
+          <div class="flex justify-end items-center mb-3 gap-5">
+            <rs-button variant="primary" @click="exportExcel">
+                <Icon name="solar:add-square-broken" class="mr-2" /> Export Excel
+            </rs-button>
+          </div>
   
           <rs-table v-if="donations.length > 0"
             :data="donations"
