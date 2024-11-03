@@ -11,7 +11,9 @@ export default defineEventHandler(async (event) => {
     const file = Buffer.from(imageData, "base64");
 
     // Create the path to save the file
-    const dir = path.join(process.cwd(), 'public/uploads/rehab/activity');
+    // const dir = path.join(process.cwd(), 'public/uploads/rehab/activity');
+    const dir = '/home/carebridge/public/uploads/rehab/activity';
+
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -19,8 +21,9 @@ export default defineEventHandler(async (event) => {
     const uniqueFilename = Date.now() + "_" + Math.floor(Math.random() * 1000);
     const fileName = uniqueFilename + "_"+ body.fileName;
     // Specify the path where you want to save the file
-    const fileUpload = path.join(process.cwd(), `public/uploads/rehab/activity/${fileName}`);
+    // const fileUpload = path.join(process.cwd(), `public/uploads/rehab/activity/${fileName}`);
     //const fileUpload = `/home/ascii/ALSB/public/img/uploads/${body.operationID}/${fileName}`;
+    const fileUpload =`/home/carebridge/public/uploads/rehab/activity/${fileName}`;
     const filePath = `/uploads/rehab/activity/${fileName}`;
 
     await fs.promises.writeFile(fileUpload, file);
