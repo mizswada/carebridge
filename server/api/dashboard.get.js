@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
 
     const { userID, email, roles } = event.context.user;
 
-    console.log("roles: ", roles);
+    // console.log("roles: ", userID);
    
     try { 
         if(roles.includes('Superadmin') || roles.includes('Admin'))
@@ -324,18 +324,13 @@ export default defineEventHandler(async (event) => {
         }
         else if(roles.includes('Association'))
         {
-            const user = await prisma.user.findFirst({
-                where: {
-                    userEmail:email
-                }
-            });
-
+            
             const totalDonationAmount = await prisma.donation.aggregate({
                 _sum: {
                     donation_amount: true,
                 },
                 where: {
-                    donation_association_id: parseInt(user.userID),
+                    donation_association_id: parseInt(userID),
                     donation_status:33,
                     deleted_at: null,
                 },
@@ -343,21 +338,21 @@ export default defineEventHandler(async (event) => {
     
             const activityCount = await prisma.activity.count({
                 where: {
-                    activity_user_id: parseInt(user.userID),
+                    activity_user_id: parseInt(userID),
                     deleted_at: null,
                 },
             });
     
             const equipmentCount = await prisma.equipment.count({
                 where: {
-                    equipment_user_id: parseInt(user.userID),
+                    equipment_user_id: parseInt(userID),
                     deleted_at: null,
                 },
             });
 
             const donations = await prisma.donation.findMany({
                 where: {
-                    donation_association_id: parseInt(user.userID),
+                    donation_association_id: parseInt(userID),
                     deleted_at: null,
                 },
                 select: {
