@@ -53,6 +53,8 @@ export default defineEventHandler(async (event) => {
           // Write the file to the server
           await fs.promises.writeFile(fileUploadPath, fileBuffer);
 
+          console.log("File uploaded successfully:", fileUploadPath);
+
           // Return the file path
           return `/uploads/${path.basename(uploadDir)}/${uniqueFilename}`;
         };

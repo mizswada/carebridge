@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
         // Query to find users with the role of Rehab Center and include associated data
         const rehabCenters = await prisma.user.findMany({
             where: {
+                userStatus: "ACTIVE",
                 userrole: {
                     some: {
                         userRoleRoleID: rehabCenterRoleID,
