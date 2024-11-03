@@ -79,19 +79,19 @@ export default defineEventHandler(async (event) => {
             
             // Process profile_picture if provided
             if (body.profile_picture) {
-                const profilePicturePath = await saveBase64File(body.profile_picture, path.join(process.cwd(), 'public/uploads/profile_pictures'));
+                const profilePicturePath = await saveBase64File(body.profile_picture, path.join("/home/carebridge/", 'public/uploads/profile_pictures'));
                 responseData.profile_picture = profilePicturePath;
             }
         
             // Process upload_ic if provided
             if (body.upload_ic) {
-                const uploadIcPath = await saveBase64File(body.upload_ic, path.join(process.cwd(), 'public/uploads/upload_ic'));
+                const uploadIcPath = await saveBase64File(body.upload_ic, path.join("/home/carebridge/", 'public/uploads/upload_ic'));
                 responseData.upload_ic = uploadIcPath;
             }
         
             // Process upload_certificate if provided
             if (body.upload_certificate) {
-                const uploadCertificatePath = await saveBase64File(body.upload_certificate, path.join(process.cwd(), 'public/uploads/upload_certificate'));
+                const uploadCertificatePath = await saveBase64File(body.upload_certificate, path.join("/home/carebridge/", 'public/uploads/upload_certificate'));
                 responseData.upload_certificate = uploadCertificatePath;
             } 
             

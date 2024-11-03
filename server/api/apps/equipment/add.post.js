@@ -23,7 +23,6 @@ export default defineEventHandler(async (event) => {
         // Helper function to save Base64 image to the server
         const saveBase64File = async (base64Data, uploadDir) => {
 
-
             // Extract the mimeType and base64 string using a regex
             const matches = base64Data.match(/^data:(.+);base64,(.+)$/);
             

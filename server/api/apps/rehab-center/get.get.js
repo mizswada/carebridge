@@ -93,7 +93,8 @@ export default defineEventHandler(async (event) => {
                 // Include activity data associated with the user
                 activity: {
                     where: {
-                        activity_status: 21  // Adding condition for activity_status = 21
+                        activity_status: 21,  // Adding condition for activity_status = 21 
+                        deleted_at: null
                     },
                     select: {
                         activity_title: true,
