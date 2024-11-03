@@ -365,7 +365,7 @@ export default defineEventHandler(async (event) => {
                     // Fetch the user related to donation_user_id
                     user_donation_donation_user_idTouser: {
                         select: {
-                            userUsername: true,
+                            userFullName: true,
                         },
                     },
                     // Fetch the lookup value related to donation_status

@@ -255,7 +255,7 @@
           >
             <!-- 'donor', 'amount' ,'reference','date','status','action' -->
             <template #donor ="donations" >
-                  {{ donations.value.user_donation_donation_user_idTouser.userUsername}}
+                  {{ donations.value.user_donation_donation_user_idTouser.userFullName}}
             </template>
             <template #amount ="donations" >
                   {{ donations.value.donation_amount}}
