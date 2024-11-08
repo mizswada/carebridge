@@ -39,7 +39,9 @@ export default defineEventHandler(async (event) => {
                 },
                 ...(state !== 0 && {
                     user_rehab_center: {
-                        center_address_state: state  // Adding condition for center_address_state only if state is not 0
+                        some: {
+                            center_address_state: state  // Adding condition for center_address_state only if state is not 0
+                        }
                     }
                 })
             },
@@ -58,6 +60,14 @@ export default defineEventHandler(async (event) => {
                 }
             }
         });
+
+        if (rehabCenters.length === 0) {
+            return {
+                statusCode: 400,
+                message: "No rehab centers found.",
+                data: []
+            };
+        }
 
         return {
             statusCode: 200,

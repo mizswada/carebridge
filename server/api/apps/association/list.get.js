@@ -39,7 +39,9 @@ export default defineEventHandler(async (event) => {
                 },
                 ...(state !== 0 && {
                     user_association: {
-                        association_address_state: state  // Adding condition for center_address_state only if state is not 0
+                        some: {
+                            association_address_state: state  // Use the correct nested filter for state
+                        }
                     }
                 })
             },
@@ -59,13 +61,21 @@ export default defineEventHandler(async (event) => {
             }
         });
 
+        if (rehabCenters.length === 0) {
+            return {
+                statusCode: 400,
+                message: "No associantios found.",
+                data: []
+            };
+        }
+
         return {
             statusCode: 200,
             message: "Data retrieved successfully",
             data: rehabCenters
         };
 
-  
+   
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return {
