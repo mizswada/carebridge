@@ -29,6 +29,13 @@ export default defineEventHandler(async (event) => {
       };
     }
 
+    if (user.userStatus === "Pending Approval") {
+      return {
+        statusCode: 400,
+        message: "Your registration is currently pending approval. Please wait for an administrator to review and activate your account.",
+      };
+    }
+
     // Get user roles
     const roles = await prisma.userrole.findMany({
       where: {

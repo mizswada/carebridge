@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import fs from 'fs';
+import { DateTime } from "luxon";
+import mail from "@/server/helper/email";
+import approvalReminderTemplate from "@/server/template/email/approval-Reminder";
 
 const config = useRuntimeConfig();
 
@@ -30,7 +33,7 @@ export default defineEventHandler(async (event) => {
             },
             data: {
                 userFullName: body.fullname,
-                userPhone: body.mobile_number
+                userPhone: body.mobile_number,
             },
         });
 
@@ -125,11 +128,53 @@ export default defineEventHandler(async (event) => {
                     bank_account_num: body.bank_acc_num,
                     bank_account_beneficiary: body.bank_acc_beneficiary,
                 },
+            }); 
+
+            const updateStatusUser = await prisma.user.update({
+                where: {
+                    userID: parseInt(userID),
+                },
+                data: {
+                    userStatus: "Pending Approval"
+                },
             });
+
+            let datetimeFormat = DateTime.fromJSDate(updateStatusUser.userCreatedDate)
+                .setZone("Asia/Kuala_Lumpur")
+                .toFormat("dd/MM/yyyy hh:mm:ss");
+
+            let data = {
+                name: updateStatusUser.userFullName,
+                email: updateStatusUser.userEmail,
+                regDate: datetimeFormat,
+            };
+          
+            console.log("Data: ");
+            console.log(data);
+
+            // Send email reminder to admin    
+            const getSetting = await prisma.setting.findFirst({
+                where: {
+                    setting_name: "email",
+                    status: "ACTIVE"
+                },
+                select: {
+                    setting_value: true,
+                },
+            });
+
+            const emailTemplate = replaceEmailTemplateWord(approvalReminderTemplate, data);
+
+            await mail(
+                getSetting.setting_value,
+                "Approve Application",
+                "Approve Application",
+                emailTemplate
+            ); 
 
             return {
                 statusCode: 200,
-                message: "User profile created successfully",
+                message: "User profile created successfully. Please wait for approval. You will be notified once your account is activated.",
                 //data: newCaretaker,
             };
         }
@@ -201,4 +246,14 @@ export default defineEventHandler(async (event) => {
         };
     }
   });
+
+  function replaceEmailTemplateWord(template, data) {
+    let emailTemplate = template;
+  
+    Object.keys(data).forEach((key) => {
+      emailTemplate = emailTemplate.replace(`[[${key}]]`, data[key]);
+    });
+  
+    return emailTemplate;
+}
   
