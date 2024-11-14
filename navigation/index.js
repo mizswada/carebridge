@@ -286,6 +286,39 @@ export default [
     },
   },
   {
+    header: "Care Taker",
+    description: "Manage your Care Taker",
+    child: [
+      {
+        title: "All Caretaker",
+        path: "/caretaker",
+        icon: "material-symbols-light:lists",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Superadmin", "Admin"],
+          }
+        },
+      },
+      {
+        title: "Pending Approval",
+        path: "/caretaker/pending",
+        icon: "material-symbols:pending-actions",
+        child: [],
+        meta: {
+          auth: {
+            role: ["Superadmin", "Admin"],
+          }
+        },
+      }
+    ],
+    meta: {
+      auth: {
+        role: ["Superadmin", "Admin"],
+      },
+    },
+  },
+  {
     header: "Care Service",
     description: "Manage your care service",
     child: [      
@@ -320,6 +353,7 @@ export default [
       },
     },
   },
+  
   {
     header: "User",
     description: "Manage your users",
@@ -336,18 +370,18 @@ export default [
         },
         
       },
-      {
-        title: "Caretaker",
-        path: "/caretaker",
-        icon: "hugeicons:healtcare",
-        child: [],
-        meta: {
-          auth: {
-            role: ["Superadmin", "Admin"],
-          }
-        },
+      // {
+      //   title: "Caretaker",
+      //   path: "/caretaker",
+      //   icon: "hugeicons:healtcare",
+      //   child: [],
+      //   meta: {
+      //     auth: {
+      //       role: ["Superadmin", "Admin"],
+      //     }
+      //   },
         
-      },
+      // },
       {
         title: "Customer",
         path: "/customer",

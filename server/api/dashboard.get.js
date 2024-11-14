@@ -139,13 +139,18 @@ export default defineEventHandler(async (event) => {
 
             // Step 1: Get the list of userFullNames and their associated userIDs
             const resultAssociation = await prisma.user_association.findMany({
-                select: {
-                user: {
-                    select: {
-                    userID: true,
-                    userFullName: true, // Select userFullname from the related user table
-                    },
+                where: {
+                    user: {
+                        userStatus: 'ACTIVE'
+                    }
                 },
+                select: {
+                    user: {
+                        select: {
+                        userID: true,
+                        userFullName: true, // Select userFullname from the related user table
+                        },
+                    },
                 },
             });
         

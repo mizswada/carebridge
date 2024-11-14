@@ -70,6 +70,45 @@
   const associationRequired=ref('');
   const rehabRequired=ref('');
 
+  const emailError=ref('');
+  const passwordError=ref('');
+
+  const secretKeyError=ref('');
+  const categoryCodeError=ref('');
+  const associationCategoryError=ref(''); 
+  const associationTypeError=ref('');  
+  const rehabCategoryError=ref('');
+  const rehabTypeError=ref('');
+  const fullnameError=ref('');
+  const phoneError=ref('');
+  const registrationNumError=ref('');
+  const licenseNumError=ref('');
+  const associationObjectiveError=ref('');
+  const associationMembershipError=ref('');
+  const associationEsablishDateError=ref('');
+  const associationOperationAreasError=ref('');
+  const rehabDescriptionError=ref('');
+  const rehabGeolocationError=ref('');
+  const rehabCapacityError=ref('');
+  const rehabOperationHourError=ref('');
+
+  const countryError=ref('');
+  const stateError=ref('');
+  const postcodeError=ref('');
+  const cityError=ref('');
+  const addressLine1Error=ref('');
+  const addressLine2Error=ref('');
+  const PICNameError=ref('');
+  const PICContactError=ref('');
+  const PICemailError=ref('');
+
+  const license1Error=ref('');
+  const certificate1Error=ref('');
+  const logo1Error=ref('');
+  const agreementError=ref('');
+
+  const websiteError=ref('');
+  
   
 
   const rehabCategoryData = await $fetch('/api/rehab-center/category', {method: 'GET'});
@@ -282,11 +321,255 @@
     });
   }
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const validatePhone = (phone) => {
+    // Basic phone validation - adjust regex based on your needs
+    const phoneRegex = /^\+?[\d\s-]{8,}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateWebsite = (url) => {
+    const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    return urlRegex.test(url);
+  };
+
+  const validateFields = () => {
+    let isValid = true;
+    // Reset all errors
+    emailError.value = '';
+    passwordError.value = '';
+    secretKeyError.value = '';
+    categoryCodeError.value = '';
+    associationCategoryError.value = '';
+    associationTypeError.value = '';
+    rehabCategoryError.value = '';
+    rehabTypeError.value = '';
+    fullnameError.value = '';
+    phoneError.value = '';
+    registrationNumError.value = '';
+    licenseNumError.value = '';
+    websiteError.value = '';
+    addressLine1Error.value = '';
+    cityError.value = '';
+    postcodeError.value = '';
+    stateError.value = '';
+    countryError.value = '';
+    PICNameError.value = '';
+    PICContactError.value = '';
+    PICemailError.value = '';
+    license1Error.value = '';
+    certificate1Error.value = '';
+    logo1Error.value = '';
+
+    // Common validations for both roles
+    if (!inputEmail.value) {
+        emailError.value = 'Email is required';
+        isValid = false;
+    } else if (!validateEmail(inputEmail.value)) {
+        emailError.value = 'Please enter a valid email address';
+        isValid = false;
+    }
+
+    if (!inputPassword.value) {
+        passwordError.value = 'Password is required';
+        isValid = false;
+    } else if (!validatePassword(inputPassword.value)) {
+        passwordError.value = 'Password must be at least 8 characters with 1 uppercase, 1 lowercase, and 1 number';
+        isValid = false;
+    }
+
+    if (!inputFullname.value) {
+        fullnameError.value = 'Full name is required';
+        isValid = false;
+    }
+
+    if (!inputPhone.value) {
+        phoneError.value = 'Phone number is required';
+        isValid = false;
+    } else if (!validatePhone(inputPhone.value)) {
+        phoneError.value = 'Please enter a valid phone number';
+        isValid = false;
+    }
+
+    if (!inputRegistrationNum.value) {
+        registrationNumError.value = 'Registration number is required';
+        isValid = false;
+    }
+
+    if (!inputLicenseNum.value) {
+        licenseNumError.value = 'License number is required';
+        isValid = false;
+    }
+
+    if (!inputWebsite.value) {
+        websiteError.value = 'Website is required';
+        isValid = false;
+    } else if (!validateWebsite(inputWebsite.value)) {
+        websiteError.value = 'Please enter a valid website URL';
+        isValid = false;
+    }
+
+    // Address validations
+    if (!inputAddressLine1.value) {
+        addressLine1Error.value = 'Address is required';
+        isValid = false;
+    }
+
+    if (!inputCity.value) {
+        cityError.value = 'City is required';
+        isValid = false;
+    }
+
+    if (!inputPostcode.value) {
+        postcodeError.value = 'Postcode is required';
+        isValid = false;
+    }
+
+    if (!inputState.value) {
+        stateError.value = 'State is required';
+        isValid = false;
+    }
+
+    if (!inputCountry.value) {
+        countryError.value = 'Country is required';
+        isValid = false;
+    }
+
+    // PIC validations
+    if (!inputPICName.value) {
+        PICNameError.value = 'PIC name is required';
+        isValid = false;
+    }
+
+    if (!inputPICContact.value) {
+        PICContactError.value = 'PIC contact is required';
+        isValid = false;
+    } else if (!validatePhone(inputPICContact.value)) {
+        PICContactError.value = 'Please enter a valid phone number';
+        isValid = false;
+    }
+
+    if (!inputPICemail.value) {
+        PICemailError.value = 'PIC email is required';
+        isValid = false;
+    } else if (!validateEmail(inputPICemail.value)) {
+        PICemailError.value = 'Please enter a valid email address';
+        isValid = false;
+    }
+
+    // Role-specific validations
+    // alert(inputRehabDescription.value);
+    if (roleOption.value === 'Association') {
+        if (!inputAssociationSecretKey.value) {
+            secretKeyError.value = 'Secret key is required';
+            isValid = false;
+        }
+
+        if (!inputAssociationCategoryCode.value) {
+            categoryCodeError.value = 'Category code is required';
+            isValid = false;
+        }
+
+        if (!inputAssociationCategory.value) {
+            associationCategoryError.value = 'Association category is required';
+            isValid = false;
+        }
+
+        if (!inputAssociationType.value) {
+            associationTypeError.value = 'Association type is required';
+            isValid = false;
+        }
+
+        if (!inputAssociationObjective.value) {
+            associationObjectiveError.value = 'Objective is required';
+            isValid = false;
+        }
+
+        if (!inputAssociationMembership.value) {
+            associationMembershipError.value = 'Membership is required';
+            isValid = false;
+        }
+
+        if (!inputAssociationEsablishDate.value) {
+            associationEsablishDateError.value = 'Establishment date is required';
+            isValid = false;
+        }
+
+        if (!inputAssociationOperationAreas.value) {
+            associationOperationAreasError.value = 'Operation areas are ';
+            isValid = false;
+        }
+    } 
+    else if (roleOption.value === 'Rehab Center') 
+    {
+        // Rehab Center validations
+        if (!inputRehabCategory.value) {
+            rehabCategoryError.value = 'Rehab category is required';
+            isValid = false;
+        }
+
+        if (!inputRehabType.value) {
+            rehabTypeError.value = 'Rehab type is required';
+            isValid = false;
+        }
+
+        if (!inputRehabDescription.value) {
+            rehabDescriptionError.value = 'Description is required';
+            isValid = false;
+        }
+
+        if (!inputRehabGeolocation.value) {
+            rehabGeolocationError.value = 'Geolocation is required';
+            isValid = false;
+        }
+
+        if (!inputRehabCapacity.value) {
+            rehabCapacityError.value = 'Capacity is required';
+            isValid = false;
+        }
+
+        if (!inputRehabOperationHour.value) {
+            rehabOperationHourError.value = 'Operation hours are ';
+            isValid = false;
+        }
+    }
+
+    // Document upload validations 
+    if (!logoFile.value) {
+        logo1Error.value = 'Logo is required';
+        isValid = false;
+    }
+
+    if (!licensesFile.value ) {
+        license1Error.value = 'License document is required';
+        isValid = false;
+    }
+
+    if (!certificatesFile.value ) {
+        certificate1Error.value = 'Certificate is required';
+        isValid = false;
+    }
+
+    return isValid;
+  };
 
   // Function to handle form submission
   const handleSubmit = async () => {
-  
     try {
+      if (!validateFields()) {
+        return;
+      }
+
       const { data:checkusername } = await useFetch("/api/checkusername", {
         method: 'POST',
         body: {
@@ -541,206 +824,323 @@
           <h4 class="col-span-2 mt-4 " v-if="roleOption == 'Rehab Center'">Rehab Center Details</h4>
           <hr class="border-black w-full border-1 mb-4" />
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit type="email" v-model="inputEmail" required >
-              <template #label>
-                Email <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1">
+                <FormKit type="email"  v-model="inputEmail" :class="{'border-red-500': emailError}" placeholder="example@gmail.com">
+                  <template #label>
+                    Email <span class="text-red-500">*</span>
+                  </template>
+                </FormKit>
+                <p v-if="emailError" class="text-red-500 text-sm">{{ emailError }}</p>
+            </div>
 
-            <FormKit :type="passwordVisible ? 'text' : 'password'" v-model="inputPassword" required >
-              <template #label>
-                Password <span class="text-red-500">*</span>
-              </template>
-              <template #suffix>
-                <button @click="togglePasswordVisibility" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 hover:dark:bg-slate-900 h-full rounded-r-md p-3 flex justify-center items-center">
-                  <Icon v-if="passwordVisible" name="material-symbols:visibility" size="19"></Icon>
-                  <Icon v-else name="material-symbols:visibility-off" size="19"></Icon>                    
-                </button>
-              </template>
-            </FormKit>
+            <div class="mb-1">
+                <FormKit :type="passwordVisible ? 'text' : 'password'" v-model="inputPassword"  >
+                  <template #label>
+                    Password <span class="text-red-500">*</span>
+                  </template>
+                  <template #suffix>
+                    <button @click="togglePasswordVisibility" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 hover:dark:bg-slate-900 h-full rounded-r-md p-3 flex justify-center items-center">
+                      <Icon v-if="passwordVisible" name="material-symbols:visibility" size="19"></Icon>
+                      <Icon v-else name="material-symbols:visibility-off" size="19"></Icon>                    
+                    </button>
+                  </template>
+                </FormKit>
+                <p v-if="passwordError" class="text-red-500 text-sm">{{ passwordError }}</p>
+            </div>
 
-            <FormKit type="text" v-if="roleOption == 'Association'" v-model="inputAssociationSecretKey" required >
-              <template #label>
-                User Secret Key <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="text" v-if="roleOption == 'Association'" v-model="inputAssociationCategoryCode" required>
-              <template #label>
-                User Category code <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1" v-if="roleOption == 'Association'">
+              <FormKit type="text"  v-model="inputAssociationSecretKey" placeholder="lumfpz1b-srnf-z8s7-nes8-o0tdbi3jgfgd" >
+                <template #label>
+                  User Secret Key <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="secretKeyError" class="text-red-500 text-sm">{{ secretKeyError }}</p>
+            </div>
 
-            <FormKit type="select" v-if="roleOption == 'Association'" v-model="inputAssociationCategory" :options="optionAssociationCategory" required >
-              <template #label>
-                Association Category <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1" v-if="roleOption == 'Association'">
+              <FormKit type="text"  v-model="inputAssociationCategoryCode" placeholder="vz1kchsl12">
+                <template #label>
+                  User Category code <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="categoryCodeError" class="text-red-500 text-sm">{{ categoryCodeError }}</p>
+            </div>
 
-            <FormKit type="select" v-if="roleOption == 'Association'" v-model="inputAssociationType" :options="optionAssociationType" required >
-              <template #label>
-                Association Type <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1" v-if="roleOption == 'Association'">
+              <FormKit type="select" v-model="inputAssociationCategory" :options="optionAssociationCategory"  >
+                <template #label>
+                  Association Category <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="associationCategoryError" class="text-red-500 text-sm">{{ associationCategoryError }}</p>
+            </div>
 
-            <FormKit type="select" v-if="roleOption == 'Rehab Center'" v-model="inputRehabCategory" :options="optionRehabCategory" required >
-              <template #label>
-                Rehab Center Category <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1" v-if="roleOption == 'Association'">
+              <FormKit type="select"  v-model="inputAssociationType" :options="optionAssociationType"  >
+                <template #label>
+                  Association Type <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="associationTypeError" class="text-red-500 text-sm">{{ associationTypeError }}</p>
+            </div>
 
-            <FormKit type="select" v-if="roleOption == 'Rehab Center'" v-model="inputRehabType" :options="optionRehabType" required >
-              <template #label>
-                Rehab Center Type <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1"  v-if="roleOption == 'Rehab Center'">
+              <FormKit type="select" v-model="inputRehabCategory" :options="optionRehabCategory"  >
+                <template #label>
+                  Rehab Center Category <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="rehabCategoryError" class="text-red-500 text-sm">{{ rehabCategoryError }}</p>
+            </div>
 
-            <FormKit type="text" v-model="inputFullname" required>
-              <template #label>
-                Full Name <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            
-            <FormKit type="tel" v-model="inputPhone" required>
-              <template #label>
-                Phone <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1" v-if="roleOption == 'Rehab Center'">
+              <FormKit type="select"  v-model="inputRehabType" :options="optionRehabType"  >
+                <template #label>
+                  Rehab Center Type <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="rehabTypeError" class="text-red-500 text-sm">{{ rehabTypeError }}</p>
+            </div>
 
-            <FormKit type="text" v-model="inputRegistrationNum" required>
-              <template #label>
-                Registration Number <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="text" v-model="inputLicenseNum" required>
-              <template #label>
-                License Number <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1" >
+              <FormKit type="text" v-model="inputFullname" placeholder="Malaysian Medical Association (MMA) or Pusat Rehabilitasi PERKESO">
+                <template #label>
+                  Full Name <span class="text-red-500">*</span>
+                </template>
+              </FormKit>              
+              <p v-if="fullnameError" class="text-red-500 text-sm">{{ fullnameError }}</p>
+            </div>
 
-            <FormKit type="textarea" v-if="roleOption == 'Association'" v-model="inputAssociationObjective" class="md:col-span-2" required>
-              <template #label>
-                Objective <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="textarea" v-if="roleOption == 'Association'" v-model="inputAssociationMembership"  class="md:col-span-2" required>
-              <template #label>
-                Membership <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1" >
+              <FormKit type="tel" v-model="inputPhone" placeholder="0123456789">
+                <template #label>
+                  Phone <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="phoneError" class="text-red-500 text-sm">{{ phoneError }}</p>
+            </div>
 
-            <FormKit type="date" v-if="roleOption == 'Association'" v-model="inputAssociationEsablishDate" required>
-              <template #label>
-                Establishment Date
-              </template>
-            </FormKit>
-            <FormKit type="text" v-if="roleOption == 'Association'" v-model="inputAssociationOperationAreas" required>
-              <template #label>
-                Operational Areas <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1" >
+              <FormKit type="text" v-model="inputRegistrationNum" placeholder="1234567-A">
+                <template #label>
+                  Registration Number <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="registrationNumError" class="text-red-500 text-sm">{{ registrationNumError }}</p>
+            </div>
 
-            <FormKit type="textarea" v-if="roleOption == 'Rehab Center'" v-model="inputRehabDescription" class="md:col-span-2" required>
-              <template #label>
-                Description <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="text" v-if="roleOption == 'Rehab Center'" v-model="inputRehabGeolocation"  class="md:col-span-2" required>
-              <template #label>
-                Geolocation <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="number" v-if="roleOption == 'Rehab Center'" v-model="inputRehabCapacity" required>
-              <template #label>
-                Center Capacity
-              </template>
-            </FormKit>
-            <FormKit type="text" v-if="roleOption == 'Rehab Center'" v-model="inputRehabOperationHour" required>
-              <template #label>
-                Operational Hours <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="url" v-model="inputWebsite" required>
-              <template #label>
-                Website <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1" >
+              <FormKit type="text" v-model="inputLicenseNum" placeholder="MMC12345">
+                <template #label>
+                  License Number <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="licenseNumError" class="text-red-500 text-sm">{{ licenseNumError }}</p>
+            </div>
+
+            <div class="mb-1" v-if="roleOption == 'Association'">
+              <FormKit type="textarea"  v-model="inputAssociationObjective" class="md:col-span-2" placeholder="Enter Objective">
+                <template #label>
+                  Objective <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="associationObjectiveError" class="text-red-500 text-sm">{{ associationObjectiveError }}</p>
+            </div>
+
+            <div class="mb-1" v-if="roleOption == 'Association'">
+              <FormKit type="textarea"  v-model="inputAssociationMembership"  class="md:col-span-2" placeholder="Enter Membership">
+                <template #label>
+                  Membership <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="associationMembershipError" class="text-red-500 text-sm">{{ associationMembershipError }}</p>
+            </div>
+
+            <div class="mb-1" v-if="roleOption == 'Association'">
+              <FormKit type="date"  v-model="inputAssociationEsablishDate" >
+                <template #label>
+                  Establishment Date
+                </template>
+              </FormKit>
+              <p v-if="associationEsablishDateError" class="text-red-500 text-sm">{{ associationEsablishDateError }}</p>
+            </div>
+
+            <div class="mb-1" v-if="roleOption == 'Association'">
+                <FormKit type="text"  v-model="inputAssociationOperationAreas" placeholder="local, national, international" >
+                  <template #label>
+                    Operational Areas <span class="text-red-500">*</span>
+                  </template>
+                </FormKit>
+                <p v-if="associationOperationAreasError" class="text-red-500 text-sm">{{ associationOperationAreasError }}</p>
+            </div>
+
+            <div class="mb-1" v-if="roleOption == 'Rehab Center'">
+                <FormKit type="textarea"  v-model="inputRehabDescription" class="md:col-span-2" placeholder="Enter Description" >
+                  <template #label>
+                    Description <span class="text-red-500">*</span>
+                  </template>
+                </FormKit>
+              <p v-if="rehabDescriptionError" class="text-red-500 text-sm">{{ rehabDescriptionError }}</p>
+            </div>
+
+            <div class="mb-1" v-if="roleOption == 'Rehab Center'">
+                <FormKit type="text"  v-model="inputRehabGeolocation"  class="md:col-span-2" placeholder="Enter Geolocation" >
+                  <template #label>
+                    Geolocation <span class="text-red-500">*</span>
+                  </template>
+                </FormKit>
+                <p v-if="rehabGeolocationError" class="text-red-500 text-sm">{{ rehabGeolocationError }}</p>
+            </div>
+
+            <div class="mb-1" v-if="roleOption == 'Rehab Center'">
+                <FormKit type="number"  v-model="inputRehabCapacity" placeholder="100" >
+                  <template #label>
+                    Center Capacity
+                  </template>
+                </FormKit>
+                <p v-if="rehabCapacityError" class="text-red-500 text-sm">{{ rehabCapacityError }}</p>
+            </div>
+
+            <div class="mb-1" v-if="roleOption == 'Rehab Center'">
+                <FormKit type="text"  v-model="inputRehabOperationHour" placeholder="09:00 - 18:00" >
+                  <template #label>
+                    Operational Hours <span class="text-red-500">*</span>
+                  </template>
+                </FormKit>
+              <p v-if="rehabOperationHourError" class="text-red-500 text-sm">{{ rehabOperationHourError }}</p>
+            </div>
+
+            <div class="mb-1" >
+              <FormKit type="url" v-model="inputWebsite" placeholder="https://www.example.com" >
+                <template #label>
+                  Website <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="websiteError" class="text-red-500 text-sm">{{ websiteError }}</p>
+            </div>   
           </div>
+
           <h4 class="col-span-2 mt-4" >Address Details</h4>
           <hr class="border-black w-full border-1" />
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit type="select" v-model="inputCountry" :options="optionCountries" required>
-              <template #label>
-                Country <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="select" v-model="inputState" :options="optionStates"  required>
-              <template #label>
-                State <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="text" v-model="inputPostcode" required >
-              <template #label>
-                Postcode <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="text" v-model="inputCity" required>
-              <template #label>
-                City <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="text" v-model="inputAddressLine1" required>
-              <template #label>
-                Address Line 1 <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="text" v-model="inputAddressLine2">
-              <template #label>
-                Address Line 2
-              </template>
-            </FormKit>
+            <div class="mb-1">
+              <FormKit type="select" v-model="inputCountry" :options="optionCountries" >
+                <template #label>
+                  Country <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="countryError" class="text-red-500 text-sm">{{ countryError }}</p>
+            </div>
+
+            <div class="mb-1">
+              <FormKit type="select" v-model="inputState" :options="optionStates"  >
+                <template #label>
+                  State <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="stateError" class="text-red-500 text-sm">{{ stateError }}</p>
+            </div>
+
+            <div class="mb-1">
+              <FormKit type="text" v-model="inputPostcode"  placeholder="123456" >
+                <template #label>
+                  Postcode <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="postcodeError" class="text-red-500 text-sm">{{ postcodeError }}</p>
+            </div>
+
+            <div class="mb-1">
+              <FormKit type="text" v-model="inputCity" placeholder="Kuala Lumpur" >
+                <template #label>
+                  City <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="cityError" class="text-red-500 text-sm">{{ cityError }}</p>
+            </div>
+
+            <div class="mb-1">
+              <FormKit type="text" v-model="inputAddressLine1" placeholder="No. 1, Jalan Ampang, 50450 Kuala Lumpur" >
+                <template #label>
+                  Address Line 1 <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="addressLine1Error" class="text-red-500 text-sm">{{ addressLine1Error }}</p>
+            </div>
+
+            <div class="mb-1">
+              <FormKit type="text" v-model="inputAddressLine2" placeholder="No. 1, Jalan Ampang, 50450 Kuala Lumpur" >
+                <template #label>
+                  Address Line 2
+                </template>
+              </FormKit>
+              <p v-if="addressLine2Error" class="text-red-500 text-sm">{{ addressLine2Error }}</p>
+            </div>         
           </div>
           <h4 class="col-span-2 mt-4" >Person In Charge Details</h4>
           <hr class="border-black w-full border-1 mb-4" />
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit type="text" v-model="inputPICName" required>
-              <template #label>
-                Name <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="tel" v-model="inputPICContact" required>
-              <template #label>
-                Contact Number <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="email" v-model="inputPICemail" required>
-              <template #label>
-                Email Address  <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1">
+              <FormKit type="text" v-model="inputPICName" placeholder="MR. ABDUL AZIZ BIN ABDUL RAHMAN" >
+                <template #label>
+                  Name <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="PICNameError" class="text-red-500 text-sm">{{ PICNameError }}</p>
+            </div>
+
+            <div class="mb-1">
+              <FormKit type="tel" v-model="inputPICContact" placeholder="0123456789" >
+                <template #label>
+                  Contact Number <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="PICContactError" class="text-red-500 text-sm">{{ PICContactError }}</p>
+            </div>
+
+            <div class="mb-1">
+              <FormKit type="email" v-model="inputPICemail" placeholder="example@gmail.com" >
+                <template #label>
+                  Email Address  <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="PICemailError" class="text-red-500 text-sm">{{ PICemailError }}</p>
+            </div>      
           </div>
 
           <h4 class="col-span-2 mt-4" >Documents Upload Details</h4>
           <hr class="border-black w-full border-1 mb-4" />
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit type="file" v-model="inputLogo1" @change="onChangeFile3" required >
-              <template #label>
-                Logo <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="file" v-model="inputLicense1" @change="onChangeFile"  required>
-              <template #label>
-                License Documents <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
-            <FormKit type="file" v-model="inputCertificate1" @change="onChangeFile2" required>
-              <template #label>
-                Certificates <span class="text-red-500">*</span>
-              </template>
-            </FormKit>
+            <div class="mb-1">
+              <FormKit type="file" v-model="inputLogo1" @change="onChangeFile3"  >
+                <template #label>
+                  Logo <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="logo1Error" class="text-red-500 text-sm">{{ logo1Error }}</p>
+            </div>
+
+            <div class="mb-1">
+              <FormKit type="file" v-model="inputLicense1" @change="onChangeFile"  >
+                <template #label>
+                  License Documents <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="license1Error" class="text-red-500 text-sm">{{ license1Error }}</p>
+            </div>
+
+            <div class="mb-1">
+              <FormKit type="file" v-model="inputCertificate1" @change="onChangeFile2" >
+                <template #label>
+                  Certificates <span class="text-red-500">*</span>
+                </template>
+              </FormKit>
+              <p v-if="certificate1Error" class="text-red-500 text-sm">{{ certificate1Error }}</p>
+            </div>
           </div>          
             
           <!-- Agreement Checkbox -->
-          <FormKit type="checkbox" label="agreement" outer-class="col-span-1 md:col-span-2 mt-4" required >
+          <FormKit type="checkbox" label="agreement" outer-class="col-span-1 md:col-span-2 mt-4"  >
             <template #label>
               I agree to the
               <a class="text-primary hover:underline ml-1">Term and Services</a>
@@ -748,7 +1148,7 @@
           </FormKit>
 
           <!-- Submit Button -->
-          <FormKit type="submit" @click="handleSubmit" input-class="w-full">
+          <FormKit type="button" @click="handleSubmit" input-class="w-full">
             Sign up
           </FormKit>
         </form>

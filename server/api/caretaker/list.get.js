@@ -5,9 +5,7 @@ export default defineEventHandler(async (event) => {
       where: {
         userRoleRoleID: 6,  // Filter by userRoleRoleID
         user: {
-          userStatus: {
-            not: 'DELETED',  // Exclude users with userStatus 'DELETED'
-          },
+          userStatus:  'ACTIVE'
         },
       },
       include: {
