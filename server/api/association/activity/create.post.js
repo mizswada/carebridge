@@ -8,12 +8,7 @@ export default defineEventHandler(async (event) => {
       }
       else
       {
-        const user = await prisma.user.findFirst({
-            where: {
-              userEmail: userStore.username
-            }
-        });
-        user_id=user.userID;
+        user_id=userID;
       }
         // create activities
         const createActivities = await prisma.activity.create({

@@ -2,18 +2,13 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const { userID, email, roles } = event.context.user;
     let activity_user_id;
- 
+    
     if(roles.includes('Superadmin') || roles.includes('Admin')) {
       activity_user_id=body?.user_id;
     }
     else
     {
-      const user = await prisma.user.findFirst({
-          where: {
-            userEmail: userStore.username
-          }
-      });
-      activity_user_id=user.userID;
+      activity_user_id=userID;
     }
     
     try {
