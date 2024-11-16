@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     try {
         const currentUser = await prisma.user.findFirst({
             where: {
-              userEmail: body?.id,
+                userID: body?.id,
             },
         });
 
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
 
         const update = await prisma.user.updateMany({
             where: {
-                userEmail: body?.id,
+                userID: body?.id,
             },
             data: {
                 userPassword: sha256(body?.newPassword).toString()

@@ -191,21 +191,27 @@
         urlError.value = '';
         statusError.value = '';
 
+        const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
         // Check each required field
         if (!titleInput.value) {
             titleError.value = 'Title is required';
             isValid = false;
         }
-        // if (!imageInput.value) {
-        //     imageError.value = 'Image is required';
-        //     isValid = false;
-        // }
+        
+        if (selectedActivity.value == null && !imageFile.value) {
+            imageError.value = 'Image is required';
+            isValid = false;
+        }
         if (!descriptionInput.value) {
             descriptionError.value = 'Description is required';
             isValid = false;
         }
         if (!urlInput.value) {
             urlError.value = 'URL is required';
+            isValid = false;
+        }
+        else if (!urlPattern.test(urlInput.value)) {
+            urlError.value = 'Please enter a valid URL (e.g., https://example.com)';
             isValid = false;
         }
         if (!statusInput.value) {
@@ -335,23 +341,30 @@
     
     const clickUpdate = async () => 
     {
-      if(imageFile2.value)
-      {
-        const { data:uploadImage } = await useFetch("/api/rehab-center/activity/upload", {
-          method: 'POST',
-          body: {
-            base64Data: imageFile2.value,
-            fileName: imageFileName2.value,              
-          },
-        });
 
-        if(uploadImage.value.respond == 200) 
-        {
-          imageInputEdit.value = uploadImage.value.data.filePath;
-        }
-      }      
+          
       // alert(imageInputEdit.value);
       try {
+        if (!validateFields()) {
+            return; // Stop if form is invalid
+        }
+
+        if(imageFile2.value)
+        {
+          const { data:uploadImage } = await useFetch("/api/rehab-center/activity/upload", {
+            method: 'POST',
+            body: {
+              base64Data: imageFile2.value,
+              fileName: imageFileName2.value,              
+            },
+          });
+
+          if(uploadImage.value.respond == 200) 
+          {
+            imageInputEdit.value = uploadImage.value.data.filePath;
+          }
+        } 
+
         const { data: update } = await useFetch("/api/rehab-center/activity/update", {
             method: "POST",
             body: JSON.stringify({  

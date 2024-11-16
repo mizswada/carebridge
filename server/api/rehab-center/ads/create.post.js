@@ -8,22 +8,7 @@ export default defineEventHandler(async (event) => {
         if(roles.includes('Superadmin') || roles.includes('Admin')) {
             user_id = body?.user_id;  // Admin or Superadmin sets the user_id from the request body
         } else {
-            // Regular user, fetch user info from database using username from store
-            const user = await prisma.user.findFirst({
-                where: {
-                    userEmail: userStore.username
-                }
-            });
-
-            // Handle case where user is not found
-            if (!user) {
-                return {
-                    response: 404,
-                    message: "User not found",
-                };
-            }
-
-            user_id = user.userID;
+            user_id = userID;
         }
         
         // Create a new advertising entry in the database

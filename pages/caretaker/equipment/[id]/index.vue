@@ -216,7 +216,7 @@
             isValid = false;
         }
         
-        if (!imageInput.value) {
+        if (selectedEquipment.value == null && !imageInput.value) {
             imageError.value = 'Image is required';
             isValid = false;
         }
@@ -690,6 +690,7 @@
                             <img :src="apiURL+ imageInputEdit" alt="Image Preview" class="w-32 h-32 object-cover mt-4" />
                             <FormKit type="file" label="Image *" v-model="imageInput2" :class="{'border-red-500': imageError}" accept="image/*" @change="onChangeFile2" required />
                             <p v-if="imageError" class="text-red-500 text-sm">{{ imageError }}</p>
+                            {{ apiURL }} {{ imageInputEdit }}
                         </div>
 
                         <!-- Description Input -->
