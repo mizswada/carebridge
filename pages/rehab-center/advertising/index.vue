@@ -187,13 +187,18 @@
         urlError.value = '';
         statusError.value = '';        
         
-        if (!imageInput.value) {
+        if (selectedAdvertising.value == null && !imageFile.value) {
             imageError.value = 'Image is required';
             isValid = false;
         }  
+        const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
 
         if (!urlInput.value) {
             urlError.value = 'url  is required';
+            isValid = false;
+        }
+        else if (!urlPattern.test(urlInput.value)) {
+            urlError.value = 'Please enter a valid URL (e.g., https://example.com)';
             isValid = false;
         }
 
@@ -309,39 +314,40 @@
     
     const clickUpdate = async () => 
     {
-        imageInput.value=imageInputEdit.value;
-        
-        if(imageFile2.value)
-        {
-        //   alert(imageFile2.value);
-            const { data:uploadImage } = await useFetch("/api/rehab-center/ads/upload", {
-            method: 'POST',
-            body: {
-                base64Data: imageFile2.value,
-                fileName: imageFileName2.value,              
-            },
-            });
+      if (!validateFields()) {
+          return; // Stop if form is invalid
+      }
 
-            if(uploadImage.value.respond == 200) 
-            {
-                imageInput.value = uploadImage.value.data.filePath;
-            }
-        }      
-        else
-        {
-          alert('kosong');
-        }
+      imageInput.value=imageInputEdit.value;
+        
+      if(imageFile2.value)
+      {
+      //   alert(imageFile2.value);
+          const { data:uploadImage } = await useFetch("/api/rehab-center/ads/upload", {
+          method: 'POST',
+          body: {
+              base64Data: imageFile2.value,
+              fileName: imageFileName2.value,              
+          },
+          });
+
+          if(uploadImage.value.respond == 200) 
+          {
+              imageInput.value = uploadImage.value.data.filePath;
+          }
+      }      
+      
         // alert(imageInputEdit.value);
         try {
-            const { data: update } = await useFetch("/api/rehab-center/ads/update", {
-                method: "POST",
-                body: JSON.stringify({  
-                    advertisingID : selectedAdvertising.value,
-                    imageInput:imageInput.value,
-                    urlInput:urlInput.value,
-                    statusInput:statusInput.value
-                })
-            });  
+          const { data: update } = await useFetch("/api/rehab-center/ads/update", {
+              method: "POST",
+              body: JSON.stringify({  
+                  advertisingID : selectedAdvertising.value,
+                  imageInput:imageInput.value,
+                  urlInput:urlInput.value,
+                  statusInput:statusInput.value
+              })
+          });  
             // alert(JSON.stringify(update.value));
             if (update.value.response === 200) 
             {

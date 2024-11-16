@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
         const equipmentCount = await prisma.equipment.count({
             where: {
                 equipment_user_id	: parseInt(id), // Ensure `id` is parsed to an integer
+                deleted_at: null,
             },
         });
 

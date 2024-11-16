@@ -454,7 +454,7 @@
           Confirm Approved
         </template>
         <template v-slot:body>
-          Are you sure you want to Approve this rehab center application?
+          Are you sure you want to Approve this caretaker application?
         </template>
         <template v-slot:footer>
           <rs-button @click="closeApprove">Cancel</rs-button>
@@ -468,7 +468,7 @@
           Confirm Reject
         </template>
         <template v-slot:body>
-          Are you sure you want to Reject this rehab center application?
+          Are you sure you want to Reject this caretaker application?
         </template>
         <template v-slot:footer>
           <rs-button @click="closeReject">Cancel</rs-button>

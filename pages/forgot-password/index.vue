@@ -69,7 +69,7 @@ const forgotPassword = async () => {
           @submit="forgotPassword"
         >
           <div class="grid grid-cols-1">
-            <FormKit label="Email" type="email" v-model="form.email" outer-class="text-left" />
+            <FormKit label="Email" type="email" v-model="form.email" outer-class="text-left" required/>
 
              <!-- Update button to show loading state -->
              <rs-button :btn-type="'submit'" :disabled="loading" class="w-full">

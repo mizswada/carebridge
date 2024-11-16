@@ -65,7 +65,7 @@ const submitForm = async () => {
       initialCache: false,
       method: "POST",
       body: JSON.stringify({
-        id: userStore.username,
+        id: userStore.userId,
         oldPassword: inputPassword.value,
         newPassword: inputPassword2.value,
       }),

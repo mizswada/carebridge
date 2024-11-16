@@ -216,7 +216,7 @@
             isValid = false;
         }
         
-        if (selectedEquipment.value == null && !imageInput.value) {
+        if (selectedEquipment.value == null && !imageFile.value) {
             imageError.value = 'Image is required';
             isValid = false;
         }
