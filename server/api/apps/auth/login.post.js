@@ -91,6 +91,7 @@ export default defineEventHandler(async (event) => {
       userCareTakerClient = await prisma.user_care_taker.findFirst({
         where: {
           user_id: user.userID,
+          userStatus: "ACTIVE"
         },
       });
     }
@@ -98,6 +99,7 @@ export default defineEventHandler(async (event) => {
       userCareTakerClient = await prisma.user_client.findFirst({
         where: {
           user_id: user.userID,
+          userStatus: "ACTIVE"
         },
       });
     }
