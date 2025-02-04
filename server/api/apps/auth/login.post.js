@@ -70,13 +70,18 @@ export default defineEventHandler(async (event) => {
       `accessToken=${accessToken}; HttpOnly; Secure; SameSite=Lax; Path=/`,
       `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Lax; Path=/`,
     ]);
-
+  
     let userCareTakerClient;
     if(roleNames.includes("Caretaker")){
       userCareTakerClient = await prisma.user_care_taker.findFirst({
         where: {
-          user_id: user.userID,
-          userStatus: "ACTIVE"
+          user_id: user.userID, // Ensure userID is correctly passed
+            user: { 
+                userStatus: "ACTIVE"
+            }
+        },
+        include: {
+            user: true, 
         },
       });
     }
@@ -84,7 +89,12 @@ export default defineEventHandler(async (event) => {
       userCareTakerClient = await prisma.user_client.findFirst({
         where: {
           user_id: user.userID,
-          userStatus: "ACTIVE"
+          user: { // ✅ Query the related user model
+            userStatus: "ACTIVE"
+          }
+        },
+        include: {
+          user: true, 
         },
       });
     }
