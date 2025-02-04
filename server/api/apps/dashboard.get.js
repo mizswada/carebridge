@@ -35,7 +35,6 @@ export default defineEventHandler(async (event) => {
     const ads = await prisma.advertising.findMany({
         where: {
           advertising_status: parseInt(225),
-          deleted_at: null
         },
         select: {
           advertising_image: true, 

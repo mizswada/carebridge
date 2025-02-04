@@ -68,7 +68,7 @@ export default defineEventHandler(async (event) => {
 
         // If a new image is uploaded, save it and remove the old one
         if (body.image) {
-            const newImagePath = await saveBase64File(body.image, path.join("/home/carebridge/", 'public/uploads/equipment_images'));
+            const newImagePath = await saveBase64File(body.image, path.join(process.cwd(), 'public/uploads/equipment_images'));
 
             // Remove the old image if it exists
             if (existingEquipment.equipment_image) {

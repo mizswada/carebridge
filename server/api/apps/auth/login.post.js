@@ -5,7 +5,7 @@ const ENV = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   try {
-    const { useremail, password, player_id } = await readBody(event);
+    const { useremail, password } = await readBody(event);
 
     const user = await prisma.user.findFirst({
       where: {
@@ -29,10 +29,10 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    if (user.userStatus === "Pending Approval") {
+    if(user.userIsVerify === 0){
       return {
         statusCode: 400,
-        message: "Your registration is currently pending approval. Please wait for an administrator to review and activate your account.",
+        message: "Please verify your account first",
       };
     }
 
@@ -53,22 +53,6 @@ export default defineEventHandler(async (event) => {
 
     const roleNames = roles.map((r) => r.role.roleName);
 
-    // Allow only "Caretaker" or "Client" roles
-    if (!roleNames.includes("Caretaker") && !roleNames.includes("Client")) {
-      return {
-        statusCode: 400,
-        message: "Access denied.",
-      };
-    }
-    
-    if(user.userIsVerify === 0){
-      return {
-        statusCode: 400,
-        message: "Please verify your account first",
-      };
-    }
-
-
     const accessToken = generateAccessToken({
       userID: user.userID,
       useremail: user.userEmail,
@@ -86,19 +70,18 @@ export default defineEventHandler(async (event) => {
       `accessToken=${accessToken}; HttpOnly; Secure; SameSite=Lax; Path=/`,
       `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Lax; Path=/`,
     ]);
-
-    // Store player_id in the user table
-    await prisma.user.update({
-        where: { userID: user.userID },
-        data: { player_id },
-    });
-
+  
     let userCareTakerClient;
     if(roleNames.includes("Caretaker")){
       userCareTakerClient = await prisma.user_care_taker.findFirst({
         where: {
-          user_id: user.userID,
-          userStatus: "ACTIVE"
+          user_id: user.userID, // Ensure userID is correctly passed
+            user: { 
+                userStatus: "ACTIVE"
+            }
+        },
+        include: {
+            user: true, 
         },
       });
     }
@@ -106,7 +89,12 @@ export default defineEventHandler(async (event) => {
       userCareTakerClient = await prisma.user_client.findFirst({
         where: {
           user_id: user.userID,
-          userStatus: "ACTIVE"
+          user: { // ✅ Query the related user model
+            userStatus: "ACTIVE"
+          }
+        },
+        include: {
+          user: true, 
         },
       });
     }
@@ -194,10 +182,10 @@ function checkProfileCompletion(userCareTakerClient, role) {
       'emergency_contact_name',
       'emergency_contact_relationship',
       'emergency_contact_number',
-      //'working_hours',
-      //'languages_spoken',
+      'working_hours',
+      'languages_spoken',
       'documents_ic',
-      //'health_status',
+      'health_status',
       'profile_picture',
       'bank_account_name',
       'bank_account_num',
@@ -226,4 +214,3 @@ function checkProfileCompletion(userCareTakerClient, role) {
 
   return true; // Profile is complete
 }
-

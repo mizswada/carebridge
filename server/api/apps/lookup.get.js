@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
     const states = await prisma.lookup.findMany({
         where: {
             lookupTitle: "state",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -16,7 +15,6 @@ export default defineEventHandler(async (event) => {
     const contact_relationships = await prisma.lookup.findMany({
         where: {
             lookupTitle: "contact_relationship",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -27,7 +25,6 @@ export default defineEventHandler(async (event) => {
     const nationalities = await prisma.lookup.findMany({
         where: {
             lookupTitle: "nationality_list",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -38,7 +35,6 @@ export default defineEventHandler(async (event) => {
     const genders = await prisma.lookup.findMany({
         where: {
             lookupTitle: "gender_type",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -50,7 +46,6 @@ export default defineEventHandler(async (event) => {
     const working_hours = await prisma.lookup.findMany({
         where: {
             lookupTitle: "working_hours",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -62,7 +57,6 @@ export default defineEventHandler(async (event) => {
     const health_status = await prisma.lookup.findMany({
         where: {
             lookupTitle: "health_status",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -73,7 +67,6 @@ export default defineEventHandler(async (event) => {
     const job_additionalCare = await prisma.lookup.findMany({
         where: {
             lookupTitle: "job_additionalCare",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -84,7 +77,6 @@ export default defineEventHandler(async (event) => {
     const qualifications_caretaker = await prisma.lookup.findMany({
         where: {
             lookupTitle: "qualifications_caretaker",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -95,8 +87,8 @@ export default defineEventHandler(async (event) => {
     const job_category = await prisma.category.findMany({
         where: {
             type: "care_service",
-            deleted_at: null,
-            status: "Enabled",
+            deleted_at: null
+
         },
         select: {
             category_id: true,
@@ -107,8 +99,7 @@ export default defineEventHandler(async (event) => {
     const rehab_center = await prisma.category.findMany({
         where: {
             type: "rehab_center",
-            deleted_at: null,
-            status: "Enabled",
+            deleted_at: null
         },
         select: {
             category_id: true,
@@ -119,7 +110,6 @@ export default defineEventHandler(async (event) => {
     const marital_status = await prisma.lookup.findMany({
         where: {
             lookupTitle: "marital_status",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -130,7 +120,6 @@ export default defineEventHandler(async (event) => {
     const religion = await prisma.lookup.findMany({
         where: {
             lookupTitle: "religion",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -141,7 +130,6 @@ export default defineEventHandler(async (event) => {
     const race = await prisma.lookup.findMany({
         where: {
             lookupTitle: "race",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -152,7 +140,6 @@ export default defineEventHandler(async (event) => {
     const bank = await prisma.lookup.findMany({
         where: {
             lookupTitle: "bank_name",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -163,8 +150,7 @@ export default defineEventHandler(async (event) => {
     const care_servicePrice = await prisma.category.findMany({
         where: {
             type: "care_service",
-            deleted_at: null,
-            status: "Enabled",
+            deleted_at: null
         },
         select: {
             category_id: true,
@@ -177,7 +163,6 @@ export default defineEventHandler(async (event) => {
     const equipment_type = await prisma.lookup.findMany({
         where: {
             lookupTitle: "equipment_type",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -188,7 +173,6 @@ export default defineEventHandler(async (event) => {
     const equipment_status = await prisma.lookup.findMany({
         where: {
             lookupTitle: "equipment_status",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
@@ -199,7 +183,6 @@ export default defineEventHandler(async (event) => {
     const job_status = await prisma.lookup.findMany({
         where: {
             lookupTitle: "job_status",
-            lookupStatus: "ACTIVE",
         },
         select: {
             lookupID: true,
